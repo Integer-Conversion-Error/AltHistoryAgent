@@ -1,0 +1,50 @@
+{
+    "$id": "https://example.com/schemas/global_economy",
+    "title": "Global Economic Trends",
+    "type": "object",
+    "properties": {
+        "globalGDP": {
+            "type": "string",
+            "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+        },
+        "stockMarketTrends": {
+            "type": "object",
+            "properties": {
+                "DowJones": {
+                    "type": "number"
+                },
+                "Nasdaq": {
+                    "type": "number"
+                },
+                "ShanghaiComposite": {
+                    "type": "number"
+                },
+                "EuroStoxx": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "DowJones",
+                "Nasdaq",
+                "ShanghaiComposite",
+                "EuroStoxx"
+            ]
+        },
+        "majorTradeDisputes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "globalInflationRate": {
+            "type": "number",
+            "minimum": 0
+        }
+    },
+    "required": [
+        "globalGDP",
+        "stockMarketTrends",
+        "majorTradeDisputes",
+        "globalInflationRate"
+    ]
+}

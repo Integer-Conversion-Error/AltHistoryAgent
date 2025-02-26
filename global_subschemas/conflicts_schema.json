@@ -1,0 +1,253 @@
+{
+    "$id": "https://example.com/schemas/conflicts",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Conflicts",
+    "type": "object",
+    "properties": {
+        "activeWars": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "conflictName": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "Ongoing",
+                            "Ceasefire",
+                            "Resolved"
+                        ]
+                    },
+                    "belligerents": {
+                        "type": "object",
+                        "properties": {
+                            "sideA": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "sideB": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "sideA",
+                            "sideB"
+                        ]
+                    },
+                    "casualties": {
+                        "type": "object",
+                        "properties": {
+                            "military": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "civilian": {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        },
+                        "required": [
+                            "military",
+                            "civilian"
+                        ]
+                    },
+                    "territorialChanges": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "region": {
+                                    "type": "string"
+                                },
+                                "newController": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "region",
+                                "newController"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "conflictName",
+                    "startDate",
+                    "status",
+                    "belligerents",
+                    "casualties"
+                ]
+            }
+        },
+        "borderSkirmishes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string"
+                    },
+                    "involvedNations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "Minor",
+                            "Moderate",
+                            "Severe"
+                        ]
+                    },
+                    "casualties": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "Ongoing",
+                            "Resolved"
+                        ]
+                    }
+                },
+                "required": [
+                    "location",
+                    "involvedNations",
+                    "severity",
+                    "casualties",
+                    "status"
+                ]
+            }
+        },
+        "internalUnrest": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "movementName": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "cause": {
+                        "type": "string"
+                    },
+                    "affectedRegions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "governmentResponse": {
+                        "type": "string",
+                        "enum": [
+                            "Suppressed",
+                            "Negotiated",
+                            "Ongoing"
+                        ]
+                    },
+                    "casualties": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                },
+                "required": [
+                    "movementName",
+                    "startDate",
+                    "cause",
+                    "affectedRegions",
+                    "governmentResponse",
+                    "casualties"
+                ]
+            }
+        },
+        "proxyWars": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "conflictName": {
+                        "type": "string"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "primaryBackers": {
+                        "type": "object",
+                        "properties": {
+                            "sideA": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "sideB": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "sideA",
+                            "sideB"
+                        ]
+                    },
+                    "supportType": {
+                        "type": "string",
+                        "enum": [
+                            "Military Aid",
+                            "Economic Aid",
+                            "Covert Operations",
+                            "Full Intervention"
+                        ]
+                    }
+                },
+                "required": [
+                    "conflictName",
+                    "startDate",
+                    "primaryBackers",
+                    "supportType"
+                ]
+            }
+        }
+    },
+    "required": [
+        "activeWars",
+        "borderSkirmishes",
+        "internalUnrest",
+        "proxyWars"
+    ]
+}

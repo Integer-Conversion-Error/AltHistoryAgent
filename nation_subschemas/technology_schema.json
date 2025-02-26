@@ -1,0 +1,34 @@
+{
+  "$id": "https://example.com/schemas/technology",
+  "title": "Technology & Innovation",
+  "type": "object",
+  "properties": {
+    "globalTechRanking": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "R&DInvestment": {
+      "type": "string",
+      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+    },
+    "majorTechnologicalAdvancements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "spaceProgram": {
+      "type": "boolean"
+    },
+    "AIIntegration": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "globalTechRanking",
+    "R&DInvestment",
+    "majorTechnologicalAdvancements",
+    "spaceProgram",
+    "AIIntegration"
+  ]
+}

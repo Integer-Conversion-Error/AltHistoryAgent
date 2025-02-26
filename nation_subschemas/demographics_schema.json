@@ -1,0 +1,54 @@
+{
+    "$id": "https://example.com/schemas/demographics",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Demographics",
+    "type": "object",
+    "properties": {
+      "population": { "type": "integer", "minimum": 0 },
+      "populationGrowthRate": { "type": "number", "minimum": -10, "maximum": 10 },
+      "medianAge": { "type": "number", "minimum": 0 },
+      "ageDistribution": {
+        "type": "object",
+        "properties": {
+          "0-14": { "type": "number", "minimum": 0, "maximum": 100 },
+          "15-24": { "type": "number", "minimum": 0, "maximum": 100 },
+          "25-54": { "type": "number", "minimum": 0, "maximum": 100 },
+          "55-64": { "type": "number", "minimum": 0, "maximum": 100 },
+          "65+": { "type": "number", "minimum": 0, "maximum": 100 }
+        },
+        "required": ["0-14", "15-24", "25-54", "55-64", "65+"]
+      },
+      "ethnicComposition": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ethnicity": { "type": "string" },
+            "percentage": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["ethnicity", "percentage"]
+        }
+      },
+      "religiousComposition": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "religion": { "type": "string" },
+            "percentage": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["religion", "percentage"]
+        }
+      },
+      "urbanizationRate": { "type": "number", "minimum": 0, "maximum": 100 },
+      "migrationRate": { "type": "number", "minimum": -10, "maximum": 10 },
+      "birthRate": { "type": "number", "minimum": 0 },
+      "deathRate": { "type": "number", "minimum": 0 },
+      "fertilityRate": { "type": "number", "minimum": 0 }
+    },
+    "required": [
+      "population", "populationGrowthRate", "medianAge", "ageDistribution", "ethnicComposition",
+      "religiousComposition", "urbanizationRate", "migrationRate", "birthRate", "deathRate", "fertilityRate"
+    ]
+  }
+  

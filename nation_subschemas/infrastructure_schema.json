@@ -1,0 +1,44 @@
+{
+  "$id": "https://example.com/schemas/infrastructure",
+  "title": "Infrastructure",
+  "type": "object",
+  "properties": {
+    "urbanizationRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "majorCities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "railNetworkCoverage": {
+      "type": "string",
+      "pattern": "^[0-9]+ km$"
+    },
+    "roadQualityIndex": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "airportCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "internetPenetrationRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "urbanizationRate",
+    "majorCities",
+    "railNetworkCoverage",
+    "roadQualityIndex",
+    "airportCount",
+    "internetPenetrationRate"
+  ]
+}

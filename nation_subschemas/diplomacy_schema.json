@@ -1,0 +1,101 @@
+{
+    "$id": "https://example.com/schemas/diplomacy",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Diplomacy & International Relations",
+    "type": "object",
+    "properties": {
+      "foreignPolicy": {
+        "type": "string",
+        "enum": ["Isolationist", "Neutral", "Interventionist", "Expansionist", "Defensive"]
+      },
+      "alliances": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "memberStates": { "type": "array", "items": { "type": "string" } },
+            "formationYear": { "type": "integer", "minimum": 1800 },
+            "type": { "type": "string", "enum": ["Military", "Economic", "Political", "Scientific"] }
+          },
+          "required": ["name", "memberStates", "formationYear", "type"]
+        }
+      },
+      "rivalries": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "nation": { "type": "string" },
+            "cause": { "type": "string" },
+            "escalationLevel": { "type": "string", "enum": ["Cold War", "Trade War", "Border Skirmishes", "Active Conflict"] }
+          },
+          "required": ["nation", "cause", "escalationLevel"]
+        }
+      },
+      "diplomaticInfluence": {
+        "type": "object",
+        "properties": {
+          "UNInfluenceScore": { "type": "number", "minimum": 0, "maximum": 100 },
+          "regionalPowerIndex": { "type": "number", "minimum": 0, "maximum": 100 },
+          "globalSoftPowerRanking": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["UNInfluenceScore", "regionalPowerIndex", "globalSoftPowerRanking"]
+      },
+      "treaties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "signingYear": { "type": "integer", "minimum": 1800 },
+            "status": { "type": "string", "enum": ["Active", "Expired", "Violated"] },
+            "nationsInvolved": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["name", "signingYear", "status", "nationsInvolved"]
+        }
+      },
+      "sanctions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "targetNation": { "type": "string" },
+            "reason": { "type": "string" },
+            "sanctionType": { "type": "string", "enum": ["Economic", "Military", "Political", "Technological"] },
+            "severity": { "type": "string", "enum": ["Mild", "Moderate", "Severe"] }
+          },
+          "required": ["targetNation", "reason", "sanctionType", "severity"]
+        }
+      },
+      "proxyInvolvement": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "conflictName": { "type": "string" },
+            "proxyNation": { "type": "string" },
+            "supportType": { "type": "string", "enum": ["Military Aid", "Covert Operations", "Financial Support", "Diplomatic Support"] },
+            "levelOfInvolvement": { "type": "string", "enum": ["Minimal", "Moderate", "Significant", "Primary Belligerent"] }
+          },
+          "required": ["conflictName", "proxyNation", "supportType", "levelOfInvolvement"]
+        }
+      },
+      "diplomaticIncidents": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "incidentName": { "type": "string" },
+            "date": { "type": "string", "format": "date" },
+            "involvedNations": { "type": "array", "items": { "type": "string" } },
+            "cause": { "type": "string" },
+            "resolution": { "type": "string", "enum": ["Resolved", "Ongoing", "Escalating"] }
+          },
+          "required": ["incidentName", "date", "involvedNations", "cause", "resolution"]
+        }
+      }
+    },
+    "required": ["foreignPolicy", "alliances", "rivalries", "diplomaticInfluence", "treaties", "sanctions", "proxyInvolvement", "diplomaticIncidents"]
+  }
+  

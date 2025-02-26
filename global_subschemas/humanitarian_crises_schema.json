@@ -1,0 +1,37 @@
+{
+    "$id": "https://example.com/schemas/humanitarian_crises",
+    "title": "Humanitarian Crises",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "crisisName": {
+                "type": "string"
+            },
+            "startDate": {
+                "type": "string",
+                "format": "date"
+            },
+            "affectedRegions": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "refugeeCount": {
+                "type": "integer",
+                "minimum": 0
+            },
+            "cause": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "crisisName",
+            "startDate",
+            "affectedRegions",
+            "refugeeCount",
+            "cause"
+        ]
+    }
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/nation",
+  "title": "Nation",
+  "type": "object",
+  "properties": {
+    "nationId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "abbreviation": {
+      "type": "string",
+      "maxLength": 5
+    },
+    "government": {
+      "$ref": "nation_subschemas/government_schema.json"
+    },
+    "capital": {
+      "type": "string"
+    },
+    "demographics": {"$ref": "nation_subschemas/demographics_schema.json"},
+    "GDP": {
+      "type": "string",
+      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "infrastructure": {
+      "$ref": "nation_subschemas/infrastructure_schema.json"
+    },
+    "technology": {
+      "$ref": "nation_subschemas/technology_schema.json"
+    },
+    "education": {
+      "$ref": "nation_subschemas/education_schema.json"
+    },
+    "healthcare": {
+      "$ref": "nation_subschemas/healthcare_schema.json"
+    },
+    "energy": {
+      "$ref": "nation_subschemas/energy_schema.json"
+    },
+    "crime": {
+      "$ref": "nation_subschemas/crime_schema.json"
+    },
+    "diplomacy": {
+      "$ref": "nation_subschemas/diplomacy_schema.json"
+    }
+  },
+  "required": [
+    "nationId",
+    "name",
+    "abbreviation",
+    "government",
+    "capital",
+    "population",
+    "GDP",
+    "currency",
+    "military",
+    "economicPolicies",
+    "tradePartners",
+    "publicSentiment"
+  ]
+}

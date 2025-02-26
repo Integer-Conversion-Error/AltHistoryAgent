@@ -1,0 +1,28 @@
+{
+  "$id": "https://example.com/schemas/military",
+  "title": "Military",
+  "type": "object",
+  "properties": {
+    "activePersonnel": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reservePersonnel": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "defenseBudget": {
+      "type": "string",
+      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+    },
+    "nuclearCapability": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "activePersonnel",
+    "reservePersonnel",
+    "defenseBudget",
+    "nuclearCapability"
+  ]
+}

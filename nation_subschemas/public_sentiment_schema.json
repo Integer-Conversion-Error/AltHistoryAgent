@@ -1,0 +1,26 @@
+{
+  "$id": "https://example.com/schemas/public_sentiment",
+  "title": "Public Sentiment",
+  "type": "object",
+  "properties": {
+    "approvalRating": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "internationalReputation": {
+      "type": "string",
+      "enum": [
+        "Very Positive",
+        "Positive",
+        "Neutral",
+        "Negative",
+        "Very Negative"
+      ]
+    }
+  },
+  "required": [
+    "approvalRating",
+    "internationalReputation"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+    "$id": "https://example.com/schemas/energy",
+    "title": "Energy & Resources",
+    "type": "object",
+    "properties": {
+      "energyProduction": { "type": "string", "pattern": "^[0-9]+ TWh$" },
+      "renewableEnergyPercentage": { "type": "number", "minimum": 0, "maximum": 100 },
+      "oilReserves": { "type": "string", "pattern": "^[0-9]+ billion barrels$" }
+    },
+    "required": ["energyProduction", "renewableEnergyPercentage", "oilReserves"]
+  }
+  

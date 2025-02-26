@@ -1,0 +1,42 @@
+{
+    "$id": "https://example.com/schemas/natural_disasters",
+    "title": "Natural Disasters",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "disasterType": {
+                "type": "string",
+                "enum": [
+                    "Earthquake",
+                    "Tsunami",
+                    "Hurricane",
+                    "Drought",
+                    "Wildfire"
+                ]
+            },
+            "location": {
+                "type": "string"
+            },
+            "date": {
+                "type": "string",
+                "format": "date"
+            },
+            "casualties": {
+                "type": "integer",
+                "minimum": 0
+            },
+            "economicDamage": {
+                "type": "string",
+                "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+            }
+        },
+        "required": [
+            "disasterType",
+            "location",
+            "date",
+            "casualties",
+            "economicDamage"
+        ]
+    }
+}

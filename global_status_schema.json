@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/schemas/global_status",
+    "title": "Global Status",
+    "type": "object",
+    "properties": {
+        "nations": {
+            "type": "array",
+            "items": {
+                "$ref": "https://example.com/schemas/nation"
+            }
+        },
+        "globalEvents": {
+            "$ref": "global_subschemas/global_events_schema.json"
+        },
+        "conflicts": {
+            "$ref": "global_subschemas/conflicts_schema.json"
+        },
+        "treaties": {
+            "$ref": "global_subschemas/treaties_schema.json"
+        },
+        "organizations": {
+            "$ref": "global_subschemas/organizations_schema.json"
+        },
+        "globalEconomy": {
+            "$ref": "global_subschemas/global_economy_schema.json"
+        },
+        "humanitarianCrises": {
+            "$ref": "global_subschemas/humanitarian_crises_schema.json"
+        },
+        "naturalDisasters": {
+            "$ref": "global_subschemas/natural_disasters_schema.json"
+        },
+        "scientificDiscoveries": {
+            "$ref": "global_subschemas/scientific_discoveries_schema.json"
+        },
+        "globalSentiment": {
+            "$ref": "global_subschemas/global_sentiment_schema.json"
+        }
+    },
+    "required": [
+        "nations",
+        "globalEvents",
+        "conflicts",
+        "treaties",
+        "organizations",
+        "globalEconomy",
+        "humanitarianCrises",
+        "naturalDisasters",
+        "scientificDiscoveries",
+        "globalSentiment"
+    ]
+}
