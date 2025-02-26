@@ -1,42 +1,71 @@
 {
     "$id": "https://example.com/schemas/natural_disasters",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Natural Disasters",
     "type": "array",
     "items": {
-        "type": "object",
-        "properties": {
-            "disasterType": {
-                "type": "string",
-                "enum": [
-                    "Earthquake",
-                    "Tsunami",
-                    "Hurricane",
-                    "Drought",
-                    "Wildfire"
-                ]
-            },
-            "location": {
-                "type": "string"
-            },
-            "date": {
-                "type": "string",
-                "format": "date"
-            },
-            "casualties": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "economicDamage": {
-                "type": "string",
-                "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
-            }
+      "type": "object",
+      "properties": {
+        "disasterType": {
+          "type": "string",
+          "enum": [
+            "Earthquake",
+            "Tsunami",
+            "Hurricane",
+            "Drought",
+            "Wildfire",
+            "Flood",
+            "Tornado",
+            "Volcanic Eruption",
+            "Landslide",
+            "Blizzard"
+          ]
         },
-        "required": [
-            "disasterType",
-            "location",
-            "date",
-            "casualties",
-            "economicDamage"
-        ]
+        "location": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "magnitude": {
+          "type": "number",
+          "minimum": 0,
+          "description": "For earthquakes, hurricane category, or other severity indicators"
+        },
+        "casualties": { "type": "integer", "minimum": 0 },
+        "economicDamage": {
+          "type": "string",
+          "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+        },
+        "affectedPopulation": { "type": "integer", "minimum": 0 },
+        "disasterResponse": {
+          "type": "object",
+          "properties": {
+            "evacuations": { "type": "integer", "minimum": 0 },
+            "aidProvided": {
+              "type": "string",
+              "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(million|billion|trillion)?$"
+            },
+            "internationalAssistance": { "type": "boolean" }
+          },
+          "required": ["evacuations", "aidProvided", "internationalAssistance"]
+        },
+        "environmentalImpact": {
+          "type": "object",
+          "properties": {
+            "co2Released": { "type": "number", "minimum": 0, "description": "Tons of CO2 released (e.g., from wildfires, eruptions)" },
+            "habitatDestruction": { "type": "string", "enum": ["Minor", "Moderate", "Severe"] },
+            "waterContamination": { "type": "boolean" }
+          }
+        }
+      },
+      "required": [
+        "disasterType",
+        "location",
+        "date",
+        "magnitude",
+        "casualties",
+        "economicDamage",
+        "affectedPopulation",
+        "disasterResponse",
+        "environmentalImpact"
+      ]
     }
-}
+  }
+  

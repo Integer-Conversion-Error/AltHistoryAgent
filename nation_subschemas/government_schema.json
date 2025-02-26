@@ -1,24 +1,241 @@
 {
-    "$id": "https://example.com/schemas/government",
-    "title": "Government",
-    "type": "object",
-    "properties": {
-      "governmentType": { "type": "string" },
-      "leader": {
+  "$id": "https://example.com/schemas/government",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Government",
+  "type": "object",
+  "properties": {
+    "governmentType": {
+      "type": "string",
+      "enum": [
+        "Democracy",
+        "Republic",
+        "Constitutional Monarchy",
+        "Absolute Monarchy",
+        "Military Junta",
+        "Single-Party State",
+        "Theocracy",
+        "Transitional Government",
+        "Dictatorship"
+      ]
+    },
+    "constitutionalStructure": {
+      "type": "string",
+      "enum": [
+        "Federal",
+        "Unitary",
+        "Confederation",
+        "Decentralized Autonomy"
+      ]
+    },
+    "leader": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "yearsInPower": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "approvalRating": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "emergencyPowers": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "title",
+        "yearsInPower",
+        "approvalRating",
+        "emergencyPowers"
+      ]
+    },
+    "politicalParties": {
+      "type": "array",
+      "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "title": { "type": "string" },
-          "yearsInPower": { "type": "integer", "minimum": 0 }
+          "name": {
+            "type": "string"
+          },
+          "ideology": {
+            "type": "string"
+          },
+          "inPower": {
+            "type": "boolean"
+          },
+          "representationPercentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "coalitionMembership": {
+            "type": "string"
+          }
         },
-        "required": ["name", "title", "yearsInPower"]
-      },
-      "politicalParties": {
-        "type": "array",
-        "items": { "type": "string" }
-      },
-      "stabilityIndex": { "type": "number", "minimum": 0, "maximum": 100 }
+        "required": [
+          "name",
+          "ideology",
+          "inPower",
+          "representationPercentage"
+        ]
+      }
     },
-    "required": ["governmentType", "leader", "politicalParties", "stabilityIndex"]
-  }
-  
+    "politicalCoalitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "memberParties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dominantIdeology": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "memberParties",
+          "dominantIdeology"
+        ]
+      }
+    },
+    "legislature": {
+      "type": "object",
+      "properties": {
+        "legislativeType": {
+          "type": "string",
+          "enum": [
+            "Unicameral",
+            "Bicameral",
+            "Advisory Council",
+            "Military Oversight Council",
+            "No Legislature"
+          ]
+        },
+        "upperHouseSeats": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lowerHouseSeats": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rulingParty": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "legislativeType",
+        "upperHouseSeats",
+        "lowerHouseSeats",
+        "rulingParty"
+      ]
+    },
+    "judiciary": {
+      "type": "object",
+      "properties": {
+        "independenceLevel": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Low",
+            "Moderate",
+            "High"
+          ]
+        },
+        "corruptionIndex": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "independenceLevel",
+        "corruptionIndex"
+      ]
+    },
+    "stabilityIndex": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "corruptionLevel": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Moderate",
+        "High",
+        "Severe"
+      ]
+    },
+    "governanceStyle": {
+      "type": "string",
+      "enum": [
+        "Authoritarian",
+        "Technocratic",
+        "Democratic",
+        "Oligarchic",
+        "Anarchic",
+        "Bureaucratic"
+      ]
+    },
+    "foreignPolicy": {
+      "type": "object",
+      "properties": {
+        "interventionismLevel": {
+          "type": "string",
+          "enum": [
+            "Isolationist",
+            "Neutral",
+            "Interventionist",
+            "Expansionist"
+          ]
+        },
+        "alliances": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "majorRivals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "interventionismLevel",
+        "alliances",
+        "majorRivals"
+      ]
+    }
+  },
+  "required": [
+    "governmentType",
+    "constitutionalStructure",
+    "leader",
+    "politicalParties",
+    "politicalCoalitions",
+    "legislature",
+    "judiciary",
+    "stabilityIndex",
+    "corruptionLevel",
+    "governanceStyle",
+    "foreignPolicy"
+  ]
+}

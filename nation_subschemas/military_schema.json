@@ -1,5 +1,6 @@
 {
   "$id": "https://example.com/schemas/military",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Military",
   "type": "object",
   "properties": {
@@ -11,18 +12,249 @@
       "type": "integer",
       "minimum": 0
     },
+    "paramilitaryPersonnel": {
+      "type": "integer",
+      "minimum": 0
+    },
     "defenseBudget": {
       "type": "string",
       "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
     },
     "nuclearCapability": {
-      "type": "boolean"
+      "type": "object",
+      "properties": {
+        "hasNuclearWeapons": {
+          "type": "boolean"
+        },
+        "nuclearStockpile": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deliverySystems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "landForces": {
+      "type": "object",
+      "properties": {
+        "tankCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "armoredVehicles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artillery": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rocketSystems": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "airForces": {
+      "type": "object",
+      "properties": {
+        "fighterJets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bomberAircraft": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transportAircraft": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drones": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "navalForces": {
+      "type": "object",
+      "properties": {
+        "aircraftCarriers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "destroyers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "submarines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frigates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "amphibiousAssaultShips": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "specialForces": {
+      "type": "object",
+      "properties": {
+        "unitCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notableOperations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cyberWarfare": {
+      "type": "object",
+      "properties": {
+        "capabilityLevel": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Moderate",
+            "Advanced",
+            "Elite"
+          ]
+        },
+        "offensiveCapabilities": {
+          "type": "boolean"
+        },
+        "defensiveCapabilities": {
+          "type": "boolean"
+        }
+      }
+    },
+    "logistics": {
+      "type": "object",
+      "properties": {
+        "fuelReserves": {
+          "type": "string",
+          "pattern": "^[0-9]+ million barrels$"
+        },
+        "munitionsStockpile": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "supplyChainEfficiency": {
+          "type": "string",
+          "enum": [
+            "Poor",
+            "Average",
+            "Good",
+            "Excellent"
+          ]
+        }
+      }
+    },
+    "strategicThinking": {
+      "type": "object",
+      "properties": {
+        "militaryDoctrine": {
+          "type": "string",
+          "enum": [
+            "Offensive Warfare",
+            "Defensive Warfare",
+            "Asymmetric Warfare",
+            "Guerrilla Warfare",
+            "Blitzkrieg",
+            "Naval Supremacy",
+            "Air Supremacy",
+            "Cyber Warfare Dominance",
+            "Nuclear Deterrence"
+          ]
+        },
+        "primaryStrategicObjectives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Key military goals (e.g., 'Control of the South China Sea', 'Defend European Allies')"
+        },
+        "warPlanning": {
+          "type": "object",
+          "properties": {
+            "preemptiveStrikePolicy": {
+              "type": "boolean"
+            },
+            "defenseReadinessLevel": {
+              "type": "string",
+              "enum": [
+                "Low",
+                "Moderate",
+                "High",
+                "Full Mobilization"
+              ]
+            },
+            "alliancesForWar": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Nations expected to join in wartime"
+            }
+          }
+        },
+        "forceProjection": {
+          "type": "object",
+          "properties": {
+            "globalMilitaryBases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Overseas bases for power projection"
+            },
+            "expeditionaryForces": {
+              "type": "boolean"
+            },
+            "rapidDeploymentCapacity": {
+              "type": "string",
+              "enum": [
+                "Low",
+                "Moderate",
+                "High",
+                "Elite"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "militaryDoctrine",
+        "primaryStrategicObjectives",
+        "warPlanning",
+        "forceProjection"
+      ]
     }
   },
   "required": [
     "activePersonnel",
     "reservePersonnel",
+    "paramilitaryPersonnel",
     "defenseBudget",
-    "nuclearCapability"
+    "nuclearCapability",
+    "landForces",
+    "airForces",
+    "navalForces",
+    "specialForces",
+    "cyberWarfare",
+    "logistics",
+    "strategicThinking"
   ]
 }
