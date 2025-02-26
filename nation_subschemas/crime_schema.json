@@ -1,12 +1,25 @@
 {
-    "$id": "https://example.com/schemas/crime",
-    "title": "Crime & Law Enforcement",
-    "type": "object",
-    "properties": {
-      "crimeRatePer100k": { "type": "number", "minimum": 0 },
-      "policeForceSize": { "type": "integer", "minimum": 0 },
-      "corruptionIndex": { "type": "number", "minimum": 0, "maximum": 100 }
+  "$id": "https://example.com/schemas/crime",
+  "title": "Crime & Law Enforcement",
+  "type": "object",
+  "properties": {
+    "crimeRatePer100k": {
+      "type": "number",
+      "minimum": 0
     },
-    "required": ["crimeRatePer100k", "policeForceSize", "corruptionIndex"]
-  }
-  
+    "policeForceSize": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "corruptionIndex": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "crimeRatePer100k",
+    "policeForceSize",
+    "corruptionIndex"
+  ]
+}
