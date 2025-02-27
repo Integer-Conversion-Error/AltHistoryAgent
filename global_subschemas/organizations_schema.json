@@ -1,0 +1,96 @@
+{
+    "$id": "https://example.com/schemas/organizations",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "International Organizations",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "abbreviation": {
+                "type": "string",
+                "maxLength": 10
+            },
+            "formationDate": {
+                "type": "string",
+                "format": "date"
+            },
+            "headquarters": {
+                "type": "string"
+            },
+            "memberStates": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "organizationType": {
+                "type": "string",
+                "enum": [
+                    "Military",
+                    "Economic",
+                    "Political",
+                    "Scientific",
+                    "Humanitarian"
+                ]
+            },
+            "primaryObjectives": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "influenceScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "A measure of the organization's global impact (0-100)"
+            },
+            "fundingSources": {
+                "type": "object",
+                "properties": {
+                    "annualBudget": {
+                        "type": "string",
+                        "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+                    },
+                    "primaryContributors": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "majorDecisions": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "decisionName": {
+                            "type": "string"
+                        },
+                        "date": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "impactSummary": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "name",
+            "abbreviation",
+            "formationDate",
+            "headquarters",
+            "memberStates",
+            "organizationType",
+            "primaryObjectives",
+            "influenceScore"
+        ]
+    }
+}

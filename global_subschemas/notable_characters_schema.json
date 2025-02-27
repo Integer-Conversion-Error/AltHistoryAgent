@@ -1,0 +1,122 @@
+{
+    "$id": "https://example.com/schemas/notable_characters",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Notable Historical Figures",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "fullName": {
+                "type": "string"
+            },
+            "aliases": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "birthDate": {
+                "type": "string",
+                "format": "date"
+            },
+            "deathDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": true
+            },
+            "nationality": {
+                "type": "string"
+            },
+            "politicalAffiliation": {
+                "type": "string"
+            },
+            "role": {
+                "type": "string",
+                "enum": [
+                    "Head of State",
+                    "Military Leader",
+                    "Scientist",
+                    "Revolutionary",
+                    "Intellectual",
+                    "Business Leader",
+                    "Religious Leader",
+                    "Spy",
+                    "Dissident",
+                    "Other"
+                ]
+            },
+            "majorContributions": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "associatedEvents": {
+                "type": "array",
+                "items": {
+                    "$ref": "global_subschemas/global_events_schema.json"
+                }
+            },
+            "publicPerception": {
+                "type": "string",
+                "enum": [
+                    "Revered",
+                    "Respected",
+                    "Controversial",
+                    "Hated",
+                    "Feared",
+                    "Unknown"
+                ]
+            },
+            "personalThoughts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "date": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "context": {
+                            "type": "string"
+                        },
+                        "entry": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "date",
+                        "context",
+                        "entry"
+                    ]
+                }
+            },
+            "quotes": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "legacy": {
+                "type": "string",
+                "enum": [
+                    "World-changing",
+                    "Significant",
+                    "Moderate",
+                    "Limited",
+                    "Forgotten"
+                ]
+            }
+        },
+        "required": [
+            "fullName",
+            "birthDate",
+            "nationality",
+            "role",
+            "majorContributions",
+            "associatedEvents",
+            "publicPerception",
+            "legacy"
+        ]
+    }
+}

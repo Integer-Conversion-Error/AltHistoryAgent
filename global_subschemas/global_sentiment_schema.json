@@ -1,0 +1,87 @@
+{
+    "$id": "https://example.com/schemas/global_sentiment",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Global Sentiment",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "nationA": {
+                "type": "string"
+            },
+            "nationB": {
+                "type": "string"
+            },
+            "diplomaticRelations": {
+                "type": "string",
+                "enum": [
+                    "Allied",
+                    "Friendly",
+                    "Neutral",
+                    "Tense",
+                    "Hostile"
+                ]
+            },
+            "economicTrust": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Scale from 0 (no trust) to 100 (full trust in trade and finance)."
+            },
+            "militaryTensions": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Scale from 0 (peaceful) to 100 (imminent war)."
+            },
+            "historicalConflicts": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "ideologicalAlignment": {
+                "type": "string",
+                "enum": [
+                    "Identical",
+                    "Similar",
+                    "Neutral",
+                    "Divergent",
+                    "Opposed"
+                ]
+            },
+            "recentIncidents": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "incidentName": {
+                            "type": "string"
+                        },
+                        "date": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "impact": {
+                            "type": "string",
+                            "enum": [
+                                "Minor",
+                                "Moderate",
+                                "Severe"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "nationA",
+            "nationB",
+            "diplomaticRelations",
+            "economicTrust",
+            "militaryTensions",
+            "historicalConflicts",
+            "ideologicalAlignment"
+        ]
+    }
+}
