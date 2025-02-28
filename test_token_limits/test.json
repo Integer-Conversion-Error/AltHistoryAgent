@@ -1,0 +1,137 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "GlobalEvent",
+    "type": "object",
+    "properties": {
+        "eventId": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "type": {
+            "type": "string"
+        },
+        "location": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "coordinates": {
+                    "type": "object",
+                    "properties": {
+                        "latitude": {
+                            "type": "number"
+                        },
+                        "longitude": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "latitude",
+                        "longitude"
+                    ]
+                }
+            },
+            "required": [
+                "country"
+            ]
+        },
+        "causes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "impact": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string"
+                            },
+                            "affectedEntities": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "quantitativeEffect": {
+                                "type": "object",
+                                "properties": {
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "value",
+                                    "unit"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "description",
+                            "affectedEntities"
+                        ]
+                    }
+                },
+                "required": [
+                    "category",
+                    "details"
+                ]
+            }
+        },
+        "internationalResponse": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "nation": {
+                        "type": "string"
+                    },
+                    "reaction": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "nation",
+                    "reaction"
+                ]
+            }
+        },
+        "longTermEffects": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "eventId",
+        "name",
+        "date",
+        "type",
+        "location",
+        "causes",
+        "impact",
+        "longTermEffects"
+    ]
+}
