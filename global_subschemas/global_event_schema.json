@@ -1,137 +1,58 @@
 {
+    "$id": "https://example.com/schemas/global_event_schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "GlobalEvent",
-    "type": "object",
-    "properties": {
-        "eventId": {
-            "type": "string"
-        },
-        "name": {
-            "type": "string"
-        },
-        "date": {
-            "type": "string",
-            "format": "date"
-        },
-        "type": {
-            "type": "string"
-        },
-        "location": {
-            "type": "object",
-            "properties": {
-                "country": {
-                    "type": "string"
-                },
-                "region": {
-                    "type": "string"
-                },
-                "coordinates": {
-                    "type": "object",
-                    "properties": {
-                        "latitude": {
-                            "type": "number"
-                        },
-                        "longitude": {
-                            "type": "number"
-                        }
-                    },
-                    "required": [
-                        "latitude",
-                        "longitude"
-                    ]
-                }
+    "title": "Global Events",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "eventType": {
+                "type": "string",
+                "enum": [
+                    "Conflict",
+                    "Economic Event",
+                    "Political Violence",
+                    "Scientific Discovery",
+                    "Natural Disaster",
+                    "Humanitarian Crisis",
+                    "Political Event",
+                    "Generic Event"
+                ],
+                "description": "The type of event being recorded."
             },
-            "required": [
-                "country"
-            ]
-        },
-        "causes": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "impact": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "category": {
-                        "type": "string"
+            "eventData": {
+                "oneOf": [
+                    {
+                        "$ref": "global_subschemas/event_subschemas/conflicts_schema.json"
                     },
-                    "details": {
-                        "type": "object",
-                        "properties": {
-                            "description": {
-                                "type": "string"
-                            },
-                            "affectedEntities": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "quantitativeEffect": {
-                                "type": "object",
-                                "properties": {
-                                    "value": {
-                                        "type": "number"
-                                    },
-                                    "unit": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "value",
-                                    "unit"
-                                ]
-                            }
-                        },
-                        "required": [
-                            "description",
-                            "affectedEntities"
-                        ]
-                    }
-                },
-                "required": [
-                    "category",
-                    "details"
-                ]
-            }
-        },
-        "internationalResponse": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "nation": {
-                        "type": "string"
+                    {
+                        "$ref": "global_subschemas/event_subschemas/economic_events_schema.json"
                     },
-                    "reaction": {
-                        "type": "string"
+                    {
+                        "$ref": "global_subschemas/event_subschemas/political_violence_schema.json"
+                    },
+                    {
+                        "$ref": "global_subschemas/event_subschemas/scientific_discoveries_schema.json"
+                    },
+                    {
+                        "$ref": "global_subschemas/event_subschemas/natural_disasters_schema.json"
+                    },
+                    {
+                        "$ref": "global_subschemas/event_subschemas/humanitarian_crises_schema.json"
+                    },
+                    {
+                        "$ref": "global_subschemas/event_subschemas/political_events_schema.json"
+                    },
+                    {
+                        "$ref": "global_subschemas/event_subschemas/generic_event_schema.json"
                     }
-                },
-                "required": [
-                    "nation",
-                    "reaction"
-                ]
+                ],
+                "description": "The detailed data of the event, based on the specific event type."
             }
         },
-        "longTermEffects": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        }
-    },
-    "required": [
-        "eventId",
-        "name",
-        "date",
-        "type",
-        "location",
-        "causes",
-        "impact",
-        "longTermEffects"
-    ]
+        "required": [
+            "eventType",
+            "eventData"
+        ]
+    }
 }

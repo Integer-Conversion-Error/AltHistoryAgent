@@ -1,37 +1,140 @@
 {
     "$id": "https://example.com/schemas/humanitarian_crises",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Humanitarian Crises",
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
+            "crisisId": {
+                "type": "string",
+                "description": "A unique identifier for the crisis."
+            },
             "crisisName": {
-                "type": "string"
+                "type": "string",
+                "description": "The official or widely recognized name of the humanitarian crisis."
             },
             "startDate": {
                 "type": "string",
-                "format": "date"
+                "format": "date",
+                "description": "The date when the crisis began (YYYY-MM-DD)."
+            },
+            "endDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": true,
+                "description": "The date when the crisis officially ended (if applicable)."
             },
             "affectedRegions": {
                 "type": "array",
                 "items": {
                     "type": "string"
-                }
+                },
+                "description": "Countries, regions, or territories affected by the crisis."
+            },
+            "severityLevel": {
+                "type": "string",
+                "enum": [
+                    "Localized",
+                    "Regional",
+                    "International",
+                    "Global"
+                ],
+                "description": "The overall scale and impact of the crisis."
+            },
+            "cause": {
+                "type": "string",
+                "description": "The primary cause of the crisis (e.g., war, famine, natural disaster, economic collapse)."
+            },
+            "casualties": {
+                "type": "object",
+                "properties": {
+                    "deaths": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Total number of fatalities linked to the crisis."
+                    },
+                    "injuries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Total number of injured individuals."
+                    }
+                },
+                "required": ["deaths"],
+                "description": "The human toll of the crisis."
             },
             "refugeeCount": {
                 "type": "integer",
-                "minimum": 0
+                "minimum": 0,
+                "description": "Number of people displaced due to the crisis."
             },
-            "cause": {
-                "type": "string"
+            "governmentResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "nation": {
+                            "type": "string",
+                            "description": "A country that has responded to the crisis."
+                        },
+                        "response": {
+                            "type": "string",
+                            "description": "Government actions such as aid distribution, military intervention, or policy changes."
+                        }
+                    },
+                    "required": ["nation", "response"]
+                },
+                "description": "How governments have reacted to the crisis."
+            },
+            "internationalAid": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "organization": {
+                            "type": "string",
+                            "description": "Name of the international organization providing aid."
+                        },
+                        "aidType": {
+                            "type": "string",
+                            "enum": [
+                                "Food",
+                                "Medical",
+                                "Shelter",
+                                "Financial",
+                                "Military",
+                                "Other"
+                            ],
+                            "description": "Type of aid provided."
+                        },
+                        "aidValue": {
+                            "type": "string",
+                            "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(million|billion)?$",
+                            "description": "Monetary value of aid if applicable (e.g., '$500 million')."
+                        }
+                    },
+                    "required": ["organization", "aidType"]
+                },
+                "description": "International organizations' efforts to mitigate the crisis."
+            },
+            "longTermEffects": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Predicted or observed long-term consequences of the crisis."
             }
         },
         "required": [
+            "crisisId",
             "crisisName",
             "startDate",
             "affectedRegions",
+            "severityLevel",
+            "cause",
+            "casualties",
             "refugeeCount",
-            "cause"
+            "longTermEffects"
         ]
     }
 }

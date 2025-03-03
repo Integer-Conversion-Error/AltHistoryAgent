@@ -48,7 +48,7 @@ def get_schema_details(data, schema_name):
                 "example": schema.get("example", "No example available")}
     return None
 
-allSchemas = {
+allSchemas = { ##add all schema summaries
   "schemas": [
     {
         "name": "Global Economy",
