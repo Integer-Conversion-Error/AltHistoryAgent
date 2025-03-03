@@ -1,0 +1,181 @@
+{
+    "$id": "https://example.com/schemas/political_violence",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Political Violence & Targeted Killings",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "eventId": {
+                "type": "string",
+                "description": "A unique identifier for the attack or assassination."
+            },
+            "name": {
+                "type": "string",
+                "description": "The official or commonly used name of the attack or killing."
+            },
+            "date": {
+                "type": "string",
+                "format": "date",
+                "description": "The date when the event took place (YYYY-MM-DD)."
+            },
+            "type": {
+                "type": "string",
+                "enum": [
+                    "Assassination",
+                    "Terrorist Attack",
+                    "Insurgent Attack",
+                    "State-Sponsored Killing",
+                    "Political Unrest",
+                    "Other"
+                ],
+                "description": "The nature of the attack or political killing."
+            },
+            "location": {
+                "type": "object",
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "description": "The country where the event occurred."
+                    },
+                    "city": {
+                        "type": "string",
+                        "description": "The city or region where the event took place."
+                    },
+                    "coordinates": {
+                        "type": "object",
+                        "properties": {
+                            "latitude": {
+                                "type": "number"
+                            },
+                            "longitude": {
+                                "type": "number"
+                            }
+                        },
+                        "required": ["latitude", "longitude"]
+                    }
+                },
+                "required": ["country"]
+            },
+            "perpetrators": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Groups, individuals, or nations responsible for the act."
+            },
+            "target": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The primary individual, group, or entity targeted."
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "The political or military significance of the target (e.g., President, General, Journalist, Organization)."
+                    },
+                    "affiliation": {
+                        "type": "string",
+                        "description": "The organization or nation the target was associated with."
+                    }
+                },
+                "required": ["name", "role"]
+            },
+            "casualties": {
+                "type": "object",
+                "properties": {
+                    "fatalities": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of confirmed deaths from the event."
+                    },
+                    "injuries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of reported injuries."
+                    }
+                },
+                "required": ["fatalities"]
+            },
+            "motive": {
+                "type": "string",
+                "description": "The primary motivation behind the attack (e.g., political, religious, ideological, economic)."
+            },
+            "method": {
+                "type": "string",
+                "description": "The means used to carry out the attack (e.g., bombing, sniper, suicide attack, poisoning)."
+            },
+            "impact": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "description": "The type of impact (e.g., political instability, security measures, military response)."
+                        },
+                        "details": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "A detailed explanation of the event’s impact."
+                                },
+                                "affectedEntities": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Organizations, nations, or populations affected."
+                                }
+                            },
+                            "required": ["description", "affectedEntities"]
+                        }
+                    },
+                    "required": ["category", "details"]
+                },
+                "description": "Consequences and political effects of the attack."
+            },
+            "internationalResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "nation": {
+                            "type": "string",
+                            "description": "A country that responded to the event."
+                        },
+                        "reaction": {
+                            "type": "string",
+                            "description": "How the country responded (e.g., military action, diplomatic protest, countermeasures)."
+                        }
+                    },
+                    "required": ["nation", "reaction"]
+                },
+                "description": "How the international community responded to the event."
+            },
+            "longTermEffects": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Potential or observed long-term effects of the attack or assassination."
+            }
+        },
+        "required": [
+            "eventId",
+            "name",
+            "date",
+            "type",
+            "location",
+            "perpetrators",
+            "target",
+            "casualties",
+            "motive",
+            "method",
+            "impact",
+            "longTermEffects"
+        ]
+    }
+}

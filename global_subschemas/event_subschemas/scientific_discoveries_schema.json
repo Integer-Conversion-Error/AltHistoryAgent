@@ -1,0 +1,146 @@
+{
+    "$id": "https://example.com/schemas/scientific_discoveries",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Scientific Discoveries & Technological Breakthroughs",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "discoveryName": {
+                "type": "string",
+                "description": "The official name of the discovery or breakthrough."
+            },
+            "date": {
+                "type": "string",
+                "format": "date",
+                "description": "The date the discovery was made public (YYYY-MM-DD)."
+            },
+            "field": {
+                "type": "string",
+                "enum": [
+                    "Physics",
+                    "Medicine",
+                    "Space",
+                    "AI",
+                    "Energy",
+                    "Engineering",
+                    "Computing",
+                    "Biotechnology",
+                    "Materials Science",
+                    "Robotics",
+                    "Communications"
+                ],
+                "description": "The scientific or technological field of the discovery."
+            },
+            "impactLevel": {
+                "type": "string",
+                "enum": [
+                    "Minor",
+                    "Moderate",
+                    "Revolutionary"
+                ],
+                "description": "The level of impact the discovery has on science, technology, or society."
+            },
+            "contributingNations": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "The countries or institutions that contributed to the discovery."
+            },
+            "practicalApplications": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Real-world applications or industries affected by the discovery."
+            },
+            "keyFigures": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Notable scientists, engineers, or organizations involved in the discovery."
+            },
+            "impact": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "description": "The category of impact (e.g., medical advancements, computing efficiency, energy sustainability)."
+                        },
+                        "details": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "A detailed explanation of the impact."
+                                },
+                                "affectedEntities": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "A list of industries, companies, or populations affected."
+                                },
+                                "quantitativeEffect": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value": {
+                                            "type": "number"
+                                        },
+                                        "unit": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["value", "unit"],
+                                    "description": "A measurable effect of the discovery (e.g., energy output, medical recovery rate)."
+                                }
+                            },
+                            "required": ["description", "affectedEntities"]
+                        }
+                    },
+                    "required": ["category", "details"]
+                },
+                "description": "A breakdown of how the discovery affects different fields."
+            },
+            "internationalResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "nation": {
+                            "type": "string",
+                            "description": "A country that responded to the discovery."
+                        },
+                        "reaction": {
+                            "type": "string",
+                            "description": "How the country responded (e.g., funding research, imposing regulations, industrial adaptation)."
+                        }
+                    },
+                    "required": ["nation", "reaction"]
+                },
+                "description": "A record of global responses to the discovery."
+            },
+            "longTermEffects": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Potential or observed long-term effects of the discovery."
+            }
+        },
+        "required": [
+            "discoveryName",
+            "date",
+            "field",
+            "impactLevel",
+            "contributingNations",
+            "practicalApplications",
+            "impact",
+            "longTermEffects"
+        ]
+    }
+}

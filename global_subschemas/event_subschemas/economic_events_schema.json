@@ -1,0 +1,137 @@
+{
+    "$id": "https://example.com/schemas/economic_events",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Economic Events",
+    "type": "object",
+    "properties": {
+        "eventId": {
+            "type": "string",
+            "description": "A unique identifier for the economic event."
+        },
+        "name": {
+            "type": "string",
+            "description": "The official or widely recognized name of the economic event."
+        },
+        "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when the event occurred (YYYY-MM-DD)."
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "Market Crash",
+                "Recession",
+                "Financial Boom",
+                "Trade Agreement",
+                "Currency Reform",
+                "Hyperinflation",
+                "Debt Crisis",
+                "Other"
+            ],
+            "description": "The specific type of economic event."
+        },
+        "location": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string",
+                    "description": "The country most affected by the event."
+                },
+                "region": {
+                    "type": "string",
+                    "description": "The specific region within the country, if applicable."
+                },
+                "globalImpact": {
+                    "type": "boolean",
+                    "description": "Indicates whether this economic event had global repercussions."
+                }
+            },
+            "required": ["country"]
+        },
+        "causes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Key factors or policies that led to the economic event."
+        },
+        "keyFigures": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Notable individuals or institutions involved (e.g., government officials, financial organizations)."
+        },
+        "impact": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "The area affected (e.g., stock market, employment, inflation, trade)."
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string",
+                                "description": "A detailed explanation of the impact."
+                            },
+                            "affectedEntities": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "A list of companies, industries, or populations affected."
+                            },
+                            "quantitativeEffect": {
+                                "type": "object",
+                                "properties": {
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["value", "unit"],
+                                "description": "A numerical representation of the impact (e.g., GDP loss, inflation rate)."
+                            }
+                        },
+                        "required": ["description", "affectedEntities"]
+                    }
+                },
+                "required": ["category", "details"]
+            },
+            "description": "A breakdown of the economic consequences."
+        },
+        "internationalResponse": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "nation": {
+                        "type": "string",
+                        "description": "A country that responded to the economic event."
+                    },
+                    "reaction": {
+                        "type": "string",
+                        "description": "How the country responded (e.g., trade policy changes, financial aid, sanctions)."
+                    }
+                },
+                "required": ["nation", "reaction"]
+            },
+            "description": "A record of global reactions to the economic shift."
+        },
+        "longTermEffects": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Potential or observed long-term consequences of the economic event."
+        }
+    },
+    "required": ["eventId", "name", "date", "type", "location", "causes", "impact", "longTermEffects"]
+}

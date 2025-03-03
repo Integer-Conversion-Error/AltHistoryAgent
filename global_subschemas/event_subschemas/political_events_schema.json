@@ -1,0 +1,146 @@
+{
+    "$id": "https://example.com/schemas/political_events",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Political Events",
+    "type": "object",
+    "properties": {
+        "eventId": {
+            "type": "string",
+            "description": "A unique identifier for the event."
+        },
+        "name": {
+            "type": "string",
+            "description": "The official or widely recognized name of the event."
+        },
+        "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when the event occurred (YYYY-MM-DD)."
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "Government Transition",
+                "Revolution",
+                "Coup d'État",
+                "Diplomatic Agreement",
+                "Treaty",
+                "Legislation Passed",
+                "Election",
+                "Summit",
+                "Other"
+            ],
+            "description": "The specific type of political event."
+        },
+        "location": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string",
+                    "description": "The country where the event took place."
+                },
+                "region": {
+                    "type": "string",
+                    "description": "The specific region within the country, if applicable."
+                },
+                "coordinates": {
+                    "type": "object",
+                    "properties": {
+                        "latitude": {
+                            "type": "number"
+                        },
+                        "longitude": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["latitude", "longitude"]
+                }
+            },
+            "required": ["country"]
+        },
+        "causes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Key factors or events that led to this political event."
+        },
+        "keyFigures": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Notable individuals involved in the event (e.g., leaders, politicians, activists)."
+        },
+        "impact": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "The type of impact (e.g., governance, economy, military, international relations)."
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string",
+                                "description": "A detailed explanation of the impact."
+                            },
+                            "affectedEntities": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "A list of governments, organizations, or populations affected."
+                            },
+                            "quantitativeEffect": {
+                                "type": "object",
+                                "properties": {
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["value", "unit"],
+                                "description": "A numerical representation of the impact (e.g., economic changes, voter turnout)."
+                            }
+                        },
+                        "required": ["description", "affectedEntities"]
+                    }
+                },
+                "required": ["category", "details"]
+            },
+            "description": "A breakdown of the event's consequences."
+        },
+        "internationalResponse": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "nation": {
+                        "type": "string",
+                        "description": "A country that responded to the event."
+                    },
+                    "reaction": {
+                        "type": "string",
+                        "description": "How the country responded (e.g., diplomatic support, sanctions, intervention)."
+                    }
+                },
+                "required": ["nation", "reaction"]
+            },
+            "description": "A record of global reactions to the event."
+        },
+        "longTermEffects": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Potential or observed long-term consequences of the event."
+        }
+    },
+    "required": ["eventId", "name", "date", "type", "location", "causes", "impact", "longTermEffects"]
+}

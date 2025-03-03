@@ -37,7 +37,7 @@ if __name__ == "__main__":
     #     print("Usage: python count_tokens.py <path_to_json_schema> [model_name]")
     #     sys.exit(1)
 
-    schema_file = "test.json"
+    schema_file = "test_token_limits/test.json"
     model = "gpt-4"
     
     try:

@@ -1,0 +1,128 @@
+{
+    "$id": "https://example.com/schemas/generic_global_event",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Generic Global Event",
+    "type": "object",
+    "properties": {
+        "eventId": {
+            "type": "string",
+            "description": "A unique identifier for the event."
+        },
+        "name": {
+            "type": "string",
+            "description": "The official or commonly recognized name of the event."
+        },
+        "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when the event took place (YYYY-MM-DD)."
+        },
+        "type": {
+            "type": "string",
+            "description": "The category of the event (e.g., 'Political', 'Economic', 'Technological', 'Other')."
+        },
+        "location": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string",
+                    "description": "The country where the event occurred."
+                },
+                "region": {
+                    "type": "string",
+                    "description": "The specific region within the country, if applicable."
+                },
+                "coordinates": {
+                    "type": "object",
+                    "properties": {
+                        "latitude": {
+                            "type": "number"
+                        },
+                        "longitude": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["latitude", "longitude"]
+                }
+            },
+            "required": ["country"]
+        },
+        "causes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "A list of factors or events that led to this event."
+        },
+        "impact": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "The type of impact (e.g., political, economic, social, environmental)."
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string",
+                                "description": "A detailed explanation of the impact."
+                            },
+                            "affectedEntities": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "A list of entities affected (e.g., countries, organizations, populations)."
+                            },
+                            "quantitativeEffect": {
+                                "type": "object",
+                                "properties": {
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["value", "unit"],
+                                "description": "A numerical representation of the impact (e.g., financial loss, casualties)."
+                            }
+                        },
+                        "required": ["description", "affectedEntities"]
+                    }
+                },
+                "required": ["category", "details"]
+            },
+            "description": "A breakdown of the event's consequences."
+        },
+        "internationalResponse": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "nation": {
+                        "type": "string",
+                        "description": "A country that responded to the event."
+                    },
+                    "reaction": {
+                        "type": "string",
+                        "description": "How the country responded (e.g., aid, sanctions, military intervention)."
+                    }
+                },
+                "required": ["nation", "reaction"]
+            },
+            "description": "A record of global reactions to the event."
+        },
+        "longTermEffects": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Potential or observed long-term consequences of the event."
+        }
+    },
+    "required": ["eventId", "name", "date", "type", "location", "causes", "impact", "longTermEffects"]
+}

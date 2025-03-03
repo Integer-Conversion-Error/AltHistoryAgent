@@ -1,137 +1,63 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "GlobalEvent",
-    "type": "object",
-    "properties": {
-        "eventId": {
-            "type": "string"
-        },
-        "name": {
-            "type": "string"
-        },
-        "date": {
-            "type": "string",
-            "format": "date"
-        },
-        "type": {
-            "type": "string"
-        },
-        "location": {
-            "type": "object",
-            "properties": {
-                "country": {
-                    "type": "string"
-                },
-                "region": {
-                    "type": "string"
-                },
-                "coordinates": {
-                    "type": "object",
-                    "properties": {
-                        "latitude": {
-                            "type": "number"
-                        },
-                        "longitude": {
-                            "type": "number"
-                        }
-                    },
-                    "required": [
-                        "latitude",
-                        "longitude"
-                    ]
-                }
-            },
-            "required": [
-                "country"
-            ]
-        },
-        "causes": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "impact": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "category": {
-                        "type": "string"
-                    },
-                    "details": {
-                        "type": "object",
-                        "properties": {
-                            "description": {
-                                "type": "string"
-                            },
-                            "affectedEntities": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "quantitativeEffect": {
-                                "type": "object",
-                                "properties": {
-                                    "value": {
-                                        "type": "number"
-                                    },
-                                    "unit": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "value",
-                                    "unit"
-                                ]
-                            }
-                        },
-                        "required": [
-                            "description",
-                            "affectedEntities"
-                        ]
-                    }
-                },
-                "required": [
-                    "category",
-                    "details"
-                ]
-            }
-        },
-        "internationalResponse": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "nation": {
-                        "type": "string"
-                    },
-                    "reaction": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "nation",
-                    "reaction"
-                ]
-            }
-        },
-        "longTermEffects": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        }
+    "eventId": "GE-1976-002",
+    "name": "Arab-Muslim League Lunar Base Established",
+    "date": "1976-11-20",
+    "type": "Scientific Achievement",
+    "location": {
+      "country": "Arab-Muslim League",
+      "region": "Lunar Surface",
+      "coordinates": {
+        "latitude": -1.5476,
+        "longitude": 23.4562
+      }
     },
-    "required": [
-        "eventId",
-        "name",
-        "date",
-        "type",
-        "location",
-        "causes",
-        "impact",
-        "longTermEffects"
+    "causes": [
+      "AML's advancements in space technology",
+      "Strategic competition with Germany and the United States",
+      "Need for a permanent research and resource extraction facility"
+    ],
+    "impact": [
+      {
+        "category": "Scientific Progress",
+        "details": {
+          "description": "The first permanently inhabited lunar station established by a non-Western power.",
+          "affectedEntities": ["AML Space Agency", "International Scientific Community"],
+          "quantitativeEffect": {
+            "value": 12,
+            "unit": "astronaut-scientists stationed"
+          }
+        }
+      },
+      {
+        "category": "Geopolitical Shift",
+        "details": {
+          "description": "Increased AML influence in global space policy and technology.",
+          "affectedEntities": ["Germany", "United States", "United Nations"],
+          "quantitativeEffect": {
+            "value": 3,
+            "unit": "new lunar treaties proposed"
+          }
+        }
+      }
+    ],
+    "internationalResponse": [
+      {
+        "nation": "Germany",
+        "reaction": "Acknowledged AML's achievement but increased funding for their own lunar expansion."
+      },
+      {
+        "nation": "United States",
+        "reaction": "Publicly congratulated AML but covertly accelerated their own lunar colonization projects."
+      },
+      {
+        "nation": "Soviet Remnants",
+        "reaction": "Attempted to discredit the lunar mission, calling it a propaganda effort."
+      }
+    ],
+    "longTermEffects": [
+      "AML establishes a strategic presence in lunar mineral extraction.",
+      "Accelerated global competition for permanent lunar colonization.",
+      "Shift in international space agreements to accommodate non-Western actors."
     ]
-}
+  }
+  
