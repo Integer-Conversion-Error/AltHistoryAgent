@@ -1,94 +1,139 @@
 {
-    "$id": "https://example.com/schemas/organizations",
+    "$id": "https://example.com/schemas/global_agreements",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "International Organizations",
+    "title": "Global Agreements & Organizations",
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
+            "entityId": {
+                "type": "string",
+                "description": "A unique identifier for the entity (organization or treaty)."
+            },
+            "entityType": {
+                "type": "string",
+                "enum": [
+                    "International Organization",
+                    "Global Treaty"
+                ],
+                "description": "Defines whether the entry represents an organization or a treaty."
+            },
             "name": {
-                "type": "string"
+                "type": "string",
+                "description": "The official name of the organization or treaty."
             },
             "abbreviation": {
                 "type": "string",
-                "maxLength": 10
+                "maxLength": 10,
+                "description": "Common abbreviation for organizations (if applicable)."
             },
-            "formationDate": {
+            "formationOrSigningDate": {
                 "type": "string",
-                "format": "date"
+                "format": "date",
+                "description": "For organizations, this represents their formation date. For treaties, this is the signing date."
+            },
+            "dissolutionOrExpiryDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": true,
+                "description": "For organizations, this represents their dissolution date. For treaties, this is the date they expire or are no longer in force."
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "Active",
+                    "Violated",
+                    "Expired",
+                    "Dissolved"
+                ],
+                "description": "Current status of the organization or treaty."
             },
             "headquarters": {
-                "type": "string"
+                "type": "string",
+                "description": "Location of the organization's headquarters (if applicable)."
             },
             "memberStates": {
                 "type": "array",
                 "items": {
                     "type": "string"
-                }
+                },
+                "description": "List of nations involved in the treaty or part of the organization."
             },
-            "organizationType": {
+            "entityCategory": {
                 "type": "string",
                 "enum": [
                     "Military",
                     "Economic",
                     "Political",
                     "Scientific",
-                    "Humanitarian"
-                ]
+                    "Humanitarian",
+                    "Peace",
+                    "Climate",
+                    "Nuclear"
+                ],
+                "description": "The category of the entity. Organizations can be Military, Economic, Political, etc., while treaties can include Peace, Climate, or Nuclear."
             },
             "primaryObjectives": {
                 "type": "array",
                 "items": {
                     "type": "string"
-                }
+                },
+                "description": "Main objectives of the organization or treaty."
             },
             "influenceScore": {
                 "type": "number",
                 "minimum": 0,
                 "maximum": 100,
-                "description": "A measure of the organization's global impact (0-100)"
+                "description": "A measure of the organization's or treaty's global impact (0-100)."
             },
             "fundingSources": {
                 "type": "object",
                 "properties": {
                     "annualBudget": {
                         "type": "string",
-                        "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+                        "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$",
+                        "description": "The yearly budget of the organization (if applicable)."
                     },
                     "primaryContributors": {
                         "type": "array",
                         "items": {
                             "type": "string"
-                        }
+                        },
+                        "description": "Nations or institutions funding the organization."
                     }
                 }
             },
-            "majorDecisions": {
+            "majorDecisionsOrImpact": {
                 "type": "array",
                 "items": {
                     "type": "object",
                     "properties": {
                         "decisionName": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "For organizations, this is a major decision made. For treaties, this is a key event related to the treaty."
                         },
                         "date": {
                             "type": "string",
-                            "format": "date"
+                            "format": "date",
+                            "description": "Date of the decision or event."
                         },
                         "impactSummary": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Summary of the impact of this decision or treaty-related event."
                         }
                     }
-                }
+                },
+                "description": "Significant decisions made by an organization or notable impacts of a treaty."
             }
         },
         "required": [
+            "entityId",
+            "entityType",
             "name",
-            "abbreviation",
-            "formationDate",
-            "headquarters",
+            "formationOrSigningDate",
+            "status",
             "memberStates",
-            "organizationType",
+            "entityCategory",
             "primaryObjectives",
             "influenceScore"
         ]

@@ -11,43 +11,35 @@
             }
         },
         "globalEvents": {
-            "$ref": "global_subschemas/global_events_schema.json"
-        },
-        "conflicts": {
-            "$ref": "global_subschemas/conflicts_schema.json"
-        },
-        "treaties": {
-            "$ref": "global_subschemas/treaties_schema.json"
-        },
-        "organizations": {
-            "$ref": "global_subschemas/organizations_schema.json"
+            "$ref": "global_subschemas/global_event_schema.json"
         },
         "globalEconomy": {
             "$ref": "global_subschemas/global_economy_schema.json"
         },
-        "humanitarianCrises": {
-            "$ref": "global_subschemas/humanitarian_crises_schema.json"
-        },
-        "naturalDisasters": {
-            "$ref": "global_subschemas/natural_disasters_schema.json"
-        },
-        "scientificDiscoveries": {
-            "$ref": "global_subschemas/scientific_discoveries_schema.json"
-        },
         "globalSentiment": {
             "$ref": "global_subschemas/global_sentiment_schema.json"
+        },
+        "globalTrade": {
+            "$ref": "global_subschemas/global_trade_schema.json"
+        },
+        "notableCharacters": {
+            "$ref": "global_subschemas/notable_characters_schema.json"
+        },
+        "organizations": {
+            "$ref": "global_subschemas/organizations_schema.json"
+        },
+        "strategicInterests": {
+            "$ref": "global_subschemas/strategic_interests_schema.json"
         }
     },
     "required": [
         "nations",
         "globalEvents",
-        "conflicts",
-        "treaties",
-        "organizations",
         "globalEconomy",
-        "humanitarianCrises",
-        "naturalDisasters",
-        "scientificDiscoveries",
-        "globalSentiment"
+        "globalSentiment",
+        "globalTrade",
+        "notableCharacters",
+        "organizations",
+        "strategicInterests"
     ]
 }

@@ -1,0 +1,609 @@
+{
+    "$id": "https://example.com/schemas/internal_affairs.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Internal Affairs (Truncated)",
+    "type": "object",
+    "properties": {
+        "crimeLawEnforcement": {
+            "title": "Crime, Law Enforcement & State Surveillance",
+            "type": "object",
+            "properties": {
+                "crimeLevel": {
+                    "type": "string",
+                    "enum": [
+                        "Minimal",
+                        "Very Low",
+                        "Low",
+                        "Moderate",
+                        "High",
+                        "Very High",
+                        "Severe",
+                        "Extreme"
+                    ],
+                    "description": "The prevalence of crime in society."
+                },
+                "policePresence": {
+                    "type": "string",
+                    "enum": [
+                        "Absent",
+                        "Minimal",
+                        "Limited",
+                        "Moderate",
+                        "Strong",
+                        "Heavy",
+                        "Militarized",
+                        "Totalitarian"
+                    ],
+                    "description": "The extent of law enforcement activity."
+                },
+                "judicialStrictness": {
+                    "type": "string",
+                    "enum": [
+                        "Permissive",
+                        "Lenient",
+                        "Mild",
+                        "Balanced",
+                        "Strict",
+                        "Harsh",
+                        "Severe",
+                        "Draconian"
+                    ],
+                    "description": "Severity of laws and judicial enforcement."
+                },
+                "stateSurveillance": {
+                    "type": "string",
+                    "enum": [
+                        "None",
+                        "Minimal",
+                        "Limited",
+                        "Moderate",
+                        "Extensive",
+                        "Widespread",
+                        "Pervasive",
+                        "Total"
+                    ],
+                    "description": "The level of state monitoring of civilians."
+                },
+                "civilLiberties": {
+                    "type": "string",
+                    "enum": [
+                        "Unrestricted",
+                        "Mostly Free",
+                        "Some Limits",
+                        "Regulated",
+                        "Restricted",
+                        "Heavily Controlled",
+                        "Oppressed",
+                        "Abolished"
+                    ],
+                    "description": "The extent of personal freedoms and rights."
+                }
+            },
+            "required": [
+                "crimeLevel",
+                "policePresence",
+                "judicialStrictness",
+                "stateSurveillance",
+                "civilLiberties"
+            ]
+        }
+    },
+    "demographics": {
+        "title": "Demographics",
+        "type": "object",
+        "properties": {
+            "populationSize": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Very Low",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "The overall population size of the nation."
+            },
+            "populationGrowth": {
+                "type": "string",
+                "enum": [
+                    "Declining Rapidly",
+                    "Declining",
+                    "Stable",
+                    "Slow Growth",
+                    "Moderate Growth",
+                    "Rapid Growth",
+                    "Extreme Growth"
+                ],
+                "description": "The rate of population growth or decline."
+            },
+            "ageStructure": {
+                "type": "string",
+                "enum": [
+                    "Very Young Population",
+                    "Young Population",
+                    "Balanced Population",
+                    "Aging Population",
+                    "Very Old Population"
+                ],
+                "description": "The overall distribution of age groups in the population."
+            },
+            "urbanizationLevel": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Very Low",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "The proportion of people living in urban areas."
+            },
+            "birthRate": {
+                "type": "string",
+                "enum": [
+                    "Extremely Low",
+                    "Very Low",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "The rate of births per capita."
+            },
+            "ethnicComposition": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "ethnicity": {
+                            "type": "string"
+                        },
+                        "dominanceLevel": {
+                            "type": "string",
+                            "enum": [
+                                "Minority",
+                                "Significant Minority",
+                                "Plurality",
+                                "Majority",
+                                "Dominant Majority"
+                            ],
+                            "description": "The relative presence of an ethnic group in the country."
+                        }
+                    },
+                    "required": [
+                        "ethnicity",
+                        "dominanceLevel"
+                    ]
+                },
+                "description": "The ethnic breakdown of the population."
+            },
+            "religiousComposition": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "religion": {
+                            "type": "string"
+                        },
+                        "dominanceLevel": {
+                            "type": "string",
+                            "enum": [
+                                "Minority",
+                                "Significant Minority",
+                                "Plurality",
+                                "Majority",
+                                "Dominant Majority"
+                            ],
+                            "description": "The relative presence of a religion in the country."
+                        }
+                    },
+                    "required": [
+                        "religion",
+                        "dominanceLevel"
+                    ]
+                },
+                "description": "The religious breakdown of the population."
+            }
+        },
+        "required": [
+            "populationSize",
+            "populationGrowth",
+            "ageStructure",
+            "urbanizationLevel",
+            "birthRate",
+            "ethnicComposition",
+            "religiousComposition"
+        ]
+    },
+    "economicPolicies": {
+        "title": "Economic Policies",
+        "type": "object",
+        "properties": {
+            "taxPolicy": {
+                "type": "object",
+                "properties": {
+                    "corporateTaxLevel": {
+                        "type": "string",
+                        "enum": [
+                            "None",
+                            "Very Low",
+                            "Low",
+                            "Moderate",
+                            "Above Average",
+                            "High",
+                            "Very High",
+                            "Extreme"
+                        ],
+                        "description": "General level of corporate taxation."
+                    },
+                    "incomeTaxLevel": {
+                        "type": "string",
+                        "enum": [
+                            "None",
+                            "Very Low",
+                            "Low",
+                            "Moderate",
+                            "Above Average",
+                            "High",
+                            "Very High",
+                            "Extreme"
+                        ],
+                        "description": "General level of income taxation."
+                    }
+                },
+                "required": [
+                    "corporateTaxLevel",
+                    "incomeTaxLevel"
+                ],
+                "description": "Broad tax policy classification for corporate and income taxation."
+            }
+        },
+        "required": [
+            "taxPolicy"
+        ]
+    },
+    "education": {
+        "title": "Education",
+        "type": "object",
+        "properties": {
+            "educationQuality": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "Overall quality and effectiveness of the education system."
+            },
+            "fundingLevel": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "The level of financial investment in education infrastructure and programs."
+            },
+            "STEMDevelopment": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "The extent of funding and emphasis on STEM (Science, Technology, Engineering, and Mathematics) education."
+            }
+        },
+        "required": [
+            "educationQuality",
+            "fundingLevel",
+            "STEMDevelopment"
+        ]
+    },
+    "energyAndResources": {
+        "title": "Energy & Resources",
+        "type": "object",
+        "properties": {
+            "energyProduction": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "string",
+                        "enum": [
+                            "None",
+                            "Minimal",
+                            "Low",
+                            "Moderate",
+                            "Above Average",
+                            "High",
+                            "Very High",
+                            "Extreme"
+                        ],
+                        "description": "Overall level of annual energy production."
+                    },
+                    "breakdownBySource": {
+                        "type": "object",
+                        "properties": {
+                            "fossilFuels": {
+                                "type": "string",
+                                "enum": [
+                                    "None",
+                                    "Minimal",
+                                    "Low",
+                                    "Moderate",
+                                    "Above Average",
+                                    "High",
+                                    "Very High",
+                                    "Extreme"
+                                ],
+                                "description": "Relative level of energy from fossil fuels."
+                            },
+                            "nuclear": {
+                                "type": "string",
+                                "enum": [
+                                    "None",
+                                    "Minimal",
+                                    "Low",
+                                    "Moderate",
+                                    "Above Average",
+                                    "High",
+                                    "Very High",
+                                    "Extreme"
+                                ],
+                                "description": "Relative level of energy from nuclear sources."
+                            },
+                            "hydro": {
+                                "type": "string",
+                                "enum": [
+                                    "None",
+                                    "Minimal",
+                                    "Low",
+                                    "Moderate",
+                                    "Above Average",
+                                    "High",
+                                    "Very High",
+                                    "Extreme"
+                                ],
+                                "description": "Relative level of energy from hydropower."
+                            },
+                            "wind": {
+                                "type": "string",
+                                "enum": [
+                                    "None",
+                                    "Minimal",
+                                    "Low",
+                                    "Moderate",
+                                    "Above Average",
+                                    "High",
+                                    "Very High",
+                                    "Extreme"
+                                ],
+                                "description": "Relative level of energy from wind power."
+                            },
+                            "solar": {
+                                "type": "string",
+                                "enum": [
+                                    "None",
+                                    "Minimal",
+                                    "Low",
+                                    "Moderate",
+                                    "Above Average",
+                                    "High",
+                                    "Very High",
+                                    "Extreme"
+                                ],
+                                "description": "Relative level of energy from solar power."
+                            }
+                        },
+                        "required": [
+                            "fossilFuels",
+                            "nuclear",
+                            "hydro",
+                            "wind",
+                            "solar"
+                        ],
+                        "description": "A categorical breakdown of energy sources."
+                    }
+                },
+                "required": [
+                    "total",
+                    "breakdownBySource"
+                ],
+                "description": "Overall and per-source levels of energy production, represented by enums."
+            },
+            "renewableEnergyPercentage": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "Approximate share of renewable energy in total production."
+            },
+            "oilProcurement": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "General level of daily oil procurement."
+            }
+        },
+        "required": [
+            "energyProduction",
+            "renewableEnergyPercentage",
+            "oilProcurement"
+        ]
+    },
+    "healthcare": {
+        "title": "Healthcare",
+        "type": "object",
+        "properties": {
+            "healthcareQuality": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "Overall quality and effectiveness of the healthcare system."
+            },
+            "fundingLevel": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "The level of financial investment in healthcare infrastructure and services."
+            },
+            "publicHealthEffectiveness": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "World-Class"
+                ],
+                "description": "The efficiency and impact of public health initiatives, including disease prevention, vaccination, and emergency response."
+            }
+        },
+        "required": [
+            "healthcareQuality",
+            "fundingLevel",
+            "publicHealthEffectiveness"
+        ]
+    },
+    "infrastructure": {
+        "title": "Infrastructure",
+        "type": "object",
+        "properties": {
+            "urbanizationLevel": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "Degree of urbanization, representing the proportion of the population living in urban areas."
+            },
+            "transportationInfrastructure": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "Above Average",
+                    "High",
+                    "Very High",
+                    "Extreme"
+                ],
+                "description": "The overall level of development in transportation infrastructure, including roads, rail, airports, and ports."
+            },
+            "communicationInfrastructure": {
+                "type": "object",
+                "properties": {
+                    "technologyLevel": {
+                        "type": "string",
+                        "enum": [
+                            "None",
+                            "Basic Landline",
+                            "2G Mobile",
+                            "3G Mobile",
+                            "4G LTE",
+                            "5G Networks",
+                            "Satellite-Based",
+                            "Quantum Communications"
+                        ],
+                        "description": "The highest level of communication technology available in the country."
+                    },
+                    "reach": {
+                        "type": "string",
+                        "enum": [
+                            "None",
+                            "Limited to Major Cities",
+                            "Available in Urban Areas",
+                            "Widespread but Uneven",
+                            "Nationwide Coverage",
+                            "Extensive Global Reach"
+                        ],
+                        "description": "The overall accessibility and reach of communication technology."
+                    }
+                },
+                "required": [
+                    "technologyLevel",
+                    "reach"
+                ],
+                "description": "The state of telecommunications and internet infrastructure, combining technology and reach."
+            }
+        },
+        "required": [
+            "urbanizationLevel",
+            "transportationInfrastructure",
+            "communicationInfrastructure"
+        ]
+    },
+    "required": [
+        "crimeLawEnforcement",
+        "demographics",
+        "economicPolicies",
+        "education",
+        "energyAndResources",
+        "healthcare",
+        "infrastructure"
+    ]
+}

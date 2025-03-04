@@ -94,11 +94,18 @@ allSchemas = { ##add all schema summaries
     "name": "Notable Historical Figures",
     "summary": "- **Full Name**: The complete name of the historical figure.\n- **Aliases**: Alternative names or titles the figure was known by.\n- **Birth Date & Death Date**: The date of birth and, if applicable, the date of death.\n- **Nationality**: The country or region the figure was primarily associated with.\n- **Political Affiliation**: The political party or ideology the individual supported.\n- **Role**: Their primary function in history (e.g., Head of State, Military Leader, Scientist, Revolutionary, etc.).\n- **Major Contributions**: Key achievements, discoveries, or actions that defined their legacy.\n- **Associated Events**: Important historical events they played a role in.\n- **Public Perception**: How they were viewed by the public (e.g., Revered, Controversial, Feared, Unknown, etc.).\n- **Personal Thoughts**: Documented reflections, diaries, or statements providing insight into their thoughts and motivations.\n- **Quotes**: Famous statements or writings attributed to them.\n- **Legacy**: The long-term impact of their actions (e.g., World-changing, Significant, Forgotten).",
     "example": "Alexander Ivanov (1912-1985), a controversial revolutionary and dissident from the Eastern Federation, played a pivotal role in the 1954 People's Uprising. Known for his radical speeches and strategic maneuvers, he was both feared and admired. His legacy remains significant, with many viewing him as a visionary while others see him as a destabilizing force in history."
-    }
+    },
+        {
+    "name": "Internal Affairs",
+    "summary": "- **Crime & Law Enforcement**: \n  - **Crime Level**: The prevalence of crime in society (Minimal to Extreme).\n  - **Police Presence**: The strength of law enforcement (Absent to Totalitarian).\n  - **Judicial Strictness**: The severity of legal enforcement (Permissive to Draconian).\n  - **State Surveillance**: The extent of government monitoring (None to Total).\n  - **Civil Liberties**: The degree of personal freedom and rights (Unrestricted to Abolished).\n\n- **Demographics**: \n  - **Population Size**: The general scale of the national population (None to Extreme).\n  - **Population Growth**: The trend of population expansion or decline (Declining Rapidly to Extreme Growth).\n  - **Age Structure**: The age distribution of the population (Very Young to Very Old).\n  - **Urbanization Level**: The share of the population living in urban areas (None to Extreme).\n  - **Birth Rate**: The rate of births per capita (Extremely Low to Extreme).\n  - **Ethnic Composition**: The breakdown of dominant and minority ethnic groups.\n  - **Religious Composition**: The dominant and minority religious groups.\n\n- **Economic Policies**: \n  - **Tax Policy**: \n    - **Corporate Tax Level**: The taxation on businesses (None to Extreme).\n    - **Income Tax Level**: The taxation on individuals (None to Extreme).\n\n- **Education**: \n  - **Education Quality**: The overall effectiveness of the education system (None to World-Class).\n  - **Funding Level**: The amount of investment in education (None to World-Class).\n  - **STEM Development**: The focus on Science, Technology, Engineering, and Math (None to World-Class).\n\n- **Energy & Resources**: \n  - **Energy Production**: The level of energy generation (None to Extreme).\n  - **Breakdown by Source**: The balance of fossil fuels, nuclear, hydro, wind, and solar energy.\n  - **Renewable Energy Percentage**: The share of total energy from renewable sources (None to Extreme).\n  - **Oil Procurement**: The extent of oil importation and extraction (None to Extreme).\n\n- **Healthcare**: \n  - **Healthcare Quality**: The accessibility and standard of medical services (None to World-Class).\n  - **Funding Level**: The financial investment in healthcare (None to World-Class).\n  - **Public Health Effectiveness**: The efficiency of disease prevention, vaccination, and emergency response (None to World-Class).\n\n- **Infrastructure**: \n  - **Urbanization Level**: The extent of city development and expansion (None to Extreme).\n  - **Transportation Infrastructure**: The state of roads, railways, ports, and airports (None to Extreme).\n  - **Communication Infrastructure**:\n    - **Technology Level**: The highest level of telecommunications (Basic Landline to Quantum Communications).\n    - **Reach**: The extent of public access to communications (None to Extensive Global Reach).",
+    "example": "The United Republic has a **Moderate** crime level with a **Strong** police presence and **Balanced** judicial system. State surveillance is **Extensive**, and civil liberties are **Regulated**. The population is **High**, with a **Slow Growth** trend, a **Balanced Population** age structure, and an **Above Average** urbanization rate. Education is **Well-Funded**, focusing on **STEM Development** at a **High** level. The nation has **Significant Energy Production**, with **Moderate** renewable energy use and **High** oil procurement. The healthcare system is **Very High Quality**, well-funded, and **Highly Effective** in public health. Infrastructure is **Highly Developed**, with a **Very High** level of urbanization, **Extensive Transportation Networks**, and **5G Communication Technology** available nationwide."
+}
+
   ]
 }
 
-
+# print(get_schema_details(allSchemas, "Internal Affairs")["summary"])
+# print(get_schema_details(allSchemas, "Internal Affairs")["example"])
 
 def generate_summarization_prompt(json_data: dict, summary_item) -> str:
     """
@@ -218,12 +225,12 @@ def main():
         return
 
     # 3. Initialize summarization session
-    schema_type = "Global Event"
+    schema_type = "Internal Affairs"
     summarization_session = initialize_summarization_session(model, json_data, schema_type)
 
     # 4. Generate and display the summary
     perform_summarization(summarization_session, json_data, schema_type)
-
+#
 
 if __name__ == "__main__":
     main()

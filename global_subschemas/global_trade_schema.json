@@ -1,0 +1,243 @@
+{
+    "$id": "https://example.com/schemas/trade_relations",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Trade Relations",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "relationId": {
+                "type": "string",
+                "description": "A unique identifier for the trade relation entry."
+            },
+            "year": {
+                "type": "integer",
+                "description": "The year of the trade report."
+            },
+            "nationA": {
+                "type": "string",
+                "description": "One of the nations in the trade relationship."
+            },
+            "nationB": {
+                "type": "string",
+                "description": "The other nation in the trade relationship."
+            },
+            "totalTradeVolume": {
+                "type": "string",
+                "enum": [
+                    "Minimal Trade (<$10B)",
+                    "Low Trade ($10B-$50B)",
+                    "Moderate Trade ($50B-$100B)",
+                    "Significant Trade ($100B-$500B)",
+                    "Major Trade Partnership ($500B-$1T)",
+                    "Strategic Trade Alliance ($1T-$5T)",
+                    "Economic Powerhouse Trade ($5T-$10T)",
+                    "Global Trade Superpower ($10T+)"
+                ],
+                "description": "The total trade volume between both nations, representing the scale of economic exchange."
+            },
+            "tradeDifference": {
+                "type": "object",
+                "properties": {
+                    "balance": {
+                        "type": "string",
+                        "enum": [
+                            "Perfectly Balanced (0%)",
+                            "Negligible Difference (1-3%)",
+                            "Minimal Difference (3-7%)",
+                            "Moderate Difference (7-15%)",
+                            "Significant Difference (15-25%)",
+                            "Large Difference (25-40%)",
+                            "Extreme Difference (>40%)"
+                        ],
+                        "description": "The absolute percentage difference between exports and imports, indicating the scale of trade imbalance without specifying surplus or deficit."
+                    },
+                    "surplusNation": {
+                        "type": "string",
+                        "description": "The nation experiencing a trade surplus."
+                    },
+                    "deficitNation": {
+                        "type": "string",
+                        "description": "The nation experiencing a trade deficit."
+                    }
+                },
+                "description": "Indicates whether trade is balanced or which nation holds a surplus or deficit."
+            },
+            "exportsFromA": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "itemCategory": {
+                            "type": "string",
+                            "enum": [
+                                "Agricultural - Grains & Cereals",
+                                "Agricultural - Fruits & Vegetables",
+                                "Agricultural - Meat & Livestock",
+                                "Agricultural - Dairy Products",
+                                "Agricultural - Seafood & Fisheries",
+                                "Agricultural - Processed Foods",
+                                "Energy - Crude Oil",
+                                "Energy - Refined Petroleum",
+                                "Energy - Natural Gas",
+                                "Energy - Coal",
+                                "Energy - Renewable Energy Components",
+                                "Metals & Minerals - Iron & Steel",
+                                "Metals & Minerals - Aluminum & Copper",
+                                "Metals & Minerals - Rare Earth Elements",
+                                "Metals & Minerals - Precious Metals (Gold, Silver, Platinum)",
+                                "Technology - Consumer Electronics",
+                                "Technology - Semiconductors & Microchips",
+                                "Technology - AI & Robotics Components",
+                                "Technology - Telecommunications Equipment",
+                                "Technology - Computing & Servers",
+                                "Manufactured Goods - Heavy Machinery",
+                                "Manufactured Goods - Construction Materials",
+                                "Manufactured Goods - Industrial Tools",
+                                "Textiles - Raw Cotton & Wool",
+                                "Textiles - Clothing & Apparel",
+                                "Textiles - Footwear & Accessories",
+                                "Textiles - High-End Fashion",
+                                "Pharmaceuticals - Generic Medicines",
+                                "Pharmaceuticals - Vaccines & Biotech",
+                                "Pharmaceuticals - Medical Equipment & Devices",
+                                "Automobiles - Passenger Vehicles",
+                                "Automobiles - Electric Vehicles",
+                                "Automobiles - Auto Parts & Components",
+                                "Aerospace - Commercial Aircraft",
+                                "Aerospace - Spacecraft & Satellites",
+                                "Aerospace - Military & Defense Aircraft",
+                                "Luxury Goods - High-End Jewelry & Watches",
+                                "Luxury Goods - Designer Brands & Accessories",
+                                "Luxury Goods - Exotic Cars & Yachts",
+                                "Weapons & Defense - Small Arms & Ammunition",
+                                "Weapons & Defense - Heavy Weapons & Artillery",
+                                "Weapons & Defense - Military Vehicles",
+                                "Weapons & Defense - Naval & Submarine Equipment",
+                                "Weapons & Defense - Cyber Warfare Tech",
+                                "Other - Scientific Equipment",
+                                "Other - Rare Cultural Artifacts",
+                                "Other - Intellectual Property & Patents"
+                            ],
+                            "description": "The category of exported goods with greater specificity."
+                        },
+                        "tradeWeight": {
+                            "type": "string",
+                            "enum": [
+                                "Marginal (<1% of total trade)",
+                                "Low (1-5%)",
+                                "Moderate (5-15%)",
+                                "Significant (15-30%)",
+                                "Key Export (30-50%)",
+                                "Dominant Export (>50%)"
+                            ],
+                            "description": "The relative importance of this good in the overall trade volume."
+                        }
+                    },
+                    "required": [
+                        "itemCategory",
+                        "specificItem",
+                        "tradeWeight"
+                    ]
+                },
+                "description": "Goods exported from Nation A to Nation B."
+            },
+            "exportsFromB": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "itemCategory": {
+                            "type": "string",
+                            "enum": [
+                                "Agricultural - Grains & Cereals",
+                                "Agricultural - Fruits & Vegetables",
+                                "Agricultural - Meat & Livestock",
+                                "Agricultural - Dairy Products",
+                                "Agricultural - Seafood & Fisheries",
+                                "Agricultural - Processed Foods",
+                                "Energy - Crude Oil",
+                                "Energy - Refined Petroleum",
+                                "Energy - Natural Gas",
+                                "Energy - Coal",
+                                "Energy - Renewable Energy Components",
+                                "Metals & Minerals - Iron & Steel",
+                                "Metals & Minerals - Aluminum & Copper",
+                                "Metals & Minerals - Rare Earth Elements",
+                                "Metals & Minerals - Precious Metals (Gold, Silver, Platinum)",
+                                "Technology - Consumer Electronics",
+                                "Technology - Semiconductors & Microchips",
+                                "Technology - AI & Robotics Components",
+                                "Technology - Telecommunications Equipment",
+                                "Technology - Computing & Servers",
+                                "Manufactured Goods - Heavy Machinery",
+                                "Manufactured Goods - Construction Materials",
+                                "Manufactured Goods - Industrial Tools",
+                                "Textiles - Raw Cotton & Wool",
+                                "Textiles - Clothing & Apparel",
+                                "Textiles - Footwear & Accessories",
+                                "Textiles - High-End Fashion",
+                                "Pharmaceuticals - Generic Medicines",
+                                "Pharmaceuticals - Vaccines & Biotech",
+                                "Pharmaceuticals - Medical Equipment & Devices",
+                                "Automobiles - Passenger Vehicles",
+                                "Automobiles - Electric Vehicles",
+                                "Automobiles - Auto Parts & Components",
+                                "Aerospace - Commercial Aircraft",
+                                "Aerospace - Spacecraft & Satellites",
+                                "Aerospace - Military & Defense Aircraft",
+                                "Luxury Goods - High-End Jewelry & Watches",
+                                "Luxury Goods - Designer Brands & Accessories",
+                                "Luxury Goods - Exotic Cars & Yachts",
+                                "Weapons & Defense - Small Arms & Ammunition",
+                                "Weapons & Defense - Heavy Weapons & Artillery",
+                                "Weapons & Defense - Military Vehicles",
+                                "Weapons & Defense - Naval & Submarine Equipment",
+                                "Weapons & Defense - Cyber Warfare Tech",
+                                "Other - Scientific Equipment",
+                                "Other - Rare Cultural Artifacts",
+                                "Other - Intellectual Property & Patents"
+                            ],
+                            "description": "The category of exported goods with greater specificity."
+                        },
+                        "tradeWeight": {
+                            "type": "string",
+                            "enum": [
+                                "Marginal (<1% of total trade)",
+                                "Low (1-5%)",
+                                "Moderate (5-15%)",
+                                "Significant (15-30%)",
+                                "Key Export (30-50%)",
+                                "Dominant Export (>50%)"
+                            ],
+                            "description": "The relative importance of this good in the overall trade volume."
+                        }
+                    },
+                    "required": [
+                        "itemCategory",
+                        "specificItem",
+                        "tradeWeight"
+                    ]
+                },
+                "description": "Goods exported from Nation B to Nation A."
+            },
+            "tradeAgreements": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Any existing trade agreements affecting this relationship."
+            }
+        },
+        "required": [
+            "relationId",
+            "year",
+            "nationA",
+            "nationB",
+            "totalTradeVolume",
+            "tradeDifference",
+            "exportsFromA",
+            "exportsFromB"
+        ]
+    }
+}
