@@ -1,82 +1,82 @@
 {
-  "crimeLawEnforcement": {
-      "crimeLevel": "Low",
-      "policePresence": "Heavy",
-      "judicialStrictness": "Strict",
-      "stateSurveillance": "Widespread",
-      "civilLiberties": "Regulated"
-  },
-  "demographics": {
-      "populationSize": "Very High",
-      "populationGrowth": "Moderate Growth",
-      "ageStructure": "Young Population",
-      "urbanizationLevel": "High",
-      "birthRate": "Above Average",
-      "ethnicComposition": [
-          {
-              "ethnicity": "Arab",
-              "dominanceLevel": "Dominant Majority"
-          },
-          {
-              "ethnicity": "Berber",
-              "dominanceLevel": "Significant Minority"
-          },
-          {
-              "ethnicity": "Persian",
-              "dominanceLevel": "Minority"
-          }
-      ],
-      "religiousComposition": [
-          {
-              "religion": "Sunni Islam",
-              "dominanceLevel": "Dominant Majority"
-          },
-          {
-              "religion": "Shia Islam",
-              "dominanceLevel": "Significant Minority"
-          },
-          {
-              "religion": "Christianity",
-              "dominanceLevel": "Minority"
-          }
-      ]
-  },
-  "economicPolicies": {
-      "taxPolicy": {
-          "corporateTaxLevel": "Moderate",
-          "incomeTaxLevel": "Low"
-      }
-  },
-  "education": {
-      "educationQuality": "Above Average",
-      "fundingLevel": "High",
-      "STEMDevelopment": "Very High"
-  },
-  "energyAndResources": {
-      "energyProduction": {
-          "total": "Very High",
-          "breakdownBySource": {
-              "fossilFuels": "High",
-              "nuclear": "Moderate",
-              "hydro": "Minimal",
-              "wind": "Above Average",
-              "solar": "Very High"
-          }
-      },
-      "renewableEnergyPercentage": "High",
-      "oilProcurement": "Extreme"
-  },
-  "healthcare": {
-      "healthcareQuality": "High",
-      "fundingLevel": "High",
-      "publicHealthEffectiveness": "Very High"
-  },
-  "infrastructure": {
-      "urbanizationLevel": "High",
-      "transportationInfrastructure": "Very High",
-      "communicationInfrastructure": {
-          "technologyLevel": "5G Networks",
-          "reach": "Nationwide Coverage"
-      }
-  }
+    "crimeLawEnforcement": {
+        "crimeLevel": "Low",
+        "policePresence": "Heavy",
+        "judicialStrictness": "Strict",
+        "stateSurveillance": "Widespread",
+        "civilLiberties": "Regulated"
+    },
+    "demographics": {
+        "populationSize": "Very High",
+        "populationGrowth": "Moderate Growth",
+        "ageStructure": "Young Population",
+        "urbanizationLevel": "High",
+        "birthRate": "Above Average",
+        "ethnicComposition": [
+            {
+                "ethnicity": "Arab",
+                "dominanceLevel": "Dominant Majority"
+            },
+            {
+                "ethnicity": "Berber",
+                "dominanceLevel": "Significant Minority"
+            },
+            {
+                "ethnicity": "Persian",
+                "dominanceLevel": "Minority"
+            }
+        ],
+        "religiousComposition": [
+            {
+                "religion": "Sunni Islam",
+                "dominanceLevel": "Dominant Majority"
+            },
+            {
+                "religion": "Shia Islam",
+                "dominanceLevel": "Significant Minority"
+            },
+            {
+                "religion": "Christianity",
+                "dominanceLevel": "Minority"
+            }
+        ]
+    },
+    "economicPolicies": {
+        "taxPolicy": {
+            "corporateTaxLevel": "Moderate",
+            "incomeTaxLevel": "Low"
+        }
+    },
+    "education": {
+        "educationQuality": "Above Average",
+        "fundingLevel": "High",
+        "STEMDevelopment": "Very High"
+    },
+    "energyAndResources": {
+        "energyProduction": {
+            "total": "Very High",
+            "breakdownBySource": {
+                "fossilFuels": "High",
+                "nuclear": "Moderate",
+                "hydro": "Minimal",
+                "wind": "Above Average",
+                "solar": "Very High"
+            }
+        },
+        "renewableEnergyPercentage": "High",
+        "oilProcurement": "Extreme"
+    },
+    "healthcare": {
+        "healthcareQuality": "High",
+        "fundingLevel": "High",
+        "publicHealthEffectiveness": "Very High"
+    },
+    "infrastructure": {
+        "urbanizationLevel": "High",
+        "transportationInfrastructure": "Very High",
+        "communicationInfrastructure": {
+            "technologyLevel": "5G Networks",
+            "reach": "Nationwide Coverage"
+        }
+    }
 }

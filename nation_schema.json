@@ -5,65 +5,62 @@
   "type": "object",
   "properties": {
     "nationId": {
-      "type": "string"
+      "type": "string",
+      "description": "A unique identifier for the nation."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The official name of the nation."
     },
     "abbreviation": {
       "type": "string",
-      "maxLength": 5
-    },
-    "government": {
-      "$ref": "nation_subschemas/government_schema.json"
+      "maxLength": 5,
+      "description": "A short-form abbreviation for the country (e.g., USA, UK, GER)."
     },
     "capital": {
-      "type": "string"
-    },
-    "demographics": {
-      "$ref": "nation_subschemas/demographics_schema.json"
+      "type": "string",
+      "description": "The capital city of the nation."
     },
     "GDP": {
       "type": "string",
-      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$",
+      "description": "The Gross Domestic Product (GDP) of the nation."
     },
     "currency": {
-      "type": "string"
+      "type": "string",
+      "description": "The official currency used by the nation."
     },
-    "infrastructure": {
-      "$ref": "nation_subschemas/infrastructure_schema.json"
+    "externalAffairs": {
+      "type": "object",
+      "properties": {
+        "diplomacy": {
+          "$ref": "nation_subschemas/external_affairs_subschemas/diplomacy_schema.json"
+        },
+        "government": {
+          "$ref": "nation_subschemas/external_affairs_subschemas/government_schema.json"
+        },
+        "military": {
+          "$ref": "nation_subschemas/external_affairs_subschemas/military_schema.json"
+        },
+        "technology": {
+          "$ref": "nation_subschemas/external_affairs_subschemas/technology_schema.json"
+        }
+      },
+      "description": "External affairs, including diplomacy, military, government structure, and technological capabilities."
     },
-    "technology": {
-      "$ref": "nation_subschemas/technology_schema.json"
-    },
-    "education": {
-      "$ref": "nation_subschemas/education_schema.json"
-    },
-    "healthcare": {
-      "$ref": "nation_subschemas/healthcare_schema.json"
-    },
-    "energy": {
-      "$ref": "nation_subschemas/energy_schema.json"
-    },
-    "crime": {
-      "$ref": "nation_subschemas/crime_schema.json"
-    },
-    "diplomacy": {
-      "$ref": "nation_subschemas/diplomacy_schema.json"
+    "internalAffairs": {
+      "$ref": "nation_subschemas/internal_affairs_subschemas/internal_affairs_schema.json",
+      "description": "Internal affairs, including domestic policies, governance, and societal stability."
     }
   },
   "required": [
     "nationId",
     "name",
     "abbreviation",
-    "government",
     "capital",
-    "population",
     "GDP",
     "currency",
-    "military",
-    "economicPolicies",
-    "tradePartners",
-    "publicSentiment"
+    "externalAffairs",
+    "internalAffairs"
   ]
 }

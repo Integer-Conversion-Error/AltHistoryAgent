@@ -461,6 +461,22 @@
                     "Extreme"
                 ],
                 "description": "General level of daily oil procurement."
+            },
+            "oilProduction": {
+                "type": "string",
+                "enum": [
+                    "None",
+                    "Negligible (<100K barrels/day)",
+                    "Minimal (100K-500K barrels/day)",
+                    "Low (500K-1M barrels/day)",
+                    "Moderate (1M-3M barrels/day)",
+                    "Significant (3M-5M barrels/day)",
+                    "High (5M-8M barrels/day)",
+                    "Very High (8M-12M barrels/day)",
+                    "Massive (12M-15M barrels/day)",
+                    "Dominant (>15M barrels/day)"
+                ],
+                "description": "Estimated daily crude oil production levels, measured in millions of barrels per day (bpd). Reflects the nation's role in global energy markets."
             }
         },
         "required": [
