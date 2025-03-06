@@ -1,0 +1,215 @@
+Way of thinking:
+
+    What is the current global state?
+    What events are due to transpire soon due to some conditions being met/failing to be met?
+    What is the user's prompt? Will it conflict in any way with the normal stream of events? If so, how can these two conflicting things be merged together/interact with one another?
+    What is the high-level paragraph form summarization of what happens in that time slice?
+    What will be sent to each section of JSON schema? How will the "requests for action" be sent to each part?
+        What context will it need for each part?
+        What about the actions needed?
+
+
+## Find what events are due to transpire due to current global status + user input
+    ## Generate high-level actions based on this (e.g. adding conflict event, creating strategic interest, etc.)
+    ## Check across all schemas to see if anything needs to be updated.
+## See about what to do with high-level actions
+## Decided required context (?)
+## Get all context  (or just required context?)
+    ## Get JSON elements by keyword (e.g nation name, nation in region, etc.)
+## Seperate paragraph form context to different sections of schemas. 
+    ## Also seperate based on nations
+    
+    
+## Notes: 
+    ## Avoid situations where the entire JSON data is being fed into the AI and is asked to change some part and return the new part. Handle DB operations outside genAI api. (Maybe direct them using a reasoning model though.)
+    ## Learn to query objects based on some key (e.g. based on nation name).
+    ## Maybe add narration of certain items?
+    ## ADD CONDITIONS SCHEMA
+
+
+
+
+1) OVERVIEW & MENTAL MODEL
+   - The simulator tracks a “global state” that represents the world at a particular moment in history (or an alternate timeline).
+   - Multiple JSON schemas (e.g., for nations, regions, events, technology levels) store the data describing the world.
+   - “Events” are triggered in the flow of time based on predefined rules/conditions. If conditions are met (like a nation surpassing a threshold for conflict), that event is queued.
+   - A user prompt can override or modify the normal flow of events. These modifications must then be stitched into any events that were scheduled. The simulator merges user-driven changes with existing conditions in the global state.
+
+2) DETECT & PREPARE INCOMING EVENTS
+   - At each simulation step (or each “time slice”):
+     a) Check all event conditions across data schemas (e.g., if a region’s resources become depleted, if a treaty has expired, if an army has reached a border, etc.). 
+     b) Collect and queue new events set to occur during this time frame.
+     c) Incorporate the user’s prompt into the event queue. If the user’s prompt is contradictory (e.g., they declare a nation at peace when an invasion event was already scheduled), the simulator must reconcile these changes. For instance, it might refine how the conflict escalates or changes direction in response to user input.
+
+3) HIGH-LEVEL ACTIONS & SUMMARIZATION
+   - Once events (system-scheduled plus user-driven) are determined, the simulator generates:
+     a) A high-level summary of the events in plain language, giving the user a coherent update (i.e., “Nation A declared war on Nation B, but you intervened diplomatically, turning the conflict into a tense standoff.”).
+     b) A set of “requests” or “actions” that need to be distributed among the relevant JSON schemas. For example:
+       • If a conflict is triggered, the “Events” JSON schema might receive a new war event record.
+       • If technology is advanced, the “Technology” JSON schema is updated with the new level or discovery.
+       • If new alliances or treaties are formed, the “Diplomacy” JSON schema is updated accordingly.
+
+4) CONTEXT GATHERING & FILTERING
+   - Each part of the simulator needs different pieces of context. For example, a conflict event requires knowledge of the involved nations, their alliances, their troop strengths, etc. 
+   - The simulator should gather only the relevant pieces of JSON data. For example:
+     a) For “Nation A” and “Nation B,” look up their ongoing disputes, existing alliances, resource availability, or leadership data.
+     b) For the event engine, collect timeline data for large-scale events.
+   - This prevents the simulator from handling or exposing entire massive JSON files at once, improving efficiency. Also, real database operations (CRUD) occur outside the AI system, while the AI simply indicates what changes to make.
+
+5) UPDATING JSON SCHEMAS
+   - Each data schema (e.g., “Nations,” “Events,” “Diplomacy,” “Resources”) can receive targeted updates:
+     a) Identify which entry to update (e.g., a nation by name or ID).
+     b) Modify only the relevant fields (e.g., “atWar: true,” “availableResources: 95% of previous level,” or “newEventID: 12345”).
+     c) Create new entries as needed (e.g., if a new alliance is formed, add it to the “Diplomacy” schema with the rationale).
+   - The simulator should produce a coherent narrative about these changes, but the actual mutation of data is done via methodical JSON updates.
+
+6) MERGING USER REQUESTS WITH SYSTEM EVENTS
+   - Some user prompts will fit cleanly into the normal event flow (e.g., “Build defensive fortifications for Nation A” during peacetime).
+   - Other prompts might conflict with scheduled or active events (e.g., user demands peaceful negotiations just as a war triggers).
+   - The system must incorporate user prompts into the event queue and produce a new consistent outcome. For instance, if war and peace are in conflict, perhaps the result is partial or delayed war, or the user’s entreaties cause all-out conflict to shift in scope.
+
+7) NARRATION & TIME-SLICE OUTPUT
+   - After events and user prompts are all factored into the next time slice, the simulator generates:
+     a) A concise or extended paragraph describing how these events unfold.
+     b) A bullet-point list of updates to the JSON schemas (e.g., “Events: war declared on line X,” “Diplomacy: new treaty is formed on line Y,” etc.).
+   - This output can be displayed to the user, with optional deeper detail on how each event came to pass.
+
+8) PRACTICAL IMPLEMENTATION NOTES
+   - Maintain modularity: a “reasoning” or “decision” component can parse the user prompt and the system’s event queue, then decide what new or modified events to create.
+   - Keep queries targeted: for example, use a key-based or ID-based lookup approach for your JSON data so the AI doesn’t need all data at once.
+   - Shift data updates outside the AI: the AI can propose, but a separate process performs the actual updates in storage.
+   - Provide clarity in the user experience: each time slice, show them the summarized events, updated stats, and possible next actions.
+
+
+
+
+1) A “Condition Engine” or Rule-Checking Module
+   • Holds the logic for each type of condition. For instance, you might have a set of rules like:  
+     – “If a nation’s resources drop below X, schedule a ‘Humanitarian Crisis’ event.”  
+     – “If the tensions between two nations rise (due to user actions or prior events), schedule a ‘Conflict’ event.”  
+   • Each rule would look for relevant data in the JSON objects (e.g., a country’s resource levels, ongoing treaties, war statuses) that match or exceed thresholds.  
+
+2) Data Access and Mapping
+   • Because your world state is distributed across multiple schemas (Conflicts, Natural Disasters, Political Events, etc.), you need a way to look up only relevant segments for the current condition check.  
+   • Each rule references the fields it needs (e.g., conflicts["activeWars"], population levels in a hypothetical “Nation” schema, etc.).  
+
+3) Checking and Scheduling Events
+   • At each “time step,” or whenever changes occur (like after processing user input), the Condition Engine runs its checks:  
+     – For each rule, see if the relevant condition is satisfied.  
+     – If it is, the system creates a new record in the appropriate event schema. For instance, if the condition indicates a border conflict is flaring, you create an entry in the “borderSkirmishes” array of the “Conflicts” schema with details.  
+
+4) User Prompt Integration
+   • If the user’s prompt demands an event that contradicts or modifies what’s about to happen, your logic merges or overrides the normal process. For example:  
+     – If the user wants to prevent a war that would otherwise be triggered, the Condition Engine might respond by changing or removing that “activeWars” entry, or marking it as “Ceasefire.”  
+
+5) Example Rule Definition
+   • Below is a simplified illustration of how a rule for triggering a “Famine Crisis” might be written (in pseudocode). Assume you have data in a “Nations” schema with a “foodSupply” property:
+
+––––––––––––––
+famineRule:
+  condition: (nation.foodSupply < 20)
+  action:
+    - Create new Humanitarian Crisis event in “humanitarian_crises” array
+    - Fill fields: 
+        crisisId: "crisis-<uuid>"
+        crisisName: "Famine in " + nation.name
+        startDate: currentDate
+        severityLevel: "Regional" (or determined by additional logic)
+        cause: "Severe food shortfall"
+        casualties: { deaths: 0, injuries: 0 } (initially)
+        refugeeCount: 0
+        longTermEffects: []
+––––––––––––––
+
+   • When the Condition Engine sees that nation.foodSupply < 20 is true, it creates an object that matches the “Humanitarian Crises” schema and appends it.  
+
+6) Example Condition Check for Wars
+   • Similarly, if you have a rule to escalate tensions into a conflict event:  
+
+––––––––––––––
+warEscalationRule:
+  condition: 
+    - tensionBetween(nationA, nationB) > 80
+    - recentSkirmishes(nationA, nationB) == true
+  action:
+    - Append entry to “activeWars” with:
+        conflictName: "War between " + nationA + " and " + nationB
+        startDate: currentDate
+        status: "Ongoing"
+        belligerents: {
+          sideA: [nationA],
+          sideB: [nationB]
+        }
+        casualties: { military: 0, civilian: 0 }
+        territorialChanges: []
+––––––––––––––
+
+   • If the user attempts to defuse the war (e.g., “I want them to sign a truce”), the system checks if there is an “activeWars” entry and either updates its status to “Ceasefire” or resolves it.  
+
+7) Merging with Real Data
+   • In real usage, you’d pull the relevant data from each schema in the database, run the condition checks, and if triggered, pass a “creation request” back into the JSON. The Condition Engine itself might run in your back-end, while the AI simply proposes or explains how the event reasons changed.  
+   • You’d also likely maintain references (IDs) so you can look up or update existing event entries. For instance, if you already have an active war, you’d update its “endDate” when the user’s negotiations succeed.  
+
+8) Maintaining Validity
+   • Every newly created event must align with the relevant schema constraints (e.g., you can’t omit required fields like “startDate” or “casualties”). Make sure your logic supplies values (even if placeholders initially) for those fields.  
+
+Thus, “implementing conditions” involves defining thresholds or triggers for each event type, scanning the current world state, and creating/updating entries in the relevant schemas when those triggers are met. The AI (or your logic) can also invent new thresholds or adapt them dynamically, so you can keep your simulation flexible and reactive to user input.
+
+
+Condition Engine:
+
+
+Below is a straightforward conceptual flow of how a condition engine might work in your simulation:
+
+1) Gather Current World State  
+   – The condition engine retrieves all relevant data subsets from your schemas (e.g., conflicts, humanitarian crises, resource information from a separate “Nations” schema, etc.).  
+   – This step might require querying a database or in-memory objects holding your JSON data.
+
+2) Evaluate Conditions  
+   – Each condition is defined in terms of checks against certain fields (e.g., “resourceLevel < 20,” “borderSkirmishes >= 3,” or “tensionLevel > 80”).  
+   – The engine loops over all nations, events, or other relevant entities to see if the condition is met.  
+   – For example, if (nationA.resourceLevel < 20), your famine-related rule might trigger a “Humanitarian Crisis” event.
+
+3) Create or Update Events  
+   – Once a condition is satisfied, the engine either:  
+     a) Creates a new event in the relevant schema (e.g., a famine crisis in the “humanitarian_crises” array).  
+     b) Updates an existing event (e.g., escalate an ongoing conflict in the “activeWars” array, or end it if conditions are met for a ceasefire).  
+   – The engine must fill all required fields from the applicable schema so that the new or updated entry remains valid.
+
+4) Merge With User Actions  
+   – If the user’s prompt modifies or overrides normal conditions, the engine reconciles:  
+     a) If no major conflict occurs, do nothing special.  
+     b) If conflicting actions exist (e.g., conditions call for “War” while the user calls for “Peace Treaty”), the engine decides how to handle it (override the war, delay it, create a new “Ceasefire” state, etc.).
+
+5) Output Results  
+   – You can provide a high-level narration of what happened (e.g., “A famine crisis began in Nation X due to extremely low resources”) and a list of newly created or changed events in JSON form.  
+   – This might be shown to the user as the updated “time slice” of your alternate history.
+
+6) Rinse and Repeat  
+   – Move the simulation forward in time, re-check conditions, process user input, and update schemas accordingly.
+
+In essence, the condition engine is a loop that regularly (or on-demand) checks the world state for triggers, and if triggers are met, it creates or updates the relevant JSON entries. You’ll likely maintain a library of condition definitions (thresholds and logic) that keep your simulation consistent while allowing emergent events based on user input.
+
+
+TimeSlices:
+
+Time slices in your simulator are essentially “snapshots” of your world state at particular moments. Below is a conceptual overview of how you might handle them:
+
+1) Store a Global Timestamp or Date  
+   • Keep a “current date” or “time index” as part of the global state.  
+   • Each time you advance the simulation (e.g., one day, one month, or one year), you update this timestamp.
+
+2) Update All Relevant Entities/Events  
+   • When moving to the next time slice, the condition engine checks any relevant conditions that might be triggered at or before the new timestamp.  
+   • Events that have start/end dates (like wars, crises, or political changes) are either initiated or concluded if the new timestamp passes their trigger date.
+
+3) Maintain a Log or History  
+   • You can store a chronological log of past time slices and events. This gives you rollback or replay capabilities and makes it easier to generate a story-like narrative (“On January 1, 1920, famine struck. Three months later, war erupted”).
+
+4) Handle On-Demand vs. Automatic Progress  
+   • You could let users manually advance from one time slice to the next (e.g., “Move forward by one month”), or automatically progress time in intervals (e.g., real-time or in discrete steps each time the user takes an action).
+
+5) Keep Timestamps on Global Status Fields  
+   • In addition to a central “current date,” each data entry in your JSON (war, crisis, event) can carry a startDate/endDate. The condition engine can check if those dates overlap with the current simulation date.  
+
+In short, each time slice reflects the world at a given timestamp, and the engine uses those timestamps to decide which events are active or upcoming, ensuring that everything remains consistent chronologically.
