@@ -1,4 +1,4 @@
-import os
+import os,time
 import json
 import google.generativeai as genai
 
@@ -43,7 +43,7 @@ def generate_object_prompt(json_schema: dict, action: str, context: str) -> str:
     You are an expert in generating structured data for an alternate history scenario. Your task is to:
     
     **1. Follow this JSON schema strictly:**
-    {json.dumps(json_schema, indent=2).replace('{', '{{').replace('}', '}}')}
+    {json.dumps(json_schema, indent=2)}
 
     **2. Create a JSON object that matches this schema exactly.**
     
@@ -65,17 +65,33 @@ def generate_json_object(model, json_schema, action, context):
     """
     Use AI to generate a JSON object following the schema.
     """
+    time.sleep(7)
     prompt = generate_object_prompt(json_schema, action, context)
     response = model.generate_content(prompt)
-
+    text = response.text[7:-3]
+    print(text)
     try:
-        generated_json = json.loads(response.text[7:-3])
+        generated_json = json.loads(text)
         return generated_json
     except json.JSONDecodeError:
         print("Error: AI did not return valid JSON.")
-        print(response)
+        print(response.text)
         return None
 
+
+def produce_structured_data(json_schema: dict, action: str, context: str):
+    """
+    Single function that:
+      1) Configures the gemini model.
+      2) Generates a JSON object (strictly following the given schema)
+         based on the provided action and context.
+      3) Returns that JSON object (or None if invalid).
+    """
+    # 1. Configure the AI model
+    model = configure_genai()
+
+    # 2. Generate the JSON object
+    return generate_json_object(model, json_schema, action, context)
 
 def main():
     """
