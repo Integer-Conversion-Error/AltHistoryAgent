@@ -41,9 +41,19 @@
           "minimum": 0
         },
         "approvalRating": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100
+          "type": "string",
+          "enum": [
+            "Total Rejection (0-5% approval, mass unrest, imminent overthrow)",
+            "Extremely Unpopular (6-15% approval, severe dissatisfaction, protests widespread)",
+            "Unpopular (16-30% approval, struggling government legitimacy, frequent opposition)",
+            "Mixed Opinions (31-45% approval, significant division within society)",
+            "Moderate Approval (46-55% approval, some opposition but generally accepted leadership)",
+            "Popular (56-70% approval, well-regarded leader, stable governance)",
+            "Highly Popular (71-85% approval, strong public support, minimal opposition)",
+            "Near Universal Support (86-95% approval, leader seen as highly competent and effective)",
+            "Cult of Personality (96-100% approval, absolute loyalty, government-controlled popularity)"
+          ],
+          "description": "The leader’s approval rating, from extreme rejection to total dominance over public perception."
         },
         "emergencyPowers": {
           "type": "boolean"
@@ -156,31 +166,46 @@
             "Moderate",
             "High"
           ]
-        },
-        "corruptionIndex": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100
         }
       },
       "required": [
-        "independenceLevel",
-        "corruptionIndex"
+        "independenceLevel"
       ]
     },
     "stabilityIndex": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 100
-    },
-    "corruptionLevel": {
       "type": "string",
       "enum": [
-        "Low",
-        "Moderate",
-        "High",
-        "Severe"
-      ]
+        "Perfectly Stable (Strong institutions, no internal threats, total governmental legitimacy)",
+        "Highly Stable (Minor protests, but governance remains effective and trusted)",
+        "Stable (Occasional unrest, but institutions and rule of law are strong)",
+        "Moderate Stability (Some political division, periodic protests, and mild unrest)",
+        "Noticeable Instability (Frequent political disputes, moderate unrest, and governance struggles)",
+        "Fragile Stability (Government retains control but faces significant opposition and tensions)",
+        "Unstable (Widespread protests, political gridlock, and emerging separatist movements)",
+        "Highly Unstable (Major unrest, riots, and growing insurgencies challenging government authority)",
+        "Crisis-Level Instability (Armed conflicts, government repression, and mass civil disobedience)",
+        "Near-Collapse (Loss of control in major regions, possible coup attempts, institutions failing)",
+        "Failed State (Government has lost effective control, widespread anarchy and internal conflict)"
+      ],
+      "description": "A qualitative measure of political and social stability, ranging from perfectly stable governance to total state collapse."
+    },
+    "corruptionIndex": {
+      "type": "string",
+      "enum": [
+        "Perfectly Transparent (Zero corruption, absolute integrity in governance)",
+        "Almost No Corruption (Extremely rare corruption cases, strong institutional oversight)",
+        "Minimal Corruption (Rare cases of bribery, harsh punishments for misconduct)",
+        "Low Corruption (Occasional small-scale corruption, generally well-regulated)",
+        "Moderate Corruption (Some bureaucratic inefficiencies, bribery in lower levels of government)",
+        "Noticeable Corruption (Bribery is a problem in certain sectors, but still controlled at higher levels)",
+        "Systemic Corruption (Widespread government inefficiencies, bribery common in business and law enforcement)",
+        "High Corruption (Political favoritism, weak enforcement against corruption, frequent misuse of funds)",
+        "Rampant Corruption (Judicial system compromised, bribery expected in most bureaucratic processes)",
+        "Severe Corruption (Government institutions deeply corrupt, embezzlement common, elections rigged)",
+        "Near-Collapse (Massive corruption, bribery and extortion are daily norms, oligarchic control)",
+        "Failed State (Corruption is the primary mode of governance, total lack of institutional integrity)"
+      ],
+      "description": "A qualitative measure of corruption in governance, ranging from perfectly transparent governance to complete state failure due to corruption."
     },
     "governanceStyle": {
       "type": "string",

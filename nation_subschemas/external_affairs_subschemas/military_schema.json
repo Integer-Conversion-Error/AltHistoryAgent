@@ -4,21 +4,174 @@
   "title": "Military",
   "type": "object",
   "properties": {
+    "intelligenceCapabilities": {
+      "type": "object",
+      "properties": {
+        "espionageCapabilities": {
+          "type": "string",
+          "enum": [
+            "None (No organized intelligence gathering)",
+            "Minimal (Basic human intelligence, weak counterintelligence)",
+            "Very Poor (Cold War-era tactics, low technological integration)",
+            "Poor (Limited SIGINT/ELINT, minimal cyber capabilities)",
+            "Mediocre (Moderate HUMINT network, developing SIGINT programs)",
+            "Below Average (Established SIGINT/ELINT, limited cyber warfare)",
+            "Average (Competent HUMINT, SIGINT, and open-source intelligence)",
+            "Above Average (Global intelligence reach, robust counterintelligence)",
+            "Good (Cyber warfare integration, AI-assisted data analysis)",
+            "Very Good (Autonomous cyber espionage, predictive intelligence models)",
+            "Excellent (AI-enhanced real-time surveillance, strategic deception capabilities)",
+            "Elite (Quantum cryptanalysis, automated covert operations)",
+            "Unmatched (Global omnipresence, full-spectrum intelligence dominance)"
+          ],
+          "description": "The nation's ability to conduct espionage, counterintelligence, and covert operations."
+        },
+        "cyberWarfareCapabilities": {
+          "type": "string",
+          "enum": [
+            "None (No cyber warfare capability)",
+            "Minimal (Basic cyber defenses, no offensive capability)",
+            "Very Poor (Limited hacking, outdated cybersecurity infrastructure)",
+            "Poor (Basic network attacks, weak defensive posture)",
+            "Mediocre (Early-stage cyber operations, developing capabilities)",
+            "Below Average (Capable of targeted cyber attacks on enemy systems)",
+            "Average (Full-scale cyber warfare capability, moderate automation)",
+            "Above Average (AI-assisted cyber warfare, persistent threat operations)",
+            "Good (Automated cyber defense and attack systems)",
+            "Very Good (Near-autonomous cyber warfare platforms, deep penetration attacks)",
+            "Excellent (Quantum-resistant cybersecurity, fully automated cyber-espionage)",
+            "Elite (Nationwide AI-driven cyber intelligence and network dominance)",
+            "Unmatched (Full-scale digital warfare, no entity immune from infiltration)"
+          ],
+          "description": "The nation's ability to engage in cyber warfare and protect itself from digital threats."
+        },
+        "electronicSurveillance": {
+          "type": "string",
+          "enum": [
+            "None (No mass surveillance capability)",
+            "Minimal (Basic wiretapping, local law enforcement use only)",
+            "Very Poor (Scattered surveillance, low automation)",
+            "Poor (Basic domestic surveillance, limited international reach)",
+            "Mediocre (Government-monitored communication networks, limited facial recognition)",
+            "Below Average (Comprehensive domestic monitoring, weak international coverage)",
+            "Average (Extensive surveillance network with AI-assisted analysis)",
+            "Above Average (Automated surveillance with real-time behavioral analysis)",
+            "Good (Massive data collection capabilities, predictive monitoring)",
+            "Very Good (Global surveillance network, integrated intelligence feeds)",
+            "Excellent (Quantum-enhanced cryptographic monitoring, automated tracking systems)",
+            "Elite (Neural-linked surveillance grids, total information awareness)",
+            "Unmatched (Planet-wide monitoring, AI-driven predictive threat analysis)"
+          ],
+          "description": "The nation's ability to conduct large-scale electronic and physical surveillance."
+        },
+        "covertOperations": {
+          "type": "string",
+          "enum": [
+            "None (No covert operations capability)",
+            "Minimal (Basic infiltration training, weak logistical support)",
+            "Very Poor (Small-scale operations, low success rates)",
+            "Poor (Basic sabotage and espionage capabilities)",
+            "Mediocre (Moderate success in destabilization and deception operations)",
+            "Below Average (Capable of executing high-profile assassinations and sabotage)",
+            "Average (Skilled in political influence, guerrilla warfare support)",
+            "Above Average (Proven ability to execute false-flag operations, economic sabotage)",
+            "Good (Advanced special operations, high-level political subversion)",
+            "Very Good (AI-assisted psychological warfare, deep infiltration tactics)",
+            "Excellent (Near-total black operations autonomy, strategic-level influence)",
+            "Elite (Autonomous covert warfare, AI-managed operations)",
+            "Unmatched (Global-scale covert manipulation, undetectable psychological operations)"
+          ],
+          "description": "The nation's ability to conduct secret military, intelligence, and destabilization operations."
+        },
+        "counterIntelligence": {
+          "type": "string",
+          "enum": [
+            "None (No counterintelligence capability)",
+            "Minimal (Basic national security efforts, no formalized structure)",
+            "Very Poor (Frequent intelligence leaks, no ability to counter espionage)",
+            "Poor (Limited ability to detect foreign infiltration)",
+            "Mediocre (Some success in countering espionage and subversion)",
+            "Below Average (Strong internal security, but vulnerable cyber intelligence leaks)",
+            "Average (Robust counterintelligence program, moderate internal surveillance)",
+            "Above Average (Highly classified security networks, strong insider threat monitoring)",
+            "Good (AI-assisted security operations, predictive threat detection)",
+            "Very Good (Automated intelligence deception and infiltration tracking)",
+            "Excellent (Global counterintelligence network, deep cover agent identification)",
+            "Elite (Near-total immunity to espionage, automated AI-driven deception programs)",
+            "Unmatched (Global counterintelligence dominance, absolute control over all classified intelligence)"
+          ],
+          "description": "The nation's ability to detect and neutralize foreign intelligence threats."
+        }
+      },
+      "description": "Detailed breakdown of the nation's intelligence and counterintelligence capabilities, covering espionage, cyber warfare, covert operations, and surveillance technology."
+    },
     "activePersonnel": {
-      "type": "integer",
-      "minimum": 0
+      "type": "string",
+      "enum": [
+        "None",
+        "Minimal (<10,000)",
+        "Very Small (10,000-50,000)",
+        "Small (50,000-100,000)",
+        "Moderate-Low (100,000-250,000)",
+        "Moderate (250,000-500,000)",
+        "Moderate-High (500,000-750,000)",
+        "Large (750,000-1M)",
+        "Very Large (1M-1.5M)",
+        "Massive (1.5M-2M)",
+        "Superpower-Level (2M-3M)",
+        "Unprecedented (>3M)"
+      ]
     },
     "reservePersonnel": {
-      "type": "integer",
-      "minimum": 0
+      "type": "string",
+      "enum": [
+        "None",
+        "Minimal (<50,000)",
+        "Very Small (50,000-100,000)",
+        "Small (100,000-250,000)",
+        "Moderate-Low (250,000-500,000)",
+        "Moderate (500,000-750,000)",
+        "Moderate-High (750,000-1M)",
+        "Large (1M-2M)",
+        "Very Large (2M-3M)",
+        "Massive (3M-5M)",
+        "Superpower-Level (5M-7M)",
+        "Unprecedented (>7M)"
+      ]
     },
     "paramilitaryPersonnel": {
-      "type": "integer",
-      "minimum": 0
+      "type": "string",
+      "enum": [
+        "None",
+        "Minimal (<10,000)",
+        "Very Small (10,000-50,000)",
+        "Small (50,000-100,000)",
+        "Moderate-Low (100,000-200,000)",
+        "Moderate (200,000-300,000)",
+        "Moderate-High (300,000-500,000)",
+        "Large (500,000-750,000)",
+        "Very Large (750,000-1M)",
+        "Massive (1M-1.5M)",
+        "Superpower-Level (1.5M-2M)",
+        "Unprecedented (>2M)"
+      ]
     },
     "defenseBudget": {
       "type": "string",
-      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+      "enum": [
+        "Negligible (<$500M)",
+        "Minimal ($500M-$1B)",
+        "Very Low ($1B-$5B)",
+        "Low ($5B-$10B)",
+        "Moderate-Low ($10B-$20B)",
+        "Moderate ($20B-$50B)",
+        "Moderate-High ($50B-$100B)",
+        "High ($100B-$150B)",
+        "Very High ($150B-$250B)",
+        "Extreme ($250B-$500B)",
+        "Superpower-Level ($500B-$750B)",
+        "Unprecedented (>$750B)"
+      ]
     },
     "nuclearCapability": {
       "type": "object",
@@ -27,13 +180,40 @@
           "type": "boolean"
         },
         "nuclearStockpile": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10 warheads)",
+            "Very Small (10-50 warheads)",
+            "Small (50-100 warheads)",
+            "Moderate-Low (100-250 warheads)",
+            "Moderate (250-500 warheads)",
+            "Moderate-High (500-1,000 warheads)",
+            "Large (1,000-2,000 warheads)",
+            "Very Large (2,000-3,500 warheads)",
+            "Massive (3,500-5,000 warheads)",
+            "Superpower-Level (5,000-7,500 warheads)",
+            "Unprecedented (>7,500 warheads)"
+          ]
         },
         "deliverySystems": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "None",
+              "Basic Tactical Nuclear Weapons",
+              "Strategic Bombers",
+              "Short-Range Ballistic Missiles (SRBM)",
+              "Medium-Range Ballistic Missiles (MRBM)",
+              "Intermediate-Range Ballistic Missiles (IRBM)",
+              "Intercontinental Ballistic Missiles (ICBM)",
+              "Submarine-Launched Ballistic Missiles (SLBM)",
+              "Hypersonic Glide Vehicles",
+              "Nuclear Artillery",
+              "Nuclear Torpedoes",
+              "Orbital Nuclear Weapons"
+            ]
           }
         }
       }
@@ -42,219 +222,897 @@
       "type": "object",
       "properties": {
         "tankCount": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<50 tanks)",
+            "Very Small (50-100 tanks)",
+            "Small (100-250 tanks)",
+            "Moderate-Small (250-500 tanks)",
+            "Moderate-Low (500-1,000 tanks)",
+            "Moderate (1,000-2,000 tanks)",
+            "Moderate-High (2,000-3,000 tanks)",
+            "Large (3,000-5,000 tanks)",
+            "Very Large (5,000-7,500 tanks)",
+            "Massive (7,500-10,000 tanks)",
+            "Superpower-Level (10,000-12,500 tanks)",
+            "Unprecedented (12,500-15,000 tanks)",
+            "Dominant (15,000-17,500 tanks)",
+            "Global Land Power (17,500-20,000 tanks)",
+            "Ultimate War Machine (>20,000 tanks)"
+          ],
+          "description": "The total number of operational main battle tanks and light tanks in active service."
         },
         "armoredVehicles": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<250)",
+            "Very Small (250-500)",
+            "Small (500-1,000)",
+            "Moderate-Small (1,000-2,000)",
+            "Moderate-Low (2,000-3,500)",
+            "Moderate (3,500-5,000)",
+            "Moderate-High (5,000-7,500)",
+            "Large (7,500-10,000)",
+            "Very Large (10,000-15,000)",
+            "Massive (15,000-20,000)",
+            "Superpower-Level (20,000-25,000)",
+            "Unprecedented (>25,000)"
+          ],
+          "description": "Total number of armored personnel carriers (APCs) and infantry fighting vehicles (IFVs) in service."
         },
         "artillery": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<500)",
+            "Very Small (500-1,000)",
+            "Small (1,000-2,000)",
+            "Moderate-Small (2,000-3,500)",
+            "Moderate-Low (3,500-5,000)",
+            "Moderate (5,000-7,500)",
+            "Moderate-High (7,500-10,000)",
+            "Large (10,000-12,500)",
+            "Very Large (12,500-15,000)",
+            "Massive (15,000-20,000)",
+            "Superpower-Level (20,000-25,000)",
+            "Unprecedented (>25,000)"
+          ],
+          "description": "Total number of self-propelled, towed, and rocket artillery units in active service."
         },
         "rocketSystems": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<250)",
+            "Very Small (250-500)",
+            "Small (500-1,000)",
+            "Moderate-Small (1,000-2,000)",
+            "Moderate-Low (2,000-3,000)",
+            "Moderate (3,000-4,000)",
+            "Moderate-High (4,000-5,000)",
+            "Large (5,000-7,500)",
+            "Very Large (7,500-10,000)",
+            "Massive (10,000-15,000)",
+            "Superpower-Level (15,000-20,000)",
+            "Unprecedented (>20,000)"
+          ],
+          "description": "Total number of multiple-launch rocket systems (MLRS) and short-range missile launchers."
+        },
+        "antiTankWeapons": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<500)",
+            "Very Small (500-1,000)",
+            "Small (1,000-2,000)",
+            "Moderate-Small (2,000-3,000)",
+            "Moderate-Low (3,000-4,000)",
+            "Moderate (4,000-5,000)",
+            "Moderate-High (5,000-7,500)",
+            "Large (7,500-10,000)",
+            "Very Large (10,000-12,500)",
+            "Massive (12,500-15,000)",
+            "Superpower-Level (15,000-20,000)",
+            "Unprecedented (>20,000)"
+          ],
+          "description": "Total number of anti-tank guided missile (ATGM) launchers and rocket-propelled grenades (RPGs) in service."
+        },
+        "airDefenseSystems": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<250)",
+            "Very Small (250-500)",
+            "Small (500-1,000)",
+            "Moderate-Small (1,000-2,000)",
+            "Moderate-Low (2,000-3,000)",
+            "Moderate (3,000-4,000)",
+            "Moderate-High (4,000-5,000)",
+            "Large (5,000-7,500)",
+            "Very Large (7,500-10,000)",
+            "Massive (10,000-15,000)",
+            "Superpower-Level (15,000-20,000)",
+            "Unprecedented (>20,000)"
+          ],
+          "description": "Total number of short, medium, and long-range surface-to-air missile (SAM) systems."
+        },
+        "landForces": {
+          "type": "object",
+          "properties": {
+            "tankQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (Pre-WWII light tanks, no modern battlefield value)",
+                "Very Poor (WWII-era tanks, vulnerable to modern anti-tank weapons)",
+                "Poor (Early Cold War designs, limited firepower and armor)",
+                "Mediocre (1950s-60s tanks, weak against modern threats)",
+                "Below Average (Basic composite armor, rudimentary fire control)",
+                "Average (1980s-era MBTs, early thermal optics, ERA armor)",
+                "Above Average (1990s-era MBTs, improved sensors and targeting)",
+                "Good (Modern MBTs with active protection systems and advanced optics)",
+                "Very Good (Next-generation tanks with modular armor, digital networking)",
+                "Excellent (AI-assisted fire control, high-velocity APFSDS rounds)",
+                "Elite (Hybrid-powered MBTs with drone coordination and stealth features)",
+                "Unmatched (Autonomous tanks with AI-driven targeting and adaptive armor)",
+                "Experimental (Electromagnetic railguns, advanced energy shielding, fully autonomous combat units)"
+              ],
+              "description": "The overall quality and technological level of the nation's main battle tanks, from outdated WWII designs to cutting-edge autonomous MBTs."
+            },
+            "armoredVehicleQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (WWII half-tracks, basic troop carriers)",
+                "Very Poor (Cold War-era, unprotected against modern threats)",
+                "Poor (Basic APCs with little armor and no advanced electronics)",
+                "Mediocre (First-gen IFVs with moderate firepower and armor)",
+                "Average (Modern APCs and IFVs with basic APS and digital systems)",
+                "Good (Heavily armed IFVs with modular armor and networked capabilities)",
+                "Very Good (Hybrid-powered APCs with enhanced automation and survivability)",
+                "Elite (AI-assisted IFVs with integrated drone control and adaptive armor)",
+                "Unmatched (Autonomous armored vehicles with energy weapons and full AI support)"
+              ],
+              "description": "The quality of the nation's armored personnel carriers and infantry fighting vehicles."
+            },
+            "artilleryQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (Manual targeting, WWII-era howitzers)",
+                "Very Poor (Outdated Cold War artillery with limited range)",
+                "Poor (Basic self-propelled artillery, no guided munitions)",
+                "Mediocre (Modernized systems with basic GPS guidance)",
+                "Average (Digital fire control, extended-range shells)",
+                "Good (Fully networked artillery with counter-battery systems)",
+                "Very Good (Autonomous fire control, hypersonic artillery shells)",
+                "Elite (Laser-guided munitions, AI-assisted targeting)",
+                "Unmatched (Electromagnetic railguns, drone-synchronized artillery)"
+              ],
+              "description": "The quality of the nation's self-propelled, towed, and rocket artillery."
+            },
+            "antiTankWeaponQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (WWII bazookas, ineffective against modern armor)",
+                "Very Poor (Cold War-era ATGMs with poor guidance systems)",
+                "Poor (Basic RPGs, no advanced target tracking)",
+                "Mediocre (First-gen ATGMs with moderate armor penetration)",
+                "Average (Fire-and-forget ATGMs with tandem warheads)",
+                "Good (Top-attack missiles, networked targeting)",
+                "Very Good (AI-assisted missiles, extreme range capability)",
+                "Elite (Autonomous hunter-killer AT systems, hypersonic missiles)",
+                "Unmatched (Electromagnetic launchers, adaptive AI targeting)"
+              ],
+              "description": "The quality of infantry and vehicle-mounted anti-tank weapons."
+            },
+            "airDefenseQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (Manual anti-aircraft guns, ineffective vs. modern threats)",
+                "Very Poor (Cold War-era SAMs, outdated radar tracking)",
+                "Poor (Basic MANPADS, limited engagement range)",
+                "Mediocre (Short-range SAMs, early radar-guided defenses)",
+                "Average (Modern SAMs with networked radar tracking)",
+                "Good (Integrated air defense systems with countermeasure resistance)",
+                "Very Good (AI-controlled air defense with multi-layered protection)",
+                "Elite (Directed energy air defenses, hypersonic interception)",
+                "Unmatched (Orbital-based air defense, full-theater AI integration)"
+              ],
+              "description": "The effectiveness and modernization of the nation's air defense systems."
+            },
+            "infantryEquipmentQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (Bolt-action rifles, WWII-era gear)",
+                "Very Poor (Cold War surplus rifles, no body armor)",
+                "Poor (Basic assault rifles, minimal protection)",
+                "Mediocre (Standardized modern rifles, kevlar vests)",
+                "Average (Advanced optics, composite armor vests)",
+                "Good (Integrated communication and night vision systems)",
+                "Very Good (Smart rifles, exoskeleton-assisted infantry)",
+                "Elite (AI-assisted targeting, adaptive camouflage systems)",
+                "Unmatched (Autonomous robotic infantry, directed-energy weapons)"
+              ],
+              "description": "The quality of infantry small arms, protective gear, and battlefield awareness equipment."
+            },
+            "logisticsVehicleQuality": {
+              "type": "string",
+              "enum": [
+                "Obsolete (Aging cargo trucks, no automation)",
+                "Very Poor (Basic transport vehicles, inefficient fuel usage)",
+                "Poor (Standard military trucks, minimal automation)",
+                "Mediocre (GPS-assisted logistics, fuel-efficient transport)",
+                "Average (Automated convoy systems, drone resupply capability)",
+                "Good (Integrated battlefield logistics, real-time tracking)",
+                "Very Good (AI-managed supply chains, robotic transport units)",
+                "Elite (Self-repairing vehicles, autonomous logistics convoys)",
+                "Unmatched (Quantum computing-driven logistics, teleportation-like rapid deployment)"
+              ],
+              "description": "The modernization level of the nation's military logistics and transport vehicles."
+            }
+          },
+          "description": "Detailed breakdown of the quality and modernization of the nation's land forces and equipment."
         }
-      }
+      },
+      "description": "Detailed breakdown of the nation's land forces."
     },
     "airForces": {
       "type": "object",
       "properties": {
         "fighterJets": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<25)",
+            "Very Small (25-50)",
+            "Small (50-150)",
+            "Moderate-Low (150-300)",
+            "Moderate (300-500)",
+            "Moderate-High (500-750)",
+            "Large (750-1,000)",
+            "Very Large (1,000-1,500)",
+            "Massive (1,500-2,000)",
+            "Superpower-Level (2,000-3,000)",
+            "Unprecedented (>3,000)"
+          ],
+          "description": "The number of operational fighter jets in service."
+        },
+        "stealthFighters": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10)",
+            "Very Small (10-25)",
+            "Small (25-50)",
+            "Moderate-Low (50-100)",
+            "Moderate (100-200)",
+            "Moderate-High (200-300)",
+            "Large (300-500)",
+            "Very Large (500-750)",
+            "Massive (750-1,000)",
+            "Superpower-Level (1,000-1,500)",
+            "Unprecedented (>1,500)"
+          ],
+          "description": "The number of stealth fighter aircraft in active service."
         },
         "bomberAircraft": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10)",
+            "Very Small (10-25)",
+            "Small (25-50)",
+            "Moderate-Low (50-100)",
+            "Moderate (100-200)",
+            "Moderate-High (200-300)",
+            "Large (300-500)",
+            "Very Large (500-750)",
+            "Massive (750-1,000)",
+            "Superpower-Level (1,000-1,500)",
+            "Unprecedented (>1,500)"
+          ],
+          "description": "The number of bomber aircraft in active service."
+        },
+        "strategicBombers": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-15)",
+            "Small (15-30)",
+            "Moderate-Low (30-50)",
+            "Moderate (50-100)",
+            "Moderate-High (100-150)",
+            "Large (150-200)",
+            "Very Large (200-300)",
+            "Massive (300-400)",
+            "Superpower-Level (400-500)",
+            "Unprecedented (>500)"
+          ],
+          "description": "The number of long-range strategic bombers in active service."
         },
         "transportAircraft": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<25)",
+            "Very Small (25-50)",
+            "Small (50-150)",
+            "Moderate-Low (150-300)",
+            "Moderate (300-500)",
+            "Moderate-High (500-750)",
+            "Large (750-1,000)",
+            "Very Large (1,000-1,500)",
+            "Massive (1,500-2,000)",
+            "Superpower-Level (2,000-3,000)",
+            "Unprecedented (>3,000)"
+          ],
+          "description": "The number of transport aircraft used for military logistics."
         },
         "drones": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<50)",
+            "Very Small (50-150)",
+            "Small (150-300)",
+            "Moderate-Low (300-500)",
+            "Moderate (500-750)",
+            "Moderate-High (750-1,000)",
+            "Large (1,000-1,500)",
+            "Very Large (1,500-2,000)",
+            "Massive (2,000-3,000)",
+            "Superpower-Level (3,000-4,000)",
+            "Unprecedented (>4,000)"
+          ],
+          "description": "The number of operational military drones."
+        },
+        "attackHelicopters": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<25)",
+            "Very Small (25-50)",
+            "Small (50-150)",
+            "Moderate-Low (150-300)",
+            "Moderate (300-500)",
+            "Moderate-High (500-750)",
+            "Large (750-1,000)",
+            "Very Large (1,000-1,500)",
+            "Massive (1,500-2,000)",
+            "Superpower-Level (2,000-3,000)",
+            "Unprecedented (>3,000)"
+          ],
+          "description": "The number of attack helicopters in active service."
+        },
+        "earlyWarningAircraft": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-15)",
+            "Small (15-30)",
+            "Moderate-Low (30-50)",
+            "Moderate (50-100)",
+            "Moderate-High (100-150)",
+            "Large (150-200)",
+            "Very Large (200-300)",
+            "Massive (300-400)",
+            "Superpower-Level (400-500)",
+            "Unprecedented (>500)"
+          ],
+          "description": "The number of airborne early warning and control (AEW&C) aircraft."
+        },
+        "electronicWarfareAircraft": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-15)",
+            "Small (15-30)",
+            "Moderate-Low (30-50)",
+            "Moderate (50-100)",
+            "Moderate-High (100-150)",
+            "Large (150-200)",
+            "Very Large (200-300)",
+            "Massive (300-400)",
+            "Superpower-Level (400-500)",
+            "Unprecedented (>500)"
+          ],
+          "description": "The number of aircraft specialized in electronic warfare and jamming."
+        },
+        "hypersonicAircraft": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-10)",
+            "Small (10-20)",
+            "Moderate-Low (20-50)",
+            "Moderate (50-100)",
+            "Moderate-High (100-150)",
+            "Large (150-200)",
+            "Very Large (200-300)",
+            "Massive (300-400)",
+            "Superpower-Level (400-500)",
+            "Unprecedented (>500)"
+          ],
+          "description": "The number of hypersonic-capable aircraft in active service."
+        },
+        "fighterJetQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (Pre-WWII biplanes, no combat value)",
+            "Very Poor (WWII propeller-driven fighters, completely outdated)",
+            "Poor (First-generation jet fighters, no advanced radar or missiles)",
+            "Mediocre (Early Cold War jets, subsonic speeds, limited weapon systems)",
+            "Below Average (Early supersonic jets, basic radar, unguided missiles)",
+            "Average (1970s-80s era fighters, semi-active radar-guided missiles, basic ECM)",
+            "Above Average (4th-generation fighters with modern radars, maneuverability enhancements)",
+            "Good (Advanced 4.5-generation fighters with AESA radars, stealth features)",
+            "Very Good (5th-generation stealth fighters with sensor fusion, supercruise capability)",
+            "Excellent (Next-generation air superiority fighters with integrated AI decision-making)",
+            "Elite (Autonomous UCAVs with hypersonic weapons and electronic warfare capabilities)",
+            "Unmatched (AI-controlled, energy-based weapon systems, full-spectrum warfare capability)",
+            "Experimental (Orbital-capable hypersonic aerospace fighters, directed energy weapons)"
+          ],
+          "description": "The overall quality and technological level of the nation's fighter jet fleet, from obsolete WWII aircraft to futuristic AI-driven aerospace fighters."
+        },
+        "bomberQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (WWII-era propeller bombers, no modern battlefield utility)",
+            "Very Poor (Early Cold War bombers, basic unguided bomb payloads)",
+            "Poor (Cold War jet bombers, limited stealth and self-defense)",
+            "Mediocre (First-generation supersonic bombers, basic precision-guided munitions)",
+            "Below Average (Strategic bombers with long-range cruise missile capability)",
+            "Average (Stealth bombers with improved ECM and stand-off strike ability)",
+            "Above Average (High-endurance bombers with full sensor fusion and hypersonic missile integration)",
+            "Good (Autonomous drone bombers with AI-controlled strike coordination)",
+            "Very Good (Fully networked bombers with real-time target acquisition and in-flight retasking)",
+            "Excellent (AI-assisted deep penetration bombers with electronic warfare capabilities)",
+            "Elite (Hypersonic global strike bombers, near-invisible radar cross-section)",
+            "Unmatched (Orbital bombers with kinetic strike capabilities)",
+            "Experimental (Space-based kinetic strike platforms, planetary-scale bombing ability)"
+          ],
+          "description": "The overall quality and technological level of the nation's bomber fleet, ranging from outdated WWII-era bombers to advanced hypersonic strike platforms."
+        },
+        "droneQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (No drone capability, reliance on manned aircraft only)",
+            "Very Poor (Basic reconnaissance drones with limited range and endurance)",
+            "Poor (First-generation combat drones, minimal weapons payload)",
+            "Mediocre (Armed drones with short-range guided missiles, weak electronic warfare capability)",
+            "Below Average (Stealth UAVs with mid-range strike capability and limited autonomy)",
+            "Average (Fully networked UAVs with real-time battlefield coordination)",
+            "Above Average (Stealth UCAVs with advanced sensor fusion and adaptive AI control)",
+            "Good (Swarm-capable drones with coordinated attack formations)",
+            "Very Good (Hypersonic drones with air-to-air combat capability)",
+            "Excellent (Fully autonomous AI-controlled drone squadrons with electronic warfare integration)",
+            "Elite (Orbital reconnaissance and attack drones, high-energy weaponry)",
+            "Unmatched (Autonomous global strike UAVs, no human intervention required)",
+            "Experimental (Self-replicating AI drone networks with quantum communication capability)"
+          ],
+          "description": "The overall quality and technological level of the nation's drone fleet, ranging from basic reconnaissance UAVs to fully autonomous AI-driven war machines."
+        },
+        "attackHelicopterQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (No dedicated attack helicopters, reliance on outdated troop carriers)",
+            "Very Poor (Basic gunship modifications of transport helicopters)",
+            "Poor (First-generation attack helicopters with limited guided munitions)",
+            "Mediocre (Early tandem-seat attack helicopters with basic countermeasures)",
+            "Below Average (Modernized attack helicopters with improved sensors and guided missiles)",
+            "Average (Advanced attack helicopters with networked targeting and ECM systems)",
+            "Above Average (Stealth-capable attack helicopters with battlefield AI integration)",
+            "Good (Fully networked gunships with autonomous loitering strike capability)",
+            "Very Good (High-speed, tilt-rotor attack aircraft with hypersonic missile integration)",
+            "Excellent (AI-assisted rotorcraft with electronic warfare and smart munitions)",
+            "Elite (Autonomous gunships with real-time swarm coordination and AI-assisted pilot systems)",
+            "Unmatched (Orbital-deployable rotorcraft with next-gen directed energy weapons)",
+            "Experimental (Gravity-defying aerial platforms for sustained combat advantage)"
+          ],
+          "description": "The overall quality and technological level of the nation's attack helicopter fleet, ranging from outdated Cold War-era models to autonomous AI-controlled combat vehicles."
+        },
+        "transportAircraftQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (Limited transport capability, outdated WWII cargo planes)",
+            "Very Poor (Basic propeller-driven transport aircraft, low capacity)",
+            "Poor (First-generation jet transport, inefficient fuel use, minimal cargo payloads)",
+            "Mediocre (Mid-range transport planes with limited range and airlift capability)",
+            "Below Average (Standard military transport planes, basic aerial refueling capability)",
+            "Average (Advanced military cargo aircraft with heavy-lift capability and modular interiors)",
+            "Above Average (Stealth transport aircraft with ECM protection and low-detectability profile)",
+            "Good (Autonomous airlift drones with self-deploying logistics payloads)",
+            "Very Good (Hypersonic military transports with global rapid deployment capability)",
+            "Excellent (AI-assisted logistics aircraft with real-time battlefield adjustments)",
+            "Elite (Space-capable military transports with near-instant deployment ability)",
+            "Unmatched (Autonomous strategic mobility platforms, no logistical bottlenecks)",
+            "Experimental (Quantum-teleportation based logistics, eliminating airlift needs)"
+          ],
+          "description": "The overall quality and technological level of the nation's military transport aircraft, from outdated propeller-driven cargo planes to next-gen AI-controlled logistics platforms."
+        },
+        "electronicWarfareAircraftQuality": {
+          "type": "string",
+          "enum": [
+            "Obsolete (No dedicated electronic warfare capability)",
+            "Very Poor (Basic jamming capabilities, ineffective against modern threats)",
+            "Poor (Early Cold War jamming systems, analog countermeasures)",
+            "Mediocre (Limited radar jamming, weak cyber defense capabilities)",
+            "Below Average (Modern EW aircraft with basic cyber-attack functions)",
+            "Average (Full-spectrum EW capabilities with stealth integration)",
+            "Above Average (AI-assisted jamming and signal disruption systems)",
+            "Good (Multi-domain EW aircraft with full-spectrum electronic attack capabilities)",
+            "Very Good (Quantum cryptography-resistant communications and networked jamming systems)",
+            "Excellent (Fully autonomous EW aircraft capable of battlefield-wide interference)",
+            "Elite (Cyber-warfare aircraft capable of disabling entire defense grids remotely)",
+            "Unmatched (Orbital-based electronic warfare craft, complete information dominance)",
+            "Experimental (Direct neural-interface hacking capabilities, global AI electronic suppression)"
+          ],
+          "description": "The overall quality and technological level of the nation's electronic warfare aircraft, from outdated Cold War-era jammers to next-gen AI-driven battlefield dominance systems."
         }
-      }
+      },
+      "description": "Detailed breakdown of the nation's air forces."
     },
     "navalForces": {
       "type": "object",
       "properties": {
         "aircraftCarriers": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "destroyers": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "submarines": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "frigates": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "amphibiousAssaultShips": {
-          "type": "integer",
-          "minimum": 0
-        }
-      }
-    },
-    "specialForces": {
-      "type": "object",
-      "properties": {
-        "unitCount": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "notableOperations": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "cyberWarfare": {
-      "type": "object",
-      "properties": {
-        "capabilityLevel": {
           "type": "string",
           "enum": [
-            "Low",
-            "Moderate",
-            "Advanced",
-            "Elite"
-          ]
+            "None",
+            "Minimal (1)",
+            "Very Small (2)",
+            "Small (3-4)",
+            "Moderate-Low (5-6)",
+            "Moderate (7-8)",
+            "Moderate-High (9-10)",
+            "Large (11-12)",
+            "Very Large (13-15)",
+            "Massive (16-18)",
+            "Superpower-Level (19-20)",
+            "Unprecedented (21-25)",
+            "Global Domination (>25)"
+          ],
+          "description": "The number of aircraft carriers in active service."
         },
-        "offensiveCapabilities": {
-          "type": "boolean"
+        "destroyers": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-10)",
+            "Small (10-20)",
+            "Moderate-Low (20-40)",
+            "Moderate (40-60)",
+            "Moderate-High (60-80)",
+            "Large (80-100)",
+            "Very Large (100-120)",
+            "Massive (120-150)",
+            "Superpower-Level (150-200)",
+            "Unprecedented (>200)"
+          ],
+          "description": "The number of destroyers in active service."
         },
-        "defensiveCapabilities": {
-          "type": "boolean"
+        "frigates": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10)",
+            "Very Small (10-20)",
+            "Small (20-40)",
+            "Moderate-Low (40-60)",
+            "Moderate (60-80)",
+            "Moderate-High (80-100)",
+            "Large (100-120)",
+            "Very Large (120-150)",
+            "Massive (150-180)",
+            "Superpower-Level (180-200)",
+            "Unprecedented (>200)"
+          ],
+          "description": "The number of frigates in active service."
+        },
+        "submarines": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-10)",
+            "Small (10-20)",
+            "Moderate-Low (20-40)",
+            "Moderate (40-60)",
+            "Moderate-High (60-80)",
+            "Large (80-100)",
+            "Very Large (100-120)",
+            "Massive (120-150)",
+            "Superpower-Level (150-200)",
+            "Unprecedented (>200)"
+          ],
+          "description": "The number of submarines in active service."
+        },
+        "amphibiousAssaultShips": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (1)",
+            "Very Small (2-3)",
+            "Small (4-6)",
+            "Moderate-Low (7-10)",
+            "Moderate (11-15)",
+            "Moderate-High (16-20)",
+            "Large (21-25)",
+            "Very Large (26-30)",
+            "Massive (31-40)",
+            "Superpower-Level (41-50)",
+            "Unprecedented (>50)"
+          ],
+          "description": "The number of amphibious assault ships in active service."
+        },
+        "corvettes": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10)",
+            "Very Small (10-20)",
+            "Small (20-40)",
+            "Moderate-Low (40-60)",
+            "Moderate (60-80)",
+            "Moderate-High (80-100)",
+            "Large (100-120)",
+            "Very Large (120-150)",
+            "Massive (150-180)",
+            "Superpower-Level (180-200)",
+            "Unprecedented (>200)"
+          ],
+          "description": "The number of corvettes in active service."
+        },
+        "nuclearSubmarines": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<5)",
+            "Very Small (5-10)",
+            "Small (10-20)",
+            "Moderate-Low (20-40)",
+            "Moderate (40-60)",
+            "Moderate-High (60-80)",
+            "Large (80-100)",
+            "Very Large (100-120)",
+            "Massive (120-150)",
+            "Superpower-Level (150-200)",
+            "Unprecedented (>200)"
+          ],
+          "description": "The number of nuclear-powered submarines in active service."
+        },
+        "coastalPatrolVessels": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10)",
+            "Very Small (10-20)",
+            "Small (20-50)",
+            "Moderate-Low (50-75)",
+            "Moderate (75-100)",
+            "Moderate-High (100-150)",
+            "Large (150-200)",
+            "Very Large (200-250)",
+            "Massive (250-300)",
+            "Superpower-Level (300-350)",
+            "Unprecedented (>350)"
+          ],
+          "description": "The number of coastal patrol vessels in active service."
+        },
+        "navalForcesQuality": {
+          "type": "object",
+          "properties": {
+            "aircraftCarrierQuality": {
+              "type": "string",
+              "enum": [
+                "None (No aircraft carrier capability)",
+                "Obsolete (WWII-era carriers, incapable of supporting modern aircraft)",
+                "Very Poor (Early Cold War carriers, limited catapult launch capability)",
+                "Poor (Basic carriers with conventional takeoff and landing, no stealth integration)",
+                "Mediocre (Modernized carriers with early jet aircraft support, minimal network integration)",
+                "Below Average (Full-size carriers with advanced radar and electronic warfare systems)",
+                "Average (Nuclear-powered carriers with multirole aircraft, strong air wing capabilities)",
+                "Above Average (Stealth-enhanced carriers with integrated drone launch capability)",
+                "Good (AI-assisted carrier operations with real-time global force projection)",
+                "Very Good (Hypersonic aircraft-capable carriers with full-spectrum warfare integration)",
+                "Excellent (Fully autonomous drone carrier with integrated quantum communication systems)",
+                "Elite (Orbital-capable naval carriers capable of space-to-sea force projection)",
+                "Unmatched (Experimental carrier platforms utilizing energy-based weapons and AI warfighters)"
+              ],
+              "description": "The overall quality and technological level of the nation's aircraft carrier fleet, from outdated WWII carriers to next-gen autonomous naval aviation platforms."
+            },
+            "submarineQuality": {
+              "type": "string",
+              "enum": [
+                "None (No submarine capability)",
+                "Obsolete (WWII-era diesel-electric subs, no modern combat effectiveness)",
+                "Very Poor (Early Cold War-era subs, weak sonar and torpedo guidance)",
+                "Poor (Basic attack submarines with limited underwater endurance)",
+                "Mediocre (Early nuclear-powered submarines, basic stealth features)",
+                "Below Average (Modern attack submarines with improved sonar and missile systems)",
+                "Average (Stealth-enhanced submarines with long-range strike capabilities)",
+                "Above Average (AI-assisted submarines with unmanned underwater drones)",
+                "Good (Hypersonic missile-capable submarines with global deterrence ability)",
+                "Very Good (Full-spectrum cyber warfare and networked underwater warfare)",
+                "Excellent (Autonomous nuclear-powered submarines with deep-sea endurance)",
+                "Elite (Quantum-stealth submarines, undetectable by traditional sonar systems)",
+                "Unmatched (Experimental subs utilizing energy shielding and AI fleet coordination)"
+              ],
+              "description": "The overall quality and technological level of the nation's submarine fleet, from obsolete diesel-electric models to cutting-edge AI-controlled stealth submarines."
+            },
+            "destroyerQuality": {
+              "type": "string",
+              "enum": [
+                "None (No destroyer capability)",
+                "Obsolete (WWII-era destroyers with outdated weaponry)",
+                "Very Poor (Early Cold War destroyers, minimal air defense systems)",
+                "Poor (Basic guided-missile destroyers with early radar systems)",
+                "Mediocre (Upgraded Cold War destroyers with improved missile defense)",
+                "Below Average (Modern destroyers with AEGIS-like defense systems)",
+                "Average (Stealth-capable destroyers with advanced electronic warfare capabilities)",
+                "Above Average (AI-assisted missile guidance and integrated air-sea coordination)",
+                "Good (Hypersonic missile-capable destroyers with near-instant strike response)",
+                "Very Good (Autonomous surface combatants with drone fleet coordination)",
+                "Excellent (Energy-weapon-equipped destroyers with cyber warfare integration)",
+                "Elite (Quantum communication-enabled destroyers with real-time battlefield adaptation)",
+                "Unmatched (Experimental destroyers with railguns and plasma-based weapon systems)"
+              ],
+              "description": "The overall quality and technological level of the nation's destroyer fleet, from outdated WWII models to autonomous AI-driven missile warships."
+            },
+            "frigateQuality": {
+              "type": "string",
+              "enum": [
+                "None (No frigate capability)",
+                "Obsolete (WWII-era escort ships, completely outdated)",
+                "Very Poor (Cold War-era frigates with basic radar systems)",
+                "Poor (Basic guided-missile frigates with early anti-submarine warfare capabilities)",
+                "Mediocre (Upgraded Cold War frigates with moderate air defense capability)",
+                "Below Average (Modern frigates with advanced sonar and missile defense)",
+                "Average (Networked multi-role frigates with AI-enhanced fleet coordination)",
+                "Above Average (Hypersonic missile-capable frigates with stealth capabilities)",
+                "Good (Autonomous frigates with real-time drone integration)",
+                "Very Good (Cyber warfare-enabled frigates with advanced jamming systems)",
+                "Excellent (Directed-energy-weapon frigates with quantum battlefield networking)",
+                "Elite (AI-assisted frigates with self-repair capabilities and full-spectrum warfare)",
+                "Unmatched (Experimental quantum-frigates capable of next-gen naval warfare)"
+              ],
+              "description": "The overall quality and technological level of the nation's frigate fleet, from outdated WWII-era escort ships to next-gen stealth cyber warfare platforms."
+            },
+            "amphibiousAssaultShipQuality": {
+              "type": "string",
+              "enum": [
+                "None (No amphibious assault capability)",
+                "Obsolete (WWII-era landing craft, no modern deployment capabilities)",
+                "Very Poor (Cold War-era troop transports with limited offensive capability)",
+                "Poor (Basic amphibious assault ships with outdated landing systems)",
+                "Mediocre (Upgraded Cold War designs with helicopter and hovercraft deployment)",
+                "Below Average (Modernized amphibious ships with multirole capabilities)",
+                "Average (Fully networked assault ships with drone-assisted landing operations)",
+                "Above Average (Stealth-enhanced amphibious assault ships with AI support)",
+                "Good (High-speed deployment capability with real-time combat coordination)",
+                "Very Good (Autonomous amphibious carriers with hypersonic troop transport drones)",
+                "Excellent (AI-driven warships with real-time combat adaptation capabilities)",
+                "Elite (Orbital-capable amphibious platforms for planetary-scale force projection)",
+                "Unmatched (Experimental high-energy shielded assault ships with autonomous invasion forces)"
+              ],
+              "description": "The overall quality and technological level of the nation's amphibious assault ships, from outdated troop transports to next-gen AI-driven naval invasion platforms."
+            },
+            "coastalPatrolVesselQuality": {
+              "type": "string",
+              "enum": [
+                "None (No coastal defense capability)",
+                "Obsolete (Aging WWII-era patrol boats, no modern effectiveness)",
+                "Very Poor (Cold War-era coastal patrol vessels, weak defensive capabilities)",
+                "Poor (Basic missile boats with limited radar and electronic warfare systems)",
+                "Mediocre (Improved patrol vessels with AI-assisted navigation and reconnaissance)",
+                "Below Average (Modernized missile corvettes with drone coordination)",
+                "Average (Stealth-capable patrol ships with networked warfare capabilities)",
+                "Above Average (Hypersonic missile-equipped fast-attack craft with enhanced tracking systems)",
+                "Good (Autonomous sea drones capable of patrolling and engaging enemy vessels)",
+                "Very Good (Cyber-warfare-enabled ships capable of disrupting enemy naval communications)",
+                "Excellent (AI-controlled fast-attack ships with energy weapons and railgun capabilities)",
+                "Elite (Quantum-linked patrol ships with full situational awareness integration)",
+                "Unmatched (Experimental autonomous naval fleet with predictive AI engagement strategies)"
+              ],
+              "description": "The overall quality and technological level of the nation's coastal patrol vessels, from outdated WWII patrol boats to AI-controlled cyber-warfare corvettes."
+            }
+          },
+          "description": "Detailed breakdown of the quality and modernization of the nation's naval forces, including carriers, submarines, surface combatants, and amphibious assault capabilities."
         }
-      }
+      },
+      "description": "Detailed breakdown of the nation's naval forces."
     },
     "logistics": {
       "type": "object",
       "properties": {
         "fuelReserves": {
           "type": "string",
-          "pattern": "^[0-9]+ million barrels$"
+          "enum": [
+            "None",
+            "Negligible (<1M barrels)",
+            "Minimal (1M-5M barrels)",
+            "Very Low (5M-10M barrels)",
+            "Low (10M-25M barrels)",
+            "Moderate-Low (25M-50M barrels)",
+            "Moderate (50M-75M barrels)",
+            "Moderate-High (75M-100M barrels)",
+            "High (100M-150M barrels)",
+            "Very High (150M-250M barrels)",
+            "Extreme (250M-500M barrels)",
+            "Massive (500M-750M barrels)",
+            "Superpower-Level (750M-1B barrels)",
+            "Dominant (1B-1.25B barrels)",
+            "Unprecedented (1.25B-1.5B barrels)",
+            "Global Strategic Reserve (1.5B-2B barrels)",
+            "World Energy Titan (>2B barrels)"
+          ],
+          "description": "The total fuel reserves available for military and logistical operations, measured in barrels."
         },
         "munitionsStockpile": {
-          "type": "integer",
-          "minimum": 0
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (<10K tons)",
+            "Very Low (10K-25K tons)",
+            "Low (25K-50K tons)",
+            "Moderate-Low (50K-100K tons)",
+            "Moderate (100K-250K tons)",
+            "Moderate-High (250K-500K tons)",
+            "High (500K-750K tons)",
+            "Very High (750K-1M tons)",
+            "Extreme (1M-2M tons)",
+            "Massive (2M-3M tons)",
+            "Superpower-Level (3M-5M tons)",
+            "Unprecedented (5M-7M tons)",
+            "Dominant (7M-10M tons)",
+            "Global War Machine (>10M tons)"
+          ],
+          "description": "The amount of stored munitions, including ammunition, missiles, and explosives, measured in tons."
         },
         "supplyChainEfficiency": {
           "type": "string",
           "enum": [
-            "Poor",
-            "Average",
-            "Good",
-            "Excellent"
-          ]
-        }
-      }
-    },
-    "strategicThinking": {
-      "type": "object",
-      "properties": {
-        "militaryDoctrine": {
+            "Nonexistent (No Logistics Capability)",
+            "Critical Failure (Severe Supply Shortages, Constant Delays)",
+            "Extremely Poor (Frequent Disruptions, Poor Distribution Networks)",
+            "Very Poor (Unreliable Supply Chains, High Waste & Corruption)",
+            "Poor (Logistics Workable Only in Peacetime, Inconsistent Wartime Supply)",
+            "Mediocre (Basic Logistics Capability, Struggles with Large-Scale Deployments)",
+            "Average (Functional Supply Chains, Limited Wartime Scaling)",
+            "Good (Well-Managed Logistics, Can Support Long-Term Deployments)",
+            "Very Good (Highly Coordinated, Rapid Supply Deployment Capabilities)",
+            "Excellent (Near-Seamless Logistics, Real-Time Tracking & AI Optimization)",
+            "Elite (Global Logistics Network, Redundant Supply Routes, No Weak Links)",
+            "Unmatched (Unrivaled Supply Chain Dominance, Instant Resupply Capabilities)"
+          ],
+          "description": "The efficiency of the nation's logistics network, including resupply speed, redundancy, and wartime effectiveness."
+        },
+        "strategicTransportCapacity": {
           "type": "string",
           "enum": [
-            "Offensive Warfare",
-            "Defensive Warfare",
-            "Asymmetric Warfare",
-            "Guerrilla Warfare",
-            "Blitzkrieg",
-            "Naval Supremacy",
-            "Air Supremacy",
-            "Cyber Warfare Dominance",
-            "Nuclear Deterrence"
-          ]
-        },
-        "primaryStrategicObjectives": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Key military goals (e.g., 'Control of the South China Sea', 'Defend European Allies')"
-        },
-        "warPlanning": {
-          "type": "object",
-          "properties": {
-            "preemptiveStrikePolicy": {
-              "type": "boolean"
-            },
-            "defenseReadinessLevel": {
-              "type": "string",
-              "enum": [
-                "Low",
-                "Moderate",
-                "High",
-                "Full Mobilization"
-              ]
-            },
-            "alliancesForWar": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Nations expected to join in wartime"
-            }
-          }
-        },
-        "forceProjection": {
-          "type": "object",
-          "properties": {
-            "globalMilitaryBases": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Overseas bases for power projection"
-            },
-            "expeditionaryForces": {
-              "type": "boolean"
-            },
-            "rapidDeploymentCapacity": {
-              "type": "string",
-              "enum": [
-                "Low",
-                "Moderate",
-                "High",
-                "Elite"
-              ]
-            }
-          }
+            "None",
+            "Minimal (Only Local Transport Capabilities, No Airlift/Sealift)",
+            "Very Low (Limited Truck Fleets, Small Airlift Capacity)",
+            "Low (Basic Military Transport Capabilities, No Heavy Airlift)",
+            "Moderate-Low (Capable of Small Regional Deployments)",
+            "Moderate (Can Sustain Long-Term Regional Operations)",
+            "Moderate-High (Can Deploy Medium-Sized Forces Overseas)",
+            "High (Capable of Large-Scale Deployments, Moderate Sealift & Airlift)",
+            "Very High (Able to Transport Full Divisions Overseas Rapidly)",
+            "Extreme (Can Move Entire Army Corps with Multiple Front Logistics)",
+            "Massive (Near-Global Deployment Capabilities, High-Speed Airlift & Sealift)",
+            "Superpower-Level (Instant Strategic Transport for Multi-Theater Operations)",
+            "Unprecedented (Full Global Mobility, No Logistical Limits on Deployment)"
+          ],
+          "description": "The nation's ability to transport and deploy forces strategically, including airlift, sealift, and logistics infrastructure."
         }
       },
-      "required": [
-        "militaryDoctrine",
-        "primaryStrategicObjectives",
-        "warPlanning",
-        "forceProjection"
-      ]
+      "description": "Detailed breakdown of the nation's military logistics capabilities."
     }
-  },
-  "required": [
-    "activePersonnel",
-    "reservePersonnel",
-    "paramilitaryPersonnel",
-    "defenseBudget",
-    "nuclearCapability",
-    "landForces",
-    "airForces",
-    "navalForces",
-    "specialForces",
-    "cyberWarfare",
-    "logistics",
-    "strategicThinking"
-  ]
+  }
 }

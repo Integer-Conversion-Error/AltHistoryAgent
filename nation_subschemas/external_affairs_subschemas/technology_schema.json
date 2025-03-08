@@ -4,31 +4,338 @@
   "type": "object",
   "properties": {
     "globalTechRanking": {
-      "type": "integer",
-      "minimum": 1
+      "type": "string",
+      "enum": [
+        "Undeveloped (No significant technological infrastructure, reliance on imported tech)",
+        "Basic (Minimal domestic research, limited industrial applications)",
+        "Emerging (Developing domestic tech sector, basic R&D capabilities)",
+        "Moderate (Growing tech industry, some self-sufficiency in innovation)",
+        "Developing Power (Recognized in select technological fields, limited global influence)",
+        "Advanced (Strong R&D sector, globally competitive in multiple fields)",
+        "High-Tech Nation (Leading innovation in key industries, robust domestic capabilities)",
+        "Cutting-Edge (Dominates in various high-tech industries, major global influence)",
+        "Tech Superpower (Sets global standards, pioneer in frontier technologies)",
+        "Unmatched (Unrivaled technology leadership, shaping the next technological era)"
+      ],
+      "description": "The qualitative ranking of the nation's technology sector, from undeveloped to world-leading innovation."
+    },
+    "globalTechTier": {
+      "type": "string",
+      "enum": [
+        "Undeveloped",
+        "Basic",
+        "Emerging",
+        "Developing",
+        "Intermediate",
+        "Advanced",
+        "Highly Advanced",
+        "Cutting-Edge",
+        "World-Class",
+        "Unrivaled"
+      ],
+      "description": "The qualitative tier of the nation's technological capabilities, reflecting its global competitiveness."
     },
     "R&DInvestment": {
       "type": "string",
-      "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
+      "enum": [
+        "Negligible (No Dedicated Research Funding)",
+        "Minimal (<$100M, Limited to Basic Research & Academic Grants)",
+        "Very Low ($100M-$500M, Small-Scale Industry & University Collaborations)",
+        "Low ($500M-$1B, Early Development in Key Sectors, Some Government Support)",
+        "Moderate-Low ($1B-$2.5B, Targeted Investment in Select Industries)",
+        "Moderate ($2.5B-$5B, National Research Programs & Emerging Technologies)",
+        "Moderate-High ($5B-$10B, Expanding Industrial R&D, Defense & Civilian Applications)",
+        "High ($10B-$20B, Advanced Research Across Multiple Sectors, Strong Private Investment)",
+        "Very High ($20B-$50B, Cutting-Edge Research, Government & Corporate Partnerships)",
+        "Extreme ($50B-$100B, Global R&D Leader, Advanced AI, Space, & Quantum Research)",
+        "Ultra-Extreme ($100B-$250B, Pioneering Scientific Breakthroughs, Full-Spectrum Research)",
+        "Dominant ($250B-$500B, Global Technological Supremacy, Next-Gen Innovations)",
+        "Unrivaled (>$500B, Hyper-Advanced R&D, Space Colonization, Post-Silicon Computing)"
+      ],
+      "description": "The nation's investment in research and development, covering fundamental research, industry partnerships, and cutting-edge technological advancements."
     },
     "majorTechnologicalAdvancements": {
       "type": "array",
       "items": {
-        "type": "string"
-      }
+        "type": "string",
+        "enum": [
+          "Consumer Electronics",
+          "Semiconductor Breakthrough",
+          "Advanced Computing",
+          "Space Exploration Milestone",
+          "Renewable Energy Innovation",
+          "Biotech Breakthrough",
+          "Cybersecurity Advancement",
+          "Quantum Computing",
+          "Robotics Innovation",
+          "Telecommunications Upgrade",
+          "Nuclear Technology",
+          "Other"
+        ]
+      },
+      "description": "Key technological breakthroughs achieved."
     },
     "spaceProgram": {
-      "type": "boolean"
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "Active",
+            "Inactive"
+          ],
+          "description": "Whether the space program is currently active."
+        },
+        "budget": {
+          "type": "string",
+          "enum": [
+            "Minimal",
+            "Low",
+            "Moderate",
+            "High",
+            "Very High"
+          ],
+          "description": "The relative level of funding allocated to the space program."
+        },
+        "launchCapability": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Suborbital Launch Only",
+            "Low Earth Orbit (LEO) Capable",
+            "Geostationary Orbit (GEO) Capable",
+            "Interplanetary Capable",
+            "Manned Spaceflight Capable"
+          ],
+          "description": "The nation's ability to launch payloads and humans into space."
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "First Rocket Test",
+              "First Successful Satellite Launch",
+              "First Human Spaceflight",
+              "First Space Station Deployment",
+              "First Lunar Landing",
+              "First Mars Mission",
+              "First Deep Space Probe",
+              "Space Tourism Capability",
+              "Permanent Lunar Base",
+              "Interplanetary Colonization Efforts",
+              "Other"
+            ]
+          },
+          "description": "Key milestones achieved by the space program."
+        },
+        "spaceWeaponization": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Reconnaissance Satellites Only",
+            "Basic Military Satellites",
+            "Anti-Satellite (ASAT) Capabilities",
+            "Orbital Strike Weapons",
+            "Extensive Space-Based Military Infrastructure"
+          ],
+          "description": "The nation's level of military presence in space."
+        },
+        "internationalCollaboration": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Limited",
+            "Extensive",
+            "Global"
+          ],
+          "description": "The extent of international partnerships in the space program."
+        }
+      },
+      "description": "Detailed information about the nation's space program. This field is nullable if no space program exists."
     },
-    "AIIntegration": {
-      "type": "boolean"
+    "cybersecurityCapability": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Basic",
+        "Moderate",
+        "Advanced",
+        "Elite"
+      ],
+      "description": "The level of cybersecurity capabilities."
+    },
+    "R&DCollaboration": {
+      "type": "string",
+      "enum": [
+        "Isolated",
+        "National",
+        "Regional",
+        "International",
+        "Global"
+      ],
+      "description": "The extent of research and development collaboration."
+    },
+    "patentOutput": {
+      "type": "string",
+      "enum": [
+        "Minimal",
+        "Low",
+        "Moderate",
+        "High",
+        "Very High"
+      ],
+      "description": "The volume of patent output reflecting innovation."
+    },
+    "computingTechnology": {
+      "type": "object",
+      "properties": {
+        "computingPower": {
+          "type": "string",
+          "enum": [
+            "Obsolete (<1 MFLOP)",
+            "Extremely Low (1-10 MFLOPs)",
+            "Very Low (10-100 MFLOPs)",
+            "Low (100 MFLOPs - 1 GFLOP)",
+            "Moderate (1-10 GFLOPs)",
+            "High (10-100 GFLOPs)",
+            "Very High (100 GFLOPs - 1 TFLOP)",
+            "Cutting-Edge (1-10 TFLOPs)",
+            "Supercomputing Entry-Level (10-100 TFLOPs)",
+            "High-End Supercomputing (100 TFLOPs - 1 PFLOP)",
+            "Top-Tier Supercomputing (1-10 PFLOPs)",
+            "Exascale Computing (10-100 PFLOPs)",
+            "Beyond Exascale (>100 PFLOPs)"
+          ],
+          "description": "The general computing power available within the nation, measured in floating-point operations per second (FLOPs)."
+        },
+        "semiconductorIndustry": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Fully Dependent on Imports (No Domestic Industry)",
+            "Basic Research Stage (Vacuum Tube & Relay-Based Computing)",
+            "Early Semiconductor Research (First Transistors & Germanium Chips)",
+            "Pioneering IC Development (Early Integrated Circuits & Small-Scale Integration)",
+            "Minimal Domestic Manufacturing (Basic IC Assembly & Low-Complexity Logic Gates)",
+            "Basic Domestic Chip Production (Early CMOS & NMOS Logic, >2500nm)",
+            "Emerging Semiconductor Industry (Basic Microcontrollers, 1000-2500nm)",
+            "Developing Semiconductor Industry (First DRAM & Microprocessors, 500-1000nm)",
+            "Mid-Tier Semiconductor Industry (250-500nm, Consumer Electronics & Early GPUs)",
+            "Established Semiconductor Industry (130-250nm, Mobile Chips & DRAM)",
+            "Advanced Chip Manufacturing (90-130nm, Early Multi-Core Processors & FPGAs)",
+            "Highly Competitive Semiconductor Industry (45-90nm, Gaming Consoles & AI Coprocessors)",
+            "Cutting-Edge Semiconductor Industry (22-45nm, High-Efficiency CPUs & GPUs)",
+            "State-of-the-Art Semiconductor Industry (10-22nm, Cloud Computing & AI Optimization)",
+            "Leading-Edge Semiconductor Industry (7-10nm, Mobile & Enterprise AI Chips)",
+            "World-Class Semiconductor Industry (5-7nm, Advanced Neural Processors & HPC)",
+            "Dominant Semiconductor Power (3-5nm, Quantum-Assisted AI & Edge Computing)",
+            "Next-Gen Semiconductor Leader (1-3nm, Carbon Nanotubes & Neuromorphic Computing)",
+            "Frontier Semiconductor Research (<1nm, Post-Silicon & Molecular Computing)"
+          ],
+          "description": "The nation's level of semiconductor industry development, spanning from early vacuum tube research to cutting-edge nanoscale manufacturing."
+        },
+        "quantumComputingCapability": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Basic Theoretical Research",
+            "Early Experimental Prototypes",
+            "Small-Scale Quantum Processors (<50 Qubits)",
+            "Moderate Quantum Computing (50-500 Qubits)",
+            "Advanced Quantum Computing (500-5000 Qubits)",
+            "World-Leading Quantum Research (>5000 Qubits, Practical Applications)"
+          ],
+          "description": "The nation's status in quantum computing development."
+        },
+        "AIResearchLevel": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Basic AI Models (Rule-Based Systems)",
+            "Early Machine Learning (Simple Neural Networks)",
+            "Moderate AI Development (Deep Learning, Limited Application)",
+            "Advanced AI Applications (Multi-Modal AI, Autonomous Systems)",
+            "Leading AI Power (Artificial General Intelligence Research)"
+          ],
+          "description": "The nation's research capabilities in artificial intelligence."
+        },
+        "networkInfrastructure": {
+          "type": "string",
+          "enum": [
+            "Obsolete (Pre-2G)",
+            "Very Basic (2G, Dial-Up Internet)",
+            "Low (3G Mobile, Limited Broadband)",
+            "Moderate (4G LTE, Fiber Rollout in Major Cities)",
+            "Advanced (5G Deployment Nationwide)",
+            "Next-Gen (Beyond 5G, Experimental Networks, Quantum Communication)"
+          ],
+          "description": "The advancement level of the nation's network infrastructure."
+        },
+        "supercomputerRanking": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal Presence (Only Basic Research Clusters)",
+            "Top 500 Supercomputers",
+            "Top 100 Supercomputers",
+            "Top 50 Supercomputers",
+            "Top 10 Supercomputers",
+            "World's Fastest Supercomputer"
+          ],
+          "description": "The nation's ranking in terms of supercomputing power."
+        },
+        "cybersecurityCapability": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (Basic Network Protection, No National Cybersecurity Agency)",
+            "Low (Firewalls, Some Cyber Defense Programs)",
+            "Moderate (Government-Led Cybersecurity Initiatives, Basic Threat Monitoring)",
+            "Advanced (AI-Driven Cyber Threat Detection, Cyber Warfare Capabilities)",
+            "Elite (Global Cyber Espionage, Advanced Offensive & Defensive Cyber Operations)"
+          ],
+          "description": "The nation's level of cybersecurity capabilities."
+        },
+        "dataCenterInfrastructure": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Minimal (Few Localized Servers, No National Data Centers)",
+            "Low (Basic Government Data Centers, Reliance on Foreign Hosting)",
+            "Moderate (National Data Centers, Cloud Computing Capabilities)",
+            "Advanced (High-Performance Data Centers, Edge Computing Infrastructure)",
+            "Elite (Massive Cloud Infrastructure, Hyperscale Data Centers, AI Data Clusters)"
+          ],
+          "description": "The nation's data storage and cloud computing capabilities."
+        },
+        "roboticsIndustry": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Basic (Limited Automation in Manufacturing)",
+            "Developing (Widespread Industrial Robotics)",
+            "Advanced (Autonomous Vehicles, AI-Powered Robotics)",
+            "Cutting-Edge (Humanoid Robots, Military Robotics, AI-Driven Automation)"
+          ],
+          "description": "The nation's robotics capabilities and industry presence."
+        }
+      },
+      "description": "Detailed breakdown of the nation's computing technology capabilities."
     }
   },
   "required": [
     "globalTechRanking",
+    "globalTechTier",
     "R&DInvestment",
     "majorTechnologicalAdvancements",
     "spaceProgram",
-    "AIIntegration"
+    "cybersecurityCapability",
+    "R&DCollaboration",
+    "patentOutput",
+    "computingTechnology"
   ]
 }
