@@ -3,3 +3,5 @@ config.json
 generated_object.json
 /generated_nations
 /generated_nations_Early 1939
+*pyc
+

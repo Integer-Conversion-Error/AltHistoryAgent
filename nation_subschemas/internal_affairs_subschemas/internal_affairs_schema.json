@@ -576,28 +576,39 @@
                     "technologyLevel": {
                         "type": "string",
                         "enum": [
-                            "None",
-                            "Basic Landline",
-                            "2G Mobile",
-                            "3G Mobile",
-                            "4G LTE",
-                            "5G Networks",
-                            "Satellite-Based",
-                            "Quantum Communications"
+                            "None (No structured communication infrastructure)",
+                            "Basic Telegraph System (Manual switchboards, wired Morse code transmission)",
+                            "Basic Landline (Rotary dial phones, operator-assisted calls)",
+                            "Early Radio Broadcast (Shortwave and AM radio, limited two-way communication)",
+                            "Advanced Radio Networks (Encrypted military radio, early frequency-hopping technology)",
+                            "Early Microwave Relay (WWII-era military radar and radio relay stations)",
+                            "Cold War-Era Landline (Automated telephone switching, copper wire infrastructure)",
+                            "Basic Mobile Telephony (Analog cellular networks, early radio car phones)",
+                            "2G Mobile (Digital voice transmission, basic SMS capabilities)",
+                            "3G Mobile (Early internet browsing, moderate data speeds, voice calling)",
+                            "4G LTE (High-speed mobile broadband, advanced wireless services)",
+                            "5G Networks (Ultra-fast internet speeds, low latency, IoT integration)",
+                            "Satellite-Based Communication (Global satellite phone networks, remote internet access)",
+                            "Quantum Communications (Theoretically unbreakable encryption, quantum entanglement data transfer)"
                         ],
-                        "description": "The highest level of communication technology available in the country."
+                        "description": "The highest level of communication technology available in the country, ranging from early telegraphy to advanced quantum communication."
                     },
                     "reach": {
                         "type": "string",
                         "enum": [
-                            "None",
-                            "Limited to Major Cities",
-                            "Available in Urban Areas",
-                            "Widespread but Uneven",
-                            "Nationwide Coverage",
-                            "Extensive Global Reach"
+                            "None (No functional communication infrastructure)",
+                            "Limited to Military and Government (Restricted, high-level use only)",
+                            "Major Cities Only (Urban telephone and radio networks, rural areas lacking service)",
+                            "Urban and Industrial Centers (Expanding coverage, but limited to economic hubs)",
+                            "Widespread but Uneven (Decentralized telephone networks, some isolated regions lacking service)",
+                            "Nationwide Landline Coverage (Copper wire telephone systems spanning most of the country)",
+                            "Early Wireless Networks (Limited radio and early mobile coverage in select areas)",
+                            "Expanding Mobile Network (Broad but inconsistent cellular coverage, dependent on technology)",
+                            "Near-Universal Coverage (High-density telecommunications infrastructure in most regions)",
+                            "Global Integration (International fiber-optic networks, satellite-linked global communication)",
+                            "Total Connectivity (Near-instant, ultra-secure global communication infrastructure, including remote regions)"
                         ],
-                        "description": "The overall accessibility and reach of communication technology."
+                        "description": "The overall accessibility and reach of communication technology, from localized urban networks to full national and global coverage."
                     }
                 },
                 "required": [

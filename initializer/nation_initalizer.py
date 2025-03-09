@@ -80,7 +80,7 @@ def generate_subfield_prompt(country_name: str, time_period: str, subfield: str)
     """
     return f"""
     Write a concise paragraph about the {subfield} of {country_name} during the {time_period}.
-    Please include historically plausible or alternate-historical details (1970s era),
+    Please include historically plausible or alternate-historical details,
     focusing on how the {subfield} works, its key features, and any notable aspects relevant 
     to that era. 
     
@@ -152,7 +152,7 @@ def fill_nation_data_with_paragraphs(model, country_name: str, time_period: str)
 ###############################################################################
 #                         4) Putting It All Together                          #
 ###############################################################################
-
+## INCREASE SIZE OF INTERNAL AFFAIRS SCHEMA, MAKE IT LIKE 2000 LINES
 
 def main():
     model = configure_genai()
@@ -168,7 +168,7 @@ def main():
     ]
     
     # Example countries and time period
-    countries = ["Germany", "Soviet Russia", "United States of America", "United Kingdom", "France", "Spain", "Republic of China", "Communist China", "Japan","Finland","Hungary"]
+    countries = ["Germany", "Soviet Russia", "United States of America", "Japan"]#, "United Kingdom", "France", "Spain", "Republic of China", "Communist China", "Japan","Finland","Hungary"]
     time_period = "Early 1939"
     
     # Store all nations' data

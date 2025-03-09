@@ -344,111 +344,133 @@
             "tankQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (Pre-WWII light tanks, no modern battlefield value)",
-                "Very Poor (WWII-era tanks, vulnerable to modern anti-tank weapons)",
-                "Poor (Early Cold War designs, limited firepower and armor)",
-                "Mediocre (1950s-60s tanks, weak against modern threats)",
-                "Below Average (Basic composite armor, rudimentary fire control)",
-                "Average (1980s-era MBTs, early thermal optics, ERA armor)",
-                "Above Average (1990s-era MBTs, improved sensors and targeting)",
-                "Good (Modern MBTs with active protection systems and advanced optics)",
-                "Very Good (Next-generation tanks with modular armor, digital networking)",
-                "Excellent (AI-assisted fire control, high-velocity APFSDS rounds)",
-                "Elite (Hybrid-powered MBTs with drone coordination and stealth features)",
-                "Unmatched (Autonomous tanks with AI-driven targeting and adaptive armor)",
-                "Experimental (Electromagnetic railguns, advanced energy shielding, fully autonomous combat units)"
+                "Obsolete (Pre-WWI armored cars and early light tanks, no modern battlefield value)",
+                "Very Poor (WWI-era tanks with slow speed, thin armor, and unreliable engines)",
+                "Poor (Interwar light tanks with limited firepower, weak against anti-tank rifles)",
+                "Mediocre (Early WWII tanks with basic armor, poor mobility, and weak main guns)",
+                "Below Average (Mid-WWII tanks with increased armor and firepower but still outdated tactics)",
+                "Average (Late-WWII medium tanks with reliable engines, improved armor, and effective main guns)",
+                "Above Average (Heavy tanks with superior firepower and armor but reduced mobility and reliability)",
+                "Good (Early Cold War tanks featuring sloped armor, basic rangefinders, and improved suspension)",
+                "Very Good (First-generation MBTs with stabilized main guns, infrared sights, and HEAT shells)",
+                "Excellent (Second-generation MBTs integrating composite armor, better fire control systems, and night vision capabilities)",
+                "Elite (Third-generation MBTs featuring advanced composite armor, smoothbore cannons, and digital fire control)",
+                "Unmatched (Fourth-generation MBTs with active protection systems, hunter-killer targeting, and multi-role networking capabilities)",
+                "Experimental (Next-gen hybrid MBTs with stealth coatings, AI-assisted targeting, and adaptive camouflage)",
+                "Near-Futuristic (MBTs integrating electromagnetic armor, hypersonic projectiles, and swarm drone coordination)",
+                "Unparalleled (Autonomous MBTs using full AI control, railgun technology, and battlefield awareness integration)",
+                "Theoretical (Tanks with directed energy weapons, quantum AI-assisted combat systems, and self-repairing nanomaterials)"
               ],
-              "description": "The overall quality and technological level of the nation's main battle tanks, from outdated WWII designs to cutting-edge autonomous MBTs."
+              "description": "The overall quality and technological level of the nation's tanks, ranging from early armored vehicles to next-generation autonomous combat systems."
             },
             "armoredVehicleQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (WWII half-tracks, basic troop carriers)",
-                "Very Poor (Cold War-era, unprotected against modern threats)",
-                "Poor (Basic APCs with little armor and no advanced electronics)",
-                "Mediocre (First-gen IFVs with moderate firepower and armor)",
-                "Average (Modern APCs and IFVs with basic APS and digital systems)",
-                "Good (Heavily armed IFVs with modular armor and networked capabilities)",
-                "Very Good (Hybrid-powered APCs with enhanced automation and survivability)",
-                "Elite (AI-assisted IFVs with integrated drone control and adaptive armor)",
-                "Unmatched (Autonomous armored vehicles with energy weapons and full AI support)"
+                "Obsolete (WWI-era armored cars with thin armor and minimal armament, highly vulnerable to small arms fire)",
+                "Very Poor (Interwar armored personnel carriers with open-top designs and no mine protection, easily penetrable)",
+                "Poor (Early WWII-era half-tracks and light APCs, basic armor, weak off-road mobility, no modern defensive systems)",
+                "Mediocre (Late WWII APCs with improved armor but no modern firepower or active protection systems)",
+                "Below Average (Post-war APCs with some mine resistance and limited amphibious capability, lacking advanced targeting systems)",
+                "Average (Cold War-era IFVs with stabilized cannons, night vision, and basic digital fire control systems)",
+                "Above Average (Modern APCs featuring modular armor, networked fire control, and basic active protection systems)",
+                "Good (Next-generation IFVs with advanced APS, AI-assisted navigation, and adaptive threat detection)",
+                "Very Good (Hybrid-powered APCs with autonomous driving, networked drone integration, and real-time threat assessment)",
+                "Excellent (Fully autonomous IFVs with AI-assisted fire control, stealth coatings, and countermeasures against top-attack munitions)",
+                "Elite (Energy-resistant infantry carriers with predictive battlefield awareness and adaptive armor systems)",
+                "Unmatched (Autonomous IFVs with railgun turrets, AI-driven command systems, and modular drone swarm deployment)",
+                "Theoretical (Fully energy-shielded armored platforms with neural-linked AI processing, self-repairing nanotechnology, and quantum-enhanced situational awareness)"
               ],
-              "description": "The quality of the nation's armored personnel carriers and infantry fighting vehicles."
+              "description": "The quality and technological level of the nation's armored personnel carriers and infantry fighting vehicles, ranging from outdated WWI-era designs to advanced autonomous combat vehicles."
             },
             "artilleryQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (Manual targeting, WWII-era howitzers)",
-                "Very Poor (Outdated Cold War artillery with limited range)",
-                "Poor (Basic self-propelled artillery, no guided munitions)",
-                "Mediocre (Modernized systems with basic GPS guidance)",
-                "Average (Digital fire control, extended-range shells)",
-                "Good (Fully networked artillery with counter-battery systems)",
-                "Very Good (Autonomous fire control, hypersonic artillery shells)",
-                "Elite (Laser-guided munitions, AI-assisted targeting)",
-                "Unmatched (Electromagnetic railguns, drone-synchronized artillery)"
+                "Obsolete (WWI-era field guns, slow-firing, manually aimed, minimal mobility)",
+                "Very Poor (Early interwar towed artillery, limited firepower and range)",
+                "Poor (Basic WWII-era howitzers, indirect fire capability but slow reload times)",
+                "Mediocre (Late WWII artillery with improved recoil systems and rangefinders)",
+                "Below Average (Early Cold War self-propelled guns with moderate accuracy)",
+                "Average (Cold War-era towed and SPGs with basic digital fire control systems)",
+                "Above Average (Modern artillery with extended-range munitions and GPS-guided shells)",
+                "Good (Networked artillery with advanced counter-battery radar and automated loading)",
+                "Very Good (Autonomous fire control systems, precision-guided hypersonic shells)",
+                "Excellent (Railgun artillery with electromagnetic acceleration, AI-targeting integration)",
+                "Elite (Orbital artillery platforms capable of near-instantaneous kinetic strikes)",
+                "Unmatched (AI-coordinated, quantum-targeting systems with planetary-scale precision)"
               ],
-              "description": "The quality of the nation's self-propelled, towed, and rocket artillery."
+              "description": "The quality of the nation's self-propelled, towed, and rocket artillery, ranging from WWI-era slow-firing cannons to futuristic AI-directed energy systems."
             },
             "antiTankWeaponQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (WWII bazookas, ineffective against modern armor)",
-                "Very Poor (Cold War-era ATGMs with poor guidance systems)",
-                "Poor (Basic RPGs, no advanced target tracking)",
-                "Mediocre (First-gen ATGMs with moderate armor penetration)",
-                "Average (Fire-and-forget ATGMs with tandem warheads)",
-                "Good (Top-attack missiles, networked targeting)",
-                "Very Good (AI-assisted missiles, extreme range capability)",
-                "Elite (Autonomous hunter-killer AT systems, hypersonic missiles)",
-                "Unmatched (Electromagnetic launchers, adaptive AI targeting)"
+                "Obsolete (Rifle-caliber anti-tank rounds, ineffective against armor)",
+                "Very Poor (Early WWII anti-tank rifles and light cannons, only effective against thin armor)",
+                "Poor (Early HEAT-based weapons like Panzerfausts, effective at close range only)",
+                "Mediocre (First-generation recoilless rifles, limited guided capability)",
+                "Below Average (Cold War-era ATGMs with wire guidance, moderate penetration)",
+                "Average (Modern fire-and-forget missiles with tandem warheads and AI-assisted targeting)",
+                "Above Average (Advanced top-attack guided missiles with high-speed tracking systems)",
+                "Good (AI-integrated smart missiles with swarming target engagement)",
+                "Very Good (Hypersonic anti-tank systems with electromagnetic penetration)",
+                "Excellent (Self-learning hunter-killer AT drones capable of independent combat)",
+                "Elite (AI-driven adaptive weapons capable of neutralizing active protection systems)",
+                "Unmatched (Railgun-based anti-armor systems capable of penetrating any known armor)"
               ],
-              "description": "The quality of infantry and vehicle-mounted anti-tank weapons."
+              "description": "The quality of infantry and vehicle-mounted anti-tank weapons, from ineffective rifle-caliber rounds to AI-driven electromagnetic warfare."
             },
             "airDefenseQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (Manual anti-aircraft guns, ineffective vs. modern threats)",
-                "Very Poor (Cold War-era SAMs, outdated radar tracking)",
-                "Poor (Basic MANPADS, limited engagement range)",
-                "Mediocre (Short-range SAMs, early radar-guided defenses)",
-                "Average (Modern SAMs with networked radar tracking)",
-                "Good (Integrated air defense systems with countermeasure resistance)",
-                "Very Good (AI-controlled air defense with multi-layered protection)",
-                "Elite (Directed energy air defenses, hypersonic interception)",
-                "Unmatched (Orbital-based air defense, full-theater AI integration)"
+                "Obsolete (WWI-era anti-aircraft machine guns, no radar integration)",
+                "Very Poor (Interwar-era flak cannons, ineffective against fast-moving aircraft)",
+                "Poor (Early WWII anti-air artillery, radar-guided but unreliable against jets)",
+                "Mediocre (Post-WWII surface-to-air missiles with limited targeting capability)",
+                "Below Average (Early Cold War SAMs with moderate tracking, vulnerable to countermeasures)",
+                "Average (Networked missile defense systems with multi-layered targeting)",
+                "Above Average (AI-assisted air defense with drone integration and electronic warfare resistance)",
+                "Good (Directed energy weapons capable of missile interception)",
+                "Very Good (Hypersonic-capable missile defense with automated counter-drone systems)",
+                "Excellent (Quantum computing-based target prediction, full aerial dominance capability)",
+                "Elite (Orbital-based air defense, capable of space-to-earth target engagement)",
+                "Unmatched (Autonomous AI-coordinated global missile defense network)"
               ],
-              "description": "The effectiveness and modernization of the nation's air defense systems."
+              "description": "The effectiveness and modernization of the nation's air defense systems, from manually operated flak cannons to AI-driven planetary defense grids."
             },
             "infantryEquipmentQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (Bolt-action rifles, WWII-era gear)",
-                "Very Poor (Cold War surplus rifles, no body armor)",
-                "Poor (Basic assault rifles, minimal protection)",
-                "Mediocre (Standardized modern rifles, kevlar vests)",
-                "Average (Advanced optics, composite armor vests)",
-                "Good (Integrated communication and night vision systems)",
-                "Very Good (Smart rifles, exoskeleton-assisted infantry)",
-                "Elite (AI-assisted targeting, adaptive camouflage systems)",
-                "Unmatched (Autonomous robotic infantry, directed-energy weapons)"
+                "Obsolete (Bolt-action rifles with no body armor, early interwar equipment)",
+                "Very Poor (Basic WWII semi-automatic rifles, minimal battlefield communication)",
+                "Poor (WWII-era assault rifles, no night vision, and unstandardized body armor)",
+                "Mediocre (Early Cold War small arms, steel helmets, and basic protective gear)",
+                "Below Average (Standardized modern rifles, lightweight armor, and battlefield radios)",
+                "Average (Ballistic composite armor, modular small arms with red dot optics)",
+                "Above Average (Advanced infantry networking with HUD integration and electronic optics)",
+                "Good (Drone-assisted infantry, battlefield-wide coordination, and biometric monitoring)",
+                "Very Good (Exoskeleton-enhanced soldiers with AI-supported targeting and command systems)",
+                "Excellent (Integrated adaptive camouflage, hypersonic smart projectiles)",
+                "Elite (Autonomous robotic infantry, next-gen AI tactical warfare systems)",
+                "Unmatched (Neural-linked soldiers with directed-energy weapons and self-repairing armor)"
               ],
-              "description": "The quality of infantry small arms, protective gear, and battlefield awareness equipment."
+              "description": "The quality of infantry small arms, protective gear, and battlefield awareness, from bolt-action rifles to AI-driven warfare."
             },
             "logisticsVehicleQuality": {
               "type": "string",
               "enum": [
-                "Obsolete (Aging cargo trucks, no automation)",
-                "Very Poor (Basic transport vehicles, inefficient fuel usage)",
-                "Poor (Standard military trucks, minimal automation)",
-                "Mediocre (GPS-assisted logistics, fuel-efficient transport)",
-                "Average (Automated convoy systems, drone resupply capability)",
-                "Good (Integrated battlefield logistics, real-time tracking)",
-                "Very Good (AI-managed supply chains, robotic transport units)",
-                "Elite (Self-repairing vehicles, autonomous logistics convoys)",
-                "Unmatched (Quantum computing-driven logistics, teleportation-like rapid deployment)"
+                "Obsolete (WWI-style supply trains, limited mechanized logistics)",
+                "Very Poor (Interwar-era trucks with poor fuel efficiency, weak off-road performance)",
+                "Poor (WWII-era transport vehicles, no battlefield automation, highly vulnerable)",
+                "Mediocre (Cold War-era transport systems with some air mobility, moderate supply chain efficiency)",
+                "Below Average (Basic GPS-assisted supply chains, limited combat adaptability)",
+                "Average (AI-assisted logistics with battlefield resupply drones and automated convoys)",
+                "Above Average (Fully autonomous supply vehicles, anti-ambush countermeasures)",
+                "Good (AI-controlled resupply with predictive demand analysis and automated fuel management)",
+                "Very Good (Self-repairing transport systems with near-zero human oversight)",
+                "Excellent (Hypersonic cargo transport, total battlefield adaptability)",
+                "Elite (Autonomous teleportation-based supply chains, complete logistical dominance)",
+                "Unmatched (Quantum-driven logistics, real-time self-adjusting battlefield supply networks)"
               ],
-              "description": "The modernization level of the nation's military logistics and transport vehicles."
+              "description": "The modernization level of the nation's military logistics and transport vehicles, from outdated WWI-style supply chains to fully automated battlefield logistics."
             }
           },
           "description": "Detailed breakdown of the quality and modernization of the nation's land forces and equipment."
@@ -642,97 +664,97 @@
         "fighterJetQuality": {
           "type": "string",
           "enum": [
-            "Obsolete (Pre-WWII biplanes, no combat value)",
-            "Very Poor (WWII propeller-driven fighters, completely outdated)",
-            "Poor (First-generation jet fighters, no advanced radar or missiles)",
-            "Mediocre (Early Cold War jets, subsonic speeds, limited weapon systems)",
-            "Below Average (Early supersonic jets, basic radar, unguided missiles)",
-            "Average (1970s-80s era fighters, semi-active radar-guided missiles, basic ECM)",
-            "Above Average (4th-generation fighters with modern radars, maneuverability enhancements)",
-            "Good (Advanced 4.5-generation fighters with AESA radars, stealth features)",
-            "Very Good (5th-generation stealth fighters with sensor fusion, supercruise capability)",
-            "Excellent (Next-generation air superiority fighters with integrated AI decision-making)",
-            "Elite (Autonomous UCAVs with hypersonic weapons and electronic warfare capabilities)",
-            "Unmatched (AI-controlled, energy-based weapon systems, full-spectrum warfare capability)",
-            "Experimental (Orbital-capable hypersonic aerospace fighters, directed energy weapons)"
+            "None (No fighter aircraft capability)",
+            "Obsolete (WWI-era biplanes with limited speed and armament, no combat value)",
+            "Very Poor (Interwar monoplane fighters, weak firepower, and poor maneuverability)",
+            "Poor (WWII-era propeller-driven fighters, outdated against jet-powered threats)",
+            "Mediocre (First-generation jet fighters with unreliable engines, no radar, and basic weaponry)",
+            "Below Average (Early Cold War supersonic jets with primitive radar and unguided missiles)",
+            "Average (Third-generation fighters with semi-active radar-guided missiles, ECM systems, and better maneuverability)",
+            "Above Average (Fourth-generation fighters with advanced radars, superior aerodynamics, and improved stealth characteristics)",
+            "Good (4.5-generation fighters with AESA radars, supercruise capability, and enhanced electronic warfare systems)",
+            "Very Good (Fifth-generation stealth fighters with sensor fusion, high-speed data links, and AI-assisted avionics)",
+            "Excellent (Next-generation air superiority fighters with hypersonic weapons, enhanced autonomous capabilities, and electronic warfare dominance)",
+            "Elite (AI-assisted UCAVs with human-machine teaming, real-time adaptive combat capabilities, and low-observable designs)",
+            "Unmatched (Sixth-generation multi-role fighters with AI-controlled sensor fusion, energy-based weapons, and swarm drone coordination)"
           ],
-          "description": "The overall quality and technological level of the nation's fighter jet fleet, from obsolete WWII aircraft to futuristic AI-driven aerospace fighters."
+          "description": "The overall quality and technological level of the nation's fighter aircraft, from obsolete biplanes to advanced AI-driven air superiority fighters."
         },
         "bomberQuality": {
           "type": "string",
           "enum": [
-            "Obsolete (WWII-era propeller bombers, no modern battlefield utility)",
-            "Very Poor (Early Cold War bombers, basic unguided bomb payloads)",
-            "Poor (Cold War jet bombers, limited stealth and self-defense)",
-            "Mediocre (First-generation supersonic bombers, basic precision-guided munitions)",
-            "Below Average (Strategic bombers with long-range cruise missile capability)",
-            "Average (Stealth bombers with improved ECM and stand-off strike ability)",
-            "Above Average (High-endurance bombers with full sensor fusion and hypersonic missile integration)",
-            "Good (Autonomous drone bombers with AI-controlled strike coordination)",
-            "Very Good (Fully networked bombers with real-time target acquisition and in-flight retasking)",
-            "Excellent (AI-assisted deep penetration bombers with electronic warfare capabilities)",
-            "Elite (Hypersonic global strike bombers, near-invisible radar cross-section)",
-            "Unmatched (Orbital bombers with kinetic strike capabilities)",
-            "Experimental (Space-based kinetic strike platforms, planetary-scale bombing ability)"
+            "None (No bomber capability)",
+            "Obsolete (WWI-era bombers, open cockpit, slow speeds, low payloads)",
+            "Very Poor (Interwar strategic bombers with limited range and weak defensive armament)",
+            "Poor (WWII-era heavy bombers, vulnerable to modern air defenses, no stealth capability)",
+            "Mediocre (Early Cold War jet-powered bombers with basic precision-guided munitions)",
+            "Below Average (Cold War-era strategic bombers with cruise missile capabilities and limited stealth features)",
+            "Average (Stealth bombers with advanced ECM, improved stand-off missile capabilities, and greater endurance)",
+            "Above Average (Modernized long-range bombers with full sensor fusion and multi-role capabilities)",
+            "Good (Hypersonic-capable strategic bombers with networked targeting and cyber warfare integration)",
+            "Very Good (AI-assisted strategic bombers with real-time target acquisition and automated strike coordination)",
+            "Excellent (Fully autonomous deep penetration bombers with low observability and precision-strike capabilities)",
+            "Elite (Next-generation stealth bombers equipped with AI-controlled mission execution and real-time battlefield adjustments)",
+            "Unmatched (Global strike bombers featuring full-spectrum dominance through hypersonic weapons, enhanced stealth, and cyber-electronic warfare integration)"
           ],
-          "description": "The overall quality and technological level of the nation's bomber fleet, ranging from outdated WWII-era bombers to advanced hypersonic strike platforms."
+          "description": "The overall quality and technological level of the nation's bomber fleet, from slow WWII-era bombers to hypersonic stealth strategic bombers."
         },
         "droneQuality": {
           "type": "string",
           "enum": [
-            "Obsolete (No drone capability, reliance on manned aircraft only)",
-            "Very Poor (Basic reconnaissance drones with limited range and endurance)",
-            "Poor (First-generation combat drones, minimal weapons payload)",
-            "Mediocre (Armed drones with short-range guided missiles, weak electronic warfare capability)",
-            "Below Average (Stealth UAVs with mid-range strike capability and limited autonomy)",
-            "Average (Fully networked UAVs with real-time battlefield coordination)",
-            "Above Average (Stealth UCAVs with advanced sensor fusion and adaptive AI control)",
-            "Good (Swarm-capable drones with coordinated attack formations)",
-            "Very Good (Hypersonic drones with air-to-air combat capability)",
-            "Excellent (Fully autonomous AI-controlled drone squadrons with electronic warfare integration)",
-            "Elite (Orbital reconnaissance and attack drones, high-energy weaponry)",
-            "Unmatched (Autonomous global strike UAVs, no human intervention required)",
-            "Experimental (Self-replicating AI drone networks with quantum communication capability)"
+            "None (No drone capability, full reliance on manned aircraft)",
+            "Obsolete (Early reconnaissance drones with minimal endurance and low-resolution cameras)",
+            "Very Poor (Cold War-era target drones with limited operational capabilities and weak sensors)",
+            "Poor (First-generation armed drones with small payloads and poor electronic warfare resistance)",
+            "Mediocre (Short-range attack drones with guided missiles and moderate autonomy)",
+            "Below Average (Stealth UAVs with mid-range strike capabilities and advanced ISR integration)",
+            "Average (Fully networked UAVs with real-time battlefield coordination and persistent surveillance capabilities)",
+            "Above Average (Multi-role UCAVs with AI-assisted targeting and autonomous mission execution)",
+            "Good (Swarm-capable drones capable of operating in coordinated attack formations with minimal human oversight)",
+            "Very Good (Hypersonic drones with long-range strike capabilities and advanced anti-air combat capability)",
+            "Excellent (Fully autonomous drone squadrons with electronic warfare dominance and precision AI-assisted targeting)",
+            "Elite (Advanced multi-role drones with real-time adaptability, AI-driven tactical execution, and superior stealth characteristics)",
+            "Unmatched (Next-generation AI-controlled strike UAVs with superior cyber warfare resilience, autonomous air superiority, and enhanced battlefield integration)"
           ],
-          "description": "The overall quality and technological level of the nation's drone fleet, ranging from basic reconnaissance UAVs to fully autonomous AI-driven war machines."
+          "description": "The overall quality and technological level of the nation's drone fleet, ranging from basic reconnaissance UAVs to next-gen autonomous AI-driven combat drones."
         },
         "attackHelicopterQuality": {
           "type": "string",
           "enum": [
-            "Obsolete (No dedicated attack helicopters, reliance on outdated troop carriers)",
-            "Very Poor (Basic gunship modifications of transport helicopters)",
-            "Poor (First-generation attack helicopters with limited guided munitions)",
-            "Mediocre (Early tandem-seat attack helicopters with basic countermeasures)",
-            "Below Average (Modernized attack helicopters with improved sensors and guided missiles)",
-            "Average (Advanced attack helicopters with networked targeting and ECM systems)",
-            "Above Average (Stealth-capable attack helicopters with battlefield AI integration)",
-            "Good (Fully networked gunships with autonomous loitering strike capability)",
-            "Very Good (High-speed, tilt-rotor attack aircraft with hypersonic missile integration)",
-            "Excellent (AI-assisted rotorcraft with electronic warfare and smart munitions)",
-            "Elite (Autonomous gunships with real-time swarm coordination and AI-assisted pilot systems)",
-            "Unmatched (Orbital-deployable rotorcraft with next-gen directed energy weapons)",
-            "Experimental (Gravity-defying aerial platforms for sustained combat advantage)"
+            "None (No attack helicopter capability)",
+            "Obsolete (Basic troop transport helicopters with manually aimed guns, no armor)",
+            "Very Poor (Early Cold War gunships with basic weaponry and minimal armor protection)",
+            "Poor (First-generation attack helicopters with unguided munitions and weak survivability)",
+            "Mediocre (Modernized tandem-seat attack helicopters with guided missiles and electronic countermeasures)",
+            "Below Average (Stealth-optimized attack helicopters with improved avionics and survivability enhancements)",
+            "Average (Networked gunships with high-precision weaponry, ECM protection, and advanced targeting pods)",
+            "Above Average (AI-assisted rotorcraft with advanced situational awareness, loitering munition deployment, and data-link integration)",
+            "Good (High-speed hybrid attack aircraft with multi-role adaptability, increased stealth, and AI fire control assistance)",
+            "Very Good (Drone-assisted attack helicopters capable of real-time reconnaissance-strike integration and self-adaptive targeting)",
+            "Excellent (AI-controlled rotorcraft with hypersonic missile integration and full electronic warfare capabilities)",
+            "Elite (Autonomous battlefield gunships with real-time swarm coordination and advanced electronic deception technologies)",
+            "Unmatched (Next-gen stealth attack helicopters featuring advanced directed-energy weaponry and full-spectrum networked warfare capabilities)"
           ],
-          "description": "The overall quality and technological level of the nation's attack helicopter fleet, ranging from outdated Cold War-era models to autonomous AI-controlled combat vehicles."
+          "description": "The overall quality and technological level of the nation's attack helicopter fleet, from early gunships to fully autonomous, AI-enhanced rotorcraft."
         },
         "transportAircraftQuality": {
           "type": "string",
           "enum": [
-            "Obsolete (Limited transport capability, outdated WWII cargo planes)",
-            "Very Poor (Basic propeller-driven transport aircraft, low capacity)",
-            "Poor (First-generation jet transport, inefficient fuel use, minimal cargo payloads)",
-            "Mediocre (Mid-range transport planes with limited range and airlift capability)",
-            "Below Average (Standard military transport planes, basic aerial refueling capability)",
-            "Average (Advanced military cargo aircraft with heavy-lift capability and modular interiors)",
-            "Above Average (Stealth transport aircraft with ECM protection and low-detectability profile)",
-            "Good (Autonomous airlift drones with self-deploying logistics payloads)",
-            "Very Good (Hypersonic military transports with global rapid deployment capability)",
-            "Excellent (AI-assisted logistics aircraft with real-time battlefield adjustments)",
-            "Elite (Space-capable military transports with near-instant deployment ability)",
-            "Unmatched (Autonomous strategic mobility platforms, no logistical bottlenecks)",
-            "Experimental (Quantum-teleportation based logistics, eliminating airlift needs)"
+            "None (No military transport aircraft capability)",
+            "Obsolete (WWI-era cargo planes with extremely limited capacity and poor range)",
+            "Very Poor (Interwar transport aircraft with weak engines, minimal lift capability, and short-range operations)",
+            "Poor (WWII-era military transport aircraft with outdated avionics, poor cargo space, and slow speeds)",
+            "Mediocre (Cold War-era jet-powered transport aircraft with basic airlift capability and mid-range operations)",
+            "Below Average (Modernized strategic airlift aircraft with aerial refueling capability and heavy payload capacities)",
+            "Average (Next-generation military cargo aircraft with high-payload, modular interiors, and enhanced ECM defenses)",
+            "Above Average (Stealth-enabled transport aircraft with full-networked logistics integration and cyber warfare resistance)",
+            "Good (Autonomous logistics drones with AI-coordinated airlift capabilities and automated deployment mechanisms)",
+            "Very Good (Hypersonic military transports with long-range rapid deployment capabilities and strategic airlift efficiency)",
+            "Excellent (AI-assisted logistics aircraft with real-time battlefield resupply optimization and adaptive flight paths)",
+            "Elite (Next-generation stealth transport aircraft with AI-managed fleet logistics and advanced countermeasures)",
+            "Unmatched (Advanced heavy-lift transport aircraft featuring AI-managed logistics, hypersonic mobility, and fully automated deployment readiness)"
           ],
-          "description": "The overall quality and technological level of the nation's military transport aircraft, from outdated propeller-driven cargo planes to next-gen AI-controlled logistics platforms."
+          "description": "The overall quality and technological level of the nation's military transport aircraft, from outdated cargo planes to highly advanced stealth-enabled airlift systems."
         },
         "electronicWarfareAircraftQuality": {
           "type": "string",
@@ -911,115 +933,96 @@
               "type": "string",
               "enum": [
                 "None (No aircraft carrier capability)",
-                "Obsolete (WWII-era carriers, incapable of supporting modern aircraft)",
-                "Very Poor (Early Cold War carriers, limited catapult launch capability)",
-                "Poor (Basic carriers with conventional takeoff and landing, no stealth integration)",
-                "Mediocre (Modernized carriers with early jet aircraft support, minimal network integration)",
-                "Below Average (Full-size carriers with advanced radar and electronic warfare systems)",
-                "Average (Nuclear-powered carriers with multirole aircraft, strong air wing capabilities)",
-                "Above Average (Stealth-enhanced carriers with integrated drone launch capability)",
-                "Good (AI-assisted carrier operations with real-time global force projection)",
-                "Very Good (Hypersonic aircraft-capable carriers with full-spectrum warfare integration)",
-                "Excellent (Fully autonomous drone carrier with integrated quantum communication systems)",
-                "Elite (Orbital-capable naval carriers capable of space-to-sea force projection)",
-                "Unmatched (Experimental carrier platforms utilizing energy-based weapons and AI warfighters)"
+                "Obsolete (WWI-era seaplane carriers, incapable of modern aerial operations)",
+                "Very Poor (Interwar aircraft carriers with wooden decks, limited aircraft capacity)",
+                "Poor (WWII-era fleet carriers, no jet capability, minimal air defense)",
+                "Mediocre (Early Cold War carriers, steam catapults, minimal automation)",
+                "Below Average (Modernized carriers with basic jet aircraft support and rudimentary radar integration)",
+                "Average (Nuclear-powered supercarriers with multirole air wings and advanced command systems)",
+                "Above Average (Stealth-optimized carriers with electromagnetic launch systems and drone control)",
+                "Good (AI-assisted carrier operations, real-time global coordination, integrated electronic warfare systems)",
+                "Very Good (Hypersonic aircraft-capable carriers with full-spectrum warfare networking and advanced CIWS defenses)",
+                "Excellent (Fully autonomous drone carrier groups with enhanced cyber warfare and fleet coordination capabilities)",
+                "Elite (Highly advanced nuclear supercarriers with integrated laser defenses and swarm drone deployment)",
+                "Unmatched (Next-generation carriers utilizing railgun-based missile defense and AI-managed fleet operations)"
               ],
-              "description": "The overall quality and technological level of the nation's aircraft carrier fleet, from outdated WWII carriers to next-gen autonomous naval aviation platforms."
+              "description": "The overall quality and technological level of the nation's aircraft carrier fleet, from early seaplane carriers to modern nuclear supercarriers."
             },
             "submarineQuality": {
               "type": "string",
               "enum": [
                 "None (No submarine capability)",
-                "Obsolete (WWII-era diesel-electric subs, no modern combat effectiveness)",
-                "Very Poor (Early Cold War-era subs, weak sonar and torpedo guidance)",
-                "Poor (Basic attack submarines with limited underwater endurance)",
-                "Mediocre (Early nuclear-powered submarines, basic stealth features)",
-                "Below Average (Modern attack submarines with improved sonar and missile systems)",
-                "Average (Stealth-enhanced submarines with long-range strike capabilities)",
-                "Above Average (AI-assisted submarines with unmanned underwater drones)",
-                "Good (Hypersonic missile-capable submarines with global deterrence ability)",
-                "Very Good (Full-spectrum cyber warfare and networked underwater warfare)",
-                "Excellent (Autonomous nuclear-powered submarines with deep-sea endurance)",
-                "Elite (Quantum-stealth submarines, undetectable by traditional sonar systems)",
-                "Unmatched (Experimental subs utilizing energy shielding and AI fleet coordination)"
+                "Obsolete (WWI-era diesel-electric submarines with no sonar or torpedo guidance)",
+                "Very Poor (Interwar coastal submarines with limited range and depth capabilities)",
+                "Poor (WWII-era diesel submarines with weak sonar, slow underwater speed, and minimal automation)",
+                "Mediocre (Early Cold War submarines with basic nuclear propulsion and primitive ballistic missile capability)",
+                "Below Average (Modern attack submarines with improved sonar, torpedo fire control, and electronic countermeasures)",
+                "Average (Stealth-enhanced nuclear submarines with long-range cruise missile capabilities)",
+                "Above Average (AI-assisted submarines with unmanned underwater drones, advanced torpedo evasion systems)",
+                "Good (Hypersonic missile-equipped submarines with advanced stealth features and global strike capability)",
+                "Very Good (AI-driven deep-sea strategic submarines capable of operating undetected for extended periods)",
+                "Excellent (Fully autonomous nuclear submarines with ultra-low noise profiles and advanced electronic warfare integration)",
+                "Elite (Quantum-stealth submarines with next-generation sonar resistance and AI-assisted fleet coordination)",
+                "Unmatched (Next-generation submersible platforms featuring hypersonic torpedoes and cyber warfare integration)"
               ],
-              "description": "The overall quality and technological level of the nation's submarine fleet, from obsolete diesel-electric models to cutting-edge AI-controlled stealth submarines."
+              "description": "The overall quality and technological level of the nation's submarine fleet, from pre-WWII designs to advanced AI-assisted stealth submarines."
             },
             "destroyerQuality": {
               "type": "string",
               "enum": [
                 "None (No destroyer capability)",
-                "Obsolete (WWII-era destroyers with outdated weaponry)",
-                "Very Poor (Early Cold War destroyers, minimal air defense systems)",
-                "Poor (Basic guided-missile destroyers with early radar systems)",
-                "Mediocre (Upgraded Cold War destroyers with improved missile defense)",
-                "Below Average (Modern destroyers with AEGIS-like defense systems)",
-                "Average (Stealth-capable destroyers with advanced electronic warfare capabilities)",
-                "Above Average (AI-assisted missile guidance and integrated air-sea coordination)",
-                "Good (Hypersonic missile-capable destroyers with near-instant strike response)",
-                "Very Good (Autonomous surface combatants with drone fleet coordination)",
-                "Excellent (Energy-weapon-equipped destroyers with cyber warfare integration)",
-                "Elite (Quantum communication-enabled destroyers with real-time battlefield adaptation)",
-                "Unmatched (Experimental destroyers with railguns and plasma-based weapon systems)"
+                "Obsolete (WWI-era torpedo boats, slow speed, ineffective against modern threats)",
+                "Very Poor (Interwar destroyers with weak anti-air capabilities and basic radar)",
+                "Poor (WWII-era destroyers, no modern missile defense, reliant on gunfire for engagements)",
+                "Mediocre (Cold War-era guided-missile destroyers with early radar and SAM integration)",
+                "Below Average (Modern destroyers with networked missile defense but limited automation)",
+                "Average (Stealth-capable destroyers with AI-assisted missile guidance and advanced radar systems)",
+                "Above Average (Hypersonic missile-capable destroyers with enhanced cyber warfare protection and electronic warfare capabilities)",
+                "Good (Automated destroyers with fleet AI coordination, advanced missile interception, and drone-assisted tracking)",
+                "Very Good (Directed-energy-weapon-equipped destroyers with real-time battlefield networking and CIWS upgrades)",
+                "Excellent (Highly advanced stealth destroyers with laser and railgun integration for missile defense)",
+                "Elite (AI-managed stealth destroyers with real-time situational awareness and counter-hypersonic missile systems)",
+                "Unmatched (Next-generation destroyers featuring full-spectrum jamming capabilities, electronic warfare dominance, and automated fleet control)"
               ],
-              "description": "The overall quality and technological level of the nation's destroyer fleet, from outdated WWII models to autonomous AI-driven missile warships."
+              "description": "The overall quality and technological level of the nation's destroyer fleet, from early torpedo boats to next-generation stealth guided-missile warships."
             },
             "frigateQuality": {
               "type": "string",
               "enum": [
                 "None (No frigate capability)",
-                "Obsolete (WWII-era escort ships, completely outdated)",
-                "Very Poor (Cold War-era frigates with basic radar systems)",
-                "Poor (Basic guided-missile frigates with early anti-submarine warfare capabilities)",
-                "Mediocre (Upgraded Cold War frigates with moderate air defense capability)",
-                "Below Average (Modern frigates with advanced sonar and missile defense)",
-                "Average (Networked multi-role frigates with AI-enhanced fleet coordination)",
-                "Above Average (Hypersonic missile-capable frigates with stealth capabilities)",
-                "Good (Autonomous frigates with real-time drone integration)",
-                "Very Good (Cyber warfare-enabled frigates with advanced jamming systems)",
-                "Excellent (Directed-energy-weapon frigates with quantum battlefield networking)",
-                "Elite (AI-assisted frigates with self-repair capabilities and full-spectrum warfare)",
-                "Unmatched (Experimental quantum-frigates capable of next-gen naval warfare)"
+                "Obsolete (WWI-era escort frigates with weak armament and slow speed)",
+                "Very Poor (Interwar frigates with limited sonar and depth charge capabilities)",
+                "Poor (WWII-era anti-submarine frigates with basic radar and no missile defense)",
+                "Mediocre (Cold War-era multi-role frigates with moderate air defense and anti-ship capability)",
+                "Below Average (Modern frigates with integrated sensors, advanced sonar, and missile defense systems)",
+                "Average (Stealth-optimized frigates with advanced fire control, radar-guided missile systems, and AI-enhanced fleet coordination)",
+                "Above Average (Hypersonic missile-capable frigates with AI-driven decision-making and enhanced drone integration)",
+                "Good (Autonomous frigates with real-time electronic warfare capabilities and cyber defense integration)",
+                "Very Good (Frigates featuring laser-based CIWS, adaptive radar technology, and long-range anti-air capability)",
+                "Excellent (AI-assisted multi-role frigates with automated fleet coordination and predictive threat analysis)",
+                "Elite (Next-gen stealth frigates with hybrid power systems, electronic warfare dominance, and railgun-based defense)",
+                "Unmatched (Fully automated multi-role frigates equipped with AI-controlled missile defense and adaptive warfare networking)"
               ],
-              "description": "The overall quality and technological level of the nation's frigate fleet, from outdated WWII-era escort ships to next-gen stealth cyber warfare platforms."
+              "description": "The overall quality and technological level of the nation's frigate fleet, from early escort ships to advanced AI-assisted multi-role warships."
             },
             "amphibiousAssaultShipQuality": {
               "type": "string",
               "enum": [
                 "None (No amphibious assault capability)",
-                "Obsolete (WWII-era landing craft, no modern deployment capabilities)",
-                "Very Poor (Cold War-era troop transports with limited offensive capability)",
-                "Poor (Basic amphibious assault ships with outdated landing systems)",
-                "Mediocre (Upgraded Cold War designs with helicopter and hovercraft deployment)",
-                "Below Average (Modernized amphibious ships with multirole capabilities)",
-                "Average (Fully networked assault ships with drone-assisted landing operations)",
-                "Above Average (Stealth-enhanced amphibious assault ships with AI support)",
-                "Good (High-speed deployment capability with real-time combat coordination)",
-                "Very Good (Autonomous amphibious carriers with hypersonic troop transport drones)",
-                "Excellent (AI-driven warships with real-time combat adaptation capabilities)",
-                "Elite (Orbital-capable amphibious platforms for planetary-scale force projection)",
-                "Unmatched (Experimental high-energy shielded assault ships with autonomous invasion forces)"
+                "Obsolete (WWI-era troop barges, slow and completely unarmored)",
+                "Very Poor (WWII-era landing craft with limited deployment capabilities and no modern protection)",
+                "Poor (Cold War-era amphibious transports with basic helicopter decks and troop carriers)",
+                "Mediocre (Modernized Cold War designs with vehicle landing capability and early drone integration)",
+                "Below Average (Networked amphibious ships with AI-assisted deployment planning and troop coordination)",
+                "Average (Fully networked assault ships with drone-assisted landing operations and semi-autonomous logistics)",
+                "Above Average (Stealth-enhanced amphibious assault ships with active protection and automated deployment platforms)",
+                "Good (AI-driven amphibious assault craft with real-time threat analysis and coordinated fleet response)",
+                "Very Good (Autonomous amphibious carriers with cyber-secure operations and next-generation deployment strategies)",
+                "Excellent (AI-integrated battlefield invasion platforms with adaptive naval drone forces and networked fleet intelligence)",
+                "Elite (Highly advanced amphibious warships with automated landing craft and electronic warfare dominance)",
+                "Unmatched (Next-gen stealth assault ships featuring railgun CIWS, cyber warfare integration, and real-time fleet coordination)"
               ],
-              "description": "The overall quality and technological level of the nation's amphibious assault ships, from outdated troop transports to next-gen AI-driven naval invasion platforms."
-            },
-            "coastalPatrolVesselQuality": {
-              "type": "string",
-              "enum": [
-                "None (No coastal defense capability)",
-                "Obsolete (Aging WWII-era patrol boats, no modern effectiveness)",
-                "Very Poor (Cold War-era coastal patrol vessels, weak defensive capabilities)",
-                "Poor (Basic missile boats with limited radar and electronic warfare systems)",
-                "Mediocre (Improved patrol vessels with AI-assisted navigation and reconnaissance)",
-                "Below Average (Modernized missile corvettes with drone coordination)",
-                "Average (Stealth-capable patrol ships with networked warfare capabilities)",
-                "Above Average (Hypersonic missile-equipped fast-attack craft with enhanced tracking systems)",
-                "Good (Autonomous sea drones capable of patrolling and engaging enemy vessels)",
-                "Very Good (Cyber-warfare-enabled ships capable of disrupting enemy naval communications)",
-                "Excellent (AI-controlled fast-attack ships with energy weapons and railgun capabilities)",
-                "Elite (Quantum-linked patrol ships with full situational awareness integration)",
-                "Unmatched (Experimental autonomous naval fleet with predictive AI engagement strategies)"
-              ],
-              "description": "The overall quality and technological level of the nation's coastal patrol vessels, from outdated WWII patrol boats to AI-controlled cyber-warfare corvettes."
+              "description": "The overall quality and technological level of the nation's amphibious assault ships, from outdated troop transports to next-generation AI-assisted invasion platforms."
             }
           },
           "description": "Detailed breakdown of the quality and modernization of the nation's naval forces, including carriers, submarines, surface combatants, and amphibious assault capabilities."

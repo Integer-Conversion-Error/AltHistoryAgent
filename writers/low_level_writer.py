@@ -69,7 +69,7 @@ def generate_json_object(model, json_schema, action, context):
     prompt = generate_object_prompt(json_schema, action, context)
     response = model.generate_content(prompt)
     text = response.text[7:-3]
-    print(text)
+    #print(text)
     try:
         generated_json = json.loads(text)
         return generated_json
