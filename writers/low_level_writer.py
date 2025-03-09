@@ -29,7 +29,7 @@ def configure_genai():
     }
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash-exp",
+        model_name="gemini-2.0-flash-lite",
         generation_config=generation_config,
     )
     return model
@@ -65,7 +65,7 @@ def generate_json_object(model, json_schema, action, context):
     """
     Use AI to generate a JSON object following the schema.
     """
-    time.sleep(7)
+    time.sleep(3)
     prompt = generate_object_prompt(json_schema, action, context)
     response = model.generate_content(prompt)
     text = response.text[7:-3]

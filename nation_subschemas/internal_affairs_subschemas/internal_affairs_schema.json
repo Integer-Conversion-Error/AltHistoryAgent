@@ -1,7 +1,7 @@
 {
     "$id": "https://example.com/schemas/internal_affairs.json",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Internal Affairs (Truncated)",
+    "title": "Internal Affairs",
     "type": "object",
     "properties": {
         "crimeLawEnforcement": {
@@ -77,6 +77,58 @@
                         "Abolished"
                     ],
                     "description": "The extent of personal freedoms and rights."
+                },
+                "organizedCrimeInfluence": {
+                    "type": "string",
+                    "enum": [
+                        "None (No organized crime presence, strong legal enforcement)",
+                        "Minimal (Small criminal groups, low impact on society)",
+                        "Low (Localized criminal syndicates, limited political influence)",
+                        "Moderate (Established mafia/cartel operations, some corruption ties)",
+                        "High (Widespread organized crime, significant corruption in law enforcement)",
+                        "Severe (Mafia/cartels influence government policy and economy)",
+                        "Extreme (State deeply intertwined with criminal networks, government largely compromised)"
+                    ],
+                    "description": "The level of influence organized crime groups such as mafias, cartels, and terrorist organizations have over national operations."
+                },
+                "corruptionInLawEnforcement": {
+                    "type": "string",
+                    "enum": [
+                        "None (Zero corruption, total transparency in policing and judiciary)",
+                        "Minimal (Occasional cases of low-level bribery, swiftly punished)",
+                        "Low (Some corrupt officers, but does not affect major operations)",
+                        "Moderate (Widespread bribery at lower levels, occasional high-level cases)",
+                        "High (Judiciary and police frequently compromised, corruption scandals common)",
+                        "Severe (Bribery is expected at all levels, judicial rulings influenced by money or power)",
+                        "Extreme (Law enforcement and courts are fully corrupt, no meaningful justice system)"
+                    ],
+                    "description": "The extent of bribery and misconduct within the police and judiciary, from rare cases to complete system collapse."
+                },
+                "judicialIndependence": {
+                    "type": "string",
+                    "enum": [
+                        "Total Independence (Completely autonomous judiciary, free from political interference)",
+                        "High Independence (Minor political influence, but largely neutral courts)",
+                        "Moderate Independence (Some government pressure, but courts still uphold legal standards)",
+                        "Limited Independence (Judicial rulings often politically motivated, some impartiality remains)",
+                        "Low Independence (Frequent government interference, opposition cases rarely fair)",
+                        "Severe Interference (Judiciary largely a tool of the ruling regime, no real independence)",
+                        "Nonexistent (Courts serve only the regime, no legal autonomy, show trials common)"
+                    ],
+                    "description": "The degree of autonomy courts have from government and political interference, ranging from total independence to complete subservience."
+                },
+                "civilUnrestLevel": {
+                    "type": "string",
+                    "enum": [
+                        "None (Complete societal harmony, no unrest or protests)",
+                        "Minimal (Rare, peaceful demonstrations with no major impact)",
+                        "Low (Occasional protests, generally non-violent and well-controlled)",
+                        "Moderate (Regular protests and strikes, minor disruptions to daily life)",
+                        "High (Widespread demonstrations, some violent clashes with law enforcement)",
+                        "Severe (Riots and uprisings, frequent mass protests, risk of regional instability)",
+                        "Extreme (Nationwide unrest, constant strikes, risk of civil war or revolution)"
+                    ],
+                    "description": "The frequency and intensity of protests, strikes, and riots, ranging from peaceful demonstrations to widespread societal upheaval."
                 }
             },
             "required": [
@@ -84,7 +136,11 @@
                 "policePresence",
                 "judicialStrictness",
                 "stateSurveillance",
-                "civilLiberties"
+                "civilLiberties",
+                "organizedCrimeInfluence",
+                "corruptionInLawEnforcement",
+                "judicialIndependence",
+                "civilUnrestLevel"
             ]
         }
     },
@@ -92,6 +148,48 @@
         "title": "Demographics",
         "type": "object",
         "properties": {
+            "literacyRate": {
+                "type": "string",
+                "enum": [
+                    "Completely Illiterate (Less than 10% of population can read and write)",
+                    "Extremely Low Literacy (10-30% literacy, widespread educational underdevelopment)",
+                    "Low Literacy (30-50% literacy, significant barriers to education)",
+                    "Moderate Literacy (50-70% literacy, improving but still major gaps)",
+                    "Above Average Literacy (70-85% literacy, strong basic education system)",
+                    "High Literacy (85-95% literacy, functional literacy for most of the population)",
+                    "Very High Literacy (95-99% literacy, well-developed education system)",
+                    "Universal Literacy (99-100% literacy, fully literate population)"
+                ],
+                "description": "The percentage of the population that can read and write, representing the overall effectiveness of the education system."
+            },
+            "employmentRate": {
+                "type": "string",
+                "enum": [
+                    "Extreme Unemployment (Less than 20% of population employed, economic collapse)",
+                    "Very High Unemployment (20-35% unemployment, severe economic distress)",
+                    "High Unemployment (10-20% unemployment, weak job market)",
+                    "Moderate Unemployment (7-10% unemployment, economic struggles but some stability)",
+                    "Balanced Employment (5-7% unemployment, considered normal economic function)",
+                    "Strong Employment (3-5% unemployment, robust job market)",
+                    "Very High Employment (1-3% unemployment, nearly full employment)",
+                    "Full Employment (0-1% unemployment, extremely strong labor market)"
+                ],
+                "description": "General employment statistics, including unemployment levels and overall labor market health."
+            },
+            "socialMobility": {
+                "type": "string",
+                "enum": [
+                    "Completely Rigid (Social class is entirely fixed, no upward mobility possible)",
+                    "Extremely Low Mobility (Only extreme wealth or privilege allows upward movement)",
+                    "Low Mobility (Difficult to change social class, limited economic opportunities)",
+                    "Moderate Mobility (Possible but difficult, education and connections are key)",
+                    "Above Average Mobility (A strong middle class, some opportunities for advancement)",
+                    "High Mobility (People can advance through merit and education, economic flexibility)",
+                    "Very High Mobility (Class mobility is common, strong economic and educational access)",
+                    "Equal Opportunity (Class barriers are nearly non-existent, fully meritocratic society)"
+                ],
+                "description": "The ease of upward economic and social movement, determining how accessible higher living standards are to the population."
+            },
             "populationSize": {
                 "type": "string",
                 "enum": [
@@ -216,6 +314,9 @@
         "required": [
             "populationSize",
             "populationGrowth",
+            "literacyRate",
+            "employmentRate",
+            "socialMobility",
             "ageStructure",
             "urbanizationLevel",
             "birthRate",
@@ -227,6 +328,108 @@
         "title": "Economic Policies",
         "type": "object",
         "properties": {
+            "wealthDistribution": {
+                "type": "string",
+                "enum": [
+                    "Extreme Inequality (Top 1% controls nearly all wealth, mass poverty)",
+                    "Severe Disparity (Wealth concentrated among elites, little middle class)",
+                    "High Inequality (Large wealth gap, lower classes struggle economically)",
+                    "Moderate Inequality (Wealth unevenly distributed, but some middle-class security)",
+                    "Balanced Distribution (Significant middle class, but income gaps still present)",
+                    "Low Inequality (Wealth is fairly distributed, economic mobility is high)",
+                    "Near-Equal Distribution (Minimal wealth gap, strong social safety nets)",
+                    "Full Economic Parity (Completely even wealth distribution, no class divisions)"
+                ],
+                "description": "The level of economic inequality, measuring how wealth is distributed across different social classes."
+            },
+            "governmentSubsidies": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "sector": {
+                            "type": "string",
+                            "enum": [
+                                "None (Government does not provide financial support to any industry)",
+                                "Agriculture (Farming, food production, and rural development subsidies)",
+                                "Energy (Fossil fuels, nuclear, or renewable energy industry support)",
+                                "Manufacturing (Heavy industry, industrial production assistance)",
+                                "Technology & Innovation (R&D, AI, space programs, high-tech subsidies)",
+                                "Healthcare (Public hospitals, pharmaceutical industries, medical research)",
+                                "Education (Public schools, universities, research institutions funding)",
+                                "Transportation (Infrastructure, public transit, road and railway development)",
+                                "Defense & Military (Subsidized military-industrial complex, arms production)",
+                                "Social Welfare (Basic income, unemployment support, housing assistance)",
+                                "Financial Sector (Bank bailouts, monetary policy intervention)",
+                                "Cultural & Media (Arts, entertainment, state-run media, cultural programs)"
+                            ],
+                            "description": "The economic sector receiving government financial support."
+                        },
+                        "subsidyLevel": {
+                            "type": "string",
+                            "enum": [
+                                "None (No subsidies provided in this sector)",
+                                "Negligible (Symbolic funding, primarily for political reasons)",
+                                "Minimal (Only essential subsidies, limited impact on sector growth)",
+                                "Low (Targeted financial aid for select industries or regions)",
+                                "Moderate (Steady government support, incentives for development)",
+                                "Above Average (Significant funding, sector receives competitive advantages)",
+                                "High (Government plays an active role in sector expansion and innovation)",
+                                "Very High (Industry depends heavily on government financial support)",
+                                "Extreme (Government dominance in funding, near-total reliance on subsidies)",
+                                "State-Controlled (Fully government-funded and operated, subsidies ensure sector survival)"
+                            ],
+                            "description": "The extent to which the government financially supports this sector, ranging from symbolic assistance to full state control."
+                        }
+                    },
+                    "required": [
+                        "sector",
+                        "subsidyLevel"
+                    ]
+                },
+                "description": "The key areas of the economy receiving direct financial support from the government, along with the scale of subsidies provided."
+            },
+            "stateOwnedEnterprises": {
+                "type": "string",
+                "enum": [
+                    "None (Fully privatized economy, no government-owned businesses)",
+                    "Minimal (Few state-run enterprises, mostly privatized sectors)",
+                    "Limited (State controls key sectors like energy and infrastructure)",
+                    "Moderate (Government owns major industries, but private sector thrives)",
+                    "Significant (State dominates strategic sectors, private businesses restricted)",
+                    "Heavy (Most industries under government control, limited privatization)",
+                    "Total State Economy (No private sector, fully government-run economy)"
+                ],
+                "description": "The proportion of the economy directly controlled by state-owned enterprises."
+            },
+            "laborRightsProtections": {
+                "type": "string",
+                "enum": [
+                    "None (No worker protections, exploitative labor conditions, no unions allowed)",
+                    "Minimal (Weak labor laws, few protections, unionizing discouraged)",
+                    "Weak (Low minimum wages, long working hours, little job security)",
+                    "Moderate (Basic worker rights, some protections, limited union power)",
+                    "Balanced (Strong worker protections, union influence present but regulated)",
+                    "High (Strict labor laws, guaranteed wages, strong collective bargaining)",
+                    "Very High (Highly protected workforce, strong unions, universal worker benefits)",
+                    "Absolute (Workers have total job security, government-enforced equality in pay and conditions)"
+                ],
+                "description": "The strength of worker rights and labor protections, ranging from exploitative conditions to full employment security."
+            },
+            "currencyStability": {
+                "type": "string",
+                "enum": [
+                    "Hyperinflation (Completely unstable, rapid devaluation, economic collapse)",
+                    "Severe Instability (Frequent crashes, inflation or deflation out of control)",
+                    "High Volatility (Unstable exchange rates, unpredictable market fluctuations)",
+                    "Moderate Volatility (Regular inflation, but overall controlled)",
+                    "Relatively Stable (Occasional fluctuations, but strong financial policies)",
+                    "Stable (Predictable currency value, backed by strong monetary policy)",
+                    "Highly Stable (Trusted global reserve currency, minimal inflation)",
+                    "Absolute Stability (Perfectly controlled, no fluctuation, full government control over valuation)"
+                ],
+                "description": "The volatility and trustworthiness of the national currency, ranging from hyperinflation to full economic control."
+            },
             "taxPolicy": {
                 "type": "object",
                 "properties": {
@@ -267,13 +470,71 @@
             }
         },
         "required": [
-            "taxPolicy"
+            "taxPolicy",
+            "governmentSubsidies",
+            "stateOwnedEnterprises",
+            "laborRightsProtections",
+            "currencyStability"
+
         ]
     },
     "education": {
         "title": "Education",
         "type": "object",
         "properties": {
+            "privateVsPublicEducation": {
+                "type": "string",
+                "enum": [
+                    "Fully Public (100% government-funded, no private education exists)",
+                    "Overwhelmingly Public (90%+ public school enrollment, private education rare)",
+                    "Majority Public (75-90% public enrollment, private schools for elite classes)",
+                    "Balanced (50-75% public enrollment, private schools widely available)",
+                    "Majority Private (25-50% public enrollment, private education dominates secondary and tertiary levels)",
+                    "Overwhelmingly Private (10-25% public enrollment, public schools underfunded and rare)",
+                    "Fully Private (0-10% public enrollment, education entirely privatized or voucher-based)"
+                ],
+                "description": "The ratio of students attending public vs. private schools, indicating the level of government involvement in education."
+            },
+            "higherEducationEnrollment": {
+                "type": "string",
+                "enum": [
+                    "Negligible (Less than 5% of students advance to higher education)",
+                    "Very Low (5-15% enrollment, higher education is rare and elitist)",
+                    "Low (15-30% enrollment, access is limited by cost or policy)",
+                    "Moderate (30-50% enrollment, university education becoming common)",
+                    "Above Average (50-65% enrollment, higher education widely accessible)",
+                    "High (65-80% enrollment, strong academic infrastructure)",
+                    "Very High (80-95% enrollment, tertiary education is the norm)",
+                    "Universal (95-100% enrollment, nearly all students pursue higher education)"
+                ],
+                "description": "The percentage of students advancing to tertiary education, measuring accessibility and cultural emphasis on higher education."
+            },
+            "vocationalTechnicalTraining": {
+                "type": "string",
+                "enum": [
+                    "None (No vocational or technical education system exists)",
+                    "Minimal (Scattered trade schools, highly informal training)",
+                    "Limited (Basic trade programs, low government support)",
+                    "Moderate (Established vocational system, but lacks prestige)",
+                    "Strong (Vocational education widely available and respected)",
+                    "Highly Developed (Integrated technical training with strong industry partnerships)",
+                    "Elite (Advanced technical institutions, globally recognized certification programs)"
+                ],
+                "description": "The availability and prestige of vocational and technical education programs, including trade schools and apprenticeships."
+            },
+            "researchInstitutions": {
+                "type": "string",
+                "enum": [
+                    "None (No major universities or research centers exist)",
+                    "Minimal (Few institutions, underfunded and low impact)",
+                    "Limited (Some recognized universities, little global influence)",
+                    "Moderate (Growing research sector, occasional major discoveries)",
+                    "Strong (Well-funded universities, regular contributions to global research)",
+                    "Highly Developed (Major research institutions, significant innovation output)",
+                    "World-Class (Leading research hubs, driving technological and scientific progress)"
+                ],
+                "description": "The presence and quality of universities and research centers, influencing innovation and academic contributions."
+            },
             "educationQuality": {
                 "type": "string",
                 "enum": [
@@ -318,6 +579,10 @@
             }
         },
         "required": [
+            "privateVsPublicEducation",
+            "higherEducationEnrollment",
+            "vocationalTechnicalTraining",
+            "researchInstitutions",
             "educationQuality",
             "fundingLevel",
             "STEMDevelopment"
@@ -434,6 +699,67 @@
                 ],
                 "description": "Overall and per-source levels of energy production, represented by enums."
             },
+            "waterSecurity": {
+                "type": "string",
+                "enum": [
+                    "Severe Water Scarcity (Extreme shortages, unreliable access, crisis-level management)",
+                    "High Water Stress (Frequent shortages, high reliance on imports or desalination)",
+                    "Moderate Water Stress (Seasonal shortages, some supply vulnerabilities)",
+                    "Stable Supply (Reliable water access, but future risks exist)",
+                    "High Water Security (Well-managed resources, no major shortages)",
+                    "Abundant Water Resources (Plentiful freshwater, surplus available for export)"
+                ],
+                "description": "The stability and availability of freshwater resources for civilian, agricultural, and industrial use."
+            },
+            "foodSecurity": {
+                "type": "string",
+                "enum": [
+                    "Extreme Food Insecurity (Widespread hunger, famine conditions, total dependence on aid)",
+                    "Severe Shortages (Regular food crises, high reliance on imports, malnutrition widespread)",
+                    "Moderate Deficiency (Insufficient domestic production, significant food imports required)",
+                    "Self-Sufficient (Meets domestic demand, but imports certain essential goods)",
+                    "Surplus Producer (Exports food products, strong agricultural base)",
+                    "Food Superpower (Dominates global food supply, vast agricultural production capabilities)"
+                ],
+                "description": "The level of self-sufficiency and reliance on food imports, ranging from famine conditions to agricultural dominance."
+            },
+            "rareEarthMineralExtraction": {
+                "type": "string",
+                "enum": [
+                    "None (No known rare earth deposits, fully dependent on imports)",
+                    "Negligible (Minimal extraction, heavily reliant on foreign sources)",
+                    "Limited (Small-scale mining operations, unable to meet industrial demand)",
+                    "Moderate (Self-sufficient supply, but reliant on some imports)",
+                    "High (Significant extraction capacity, strong domestic supply chain)",
+                    "Strategic Producer (One of the global leaders in rare earth mineral production)",
+                    "Dominant Supplier (Controls majority of global rare earth production, critical to supply chains)"
+                ],
+                "description": "The availability and control over critical rare earth minerals, essential for high-tech industries."
+            },
+            "energyDependence": {
+                "type": "string",
+                "enum": [
+                    "Fully Dependent (100% reliant on energy imports, no domestic production)",
+                    "Highly Dependent (Majority of energy needs met through imports)",
+                    "Moderately Dependent (Significant domestic production, but still relies on imports)",
+                    "Self-Sufficient (Energy needs met domestically, little reliance on imports)",
+                    "Energy Surplus (Produces more energy than needed, exports surplus)",
+                    "Energy Superpower (Globally dominant energy producer, major exporter)"
+                ],
+                "description": "The level of reliance on foreign energy imports versus domestic production capacity."
+            },
+            "environmentalProtectionPolicies": {
+                "type": "string",
+                "enum": [
+                    "No Regulations (No environmental protections, unchecked exploitation of resources)",
+                    "Minimal Efforts (Weak regulations, environmental degradation widespread)",
+                    "Moderate Protections (Basic laws in place, but enforcement is weak)",
+                    "Sustainable Policies (Environmental protections actively enforced, moderate sustainability efforts)",
+                    "Strong Conservation Efforts (Proactive government initiatives for environmental sustainability)",
+                    "Global Environmental Leader (Highly stringent environmental policies, driving international sustainability efforts)"
+                ],
+                "description": "The extent of government policies regarding sustainability, environmental regulations, and resource conservation."
+            },
             "renewableEnergyPercentage": {
                 "type": "string",
                 "enum": [
@@ -481,8 +807,14 @@
         },
         "required": [
             "energyProduction",
+            "waterSecurity",
+            "foodSecurity",
+            "rareEarthMineralExtraction",
+            "energyDependence",
+            "environmentalProtectionPolicies",
             "renewableEnergyPercentage",
-            "oilProcurement"
+            "oilProcurement",
+            "oilProduction"
         ]
     },
     "healthcare": {
@@ -542,6 +874,71 @@
         "title": "Infrastructure",
         "type": "object",
         "properties": {
+            "housingQualityAvailability": {
+                "type": "string",
+                "enum": [
+                    "Severe Housing Crisis (Extreme shortages, overcrowding, homelessness widespread)",
+                    "High Shortage (Housing unaffordable or inaccessible for most of the population)",
+                    "Moderate Shortage (High demand, rising prices, some housing gaps remain)",
+                    "Balanced (Housing supply meets demand, affordable options exist for most)",
+                    "Above Average Availability (Stable housing market, variety of affordable options)",
+                    "High Availability (Accessible, affordable housing, well-developed urban planning)",
+                    "Housing Surplus (Excess housing supply, low costs, easy accessibility for all)"
+                ],
+                "description": "The affordability and accessibility of housing, from severe shortages to surplus availability."
+            },
+            "publicTransportEfficiency": {
+                "type": "string",
+                "enum": [
+                    "Nonexistent (No public transit infrastructure, full reliance on private transport)",
+                    "Minimal (Limited coverage, unreliable service, poorly maintained vehicles)",
+                    "Basic (Public transport exists but is slow, inefficient, or lacks coverage)",
+                    "Moderate (Functioning transit system, but overcrowding or inefficiencies present)",
+                    "Well-Developed (Extensive transit coverage, reliable service in urban centers)",
+                    "Highly Efficient (High-speed, well-integrated transit network, strong ridership)",
+                    "World-Class (Seamless, high-tech transit system, affordable and widely used)"
+                ],
+                "description": "The strength and efficiency of national and urban public transportation networks."
+            },
+            "roadHighwayDevelopment": {
+                "type": "string",
+                "enum": [
+                    "Nonexistent (No paved roads, transportation infrastructure undeveloped)",
+                    "Severely Underdeveloped (Basic roads exist, but poor maintenance and coverage)",
+                    "Poor (Limited highways, traffic congestion, infrastructure deterioration common)",
+                    "Moderate (Growing highway system, but bottlenecks and aging roads exist)",
+                    "Well-Developed (Extensive, well-maintained highways, efficient road networks)",
+                    "Highly Advanced (Modernized highways, high-speed road systems, minimal congestion)",
+                    "World-Class (Smart infrastructure, automated traffic control, near-zero congestion)"
+                ],
+                "description": "The overall condition and efficiency of major road and highway networks."
+            },
+            "airportPortInfrastructure": {
+                "type": "string",
+                "enum": [
+                    "Nonexistent (No airports or seaports, full reliance on land transport)",
+                    "Minimal (Small regional facilities, no major international trade capabilities)",
+                    "Basic (Limited international access, outdated infrastructure)",
+                    "Moderate (Functioning but congested or inefficient facilities, growing trade volume)",
+                    "Well-Developed (Reliable air and sea trade infrastructure, modernized ports and hubs)",
+                    "Highly Advanced (Major global trade hubs, seamless logistics and transport systems)",
+                    "World-Class (Cutting-edge logistics, high-capacity trade infrastructure, major player in global transport)"
+                ],
+                "description": "The level of development in air and sea trade facilities, affecting trade efficiency."
+            },
+            "disasterPreparedness": {
+                "type": "string",
+                "enum": [
+                    "Extremely Vulnerable (No emergency response capacity, catastrophic losses in disasters)",
+                    "Highly Unprepared (Limited response capability, infrastructure collapses in crises)",
+                    "Moderately Unprepared (Basic disaster management, but severe vulnerabilities remain)",
+                    "Moderately Prepared (Some disaster resilience, but response efficiency inconsistent)",
+                    "Well-Prepared (Effective emergency planning, trained personnel, strong infrastructure)",
+                    "Highly Resilient (Strong disaster resilience, rapid response capacity, minimal disruption)",
+                    "World-Class Preparedness (Near-invulnerable to disasters, best global response systems)"
+                ],
+                "description": "The nation’s capacity to withstand and recover from natural disasters, from extreme vulnerability to world-class preparedness."
+            },
             "urbanizationLevel": {
                 "type": "string",
                 "enum": [
@@ -619,6 +1016,11 @@
             }
         },
         "required": [
+            "housingQualityAvailability",
+            "publicTransportEfficiency",
+            "roadHighwayDevelopment",
+            "airportPortInfrastructure",
+            "disasterPreparedness",
             "urbanizationLevel",
             "transportationInfrastructure",
             "communicationInfrastructure"

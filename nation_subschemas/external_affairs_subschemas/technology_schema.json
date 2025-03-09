@@ -168,17 +168,6 @@
       ],
       "description": "The level of cybersecurity capabilities."
     },
-    "R&DCollaboration": {
-      "type": "string",
-      "enum": [
-        "Isolated",
-        "National",
-        "Regional",
-        "International",
-        "Global"
-      ],
-      "description": "The extent of research and development collaboration."
-    },
     "patentOutput": {
       "type": "string",
       "enum": [
@@ -324,7 +313,18 @@
           "description": "The nation's robotics capabilities and industry presence."
         }
       },
-      "description": "Detailed breakdown of the nation's computing technology capabilities."
+      "description": "Detailed breakdown of the nation's computing technology capabilities.",
+      "required": [
+        "computingPower",
+        "semiconductorIndustry",
+        "quantumComputingCapability",
+        "AIResearchLevel",
+        "networkInfrastructure",
+        "supercomputerRanking",
+        "cybersecurityCapability",
+        "dataCenterInfrastructure",
+        "roboticsIndustry"
+      ]
     }
   },
   "required": [
@@ -334,7 +334,6 @@
     "majorTechnologicalAdvancements",
     "spaceProgram",
     "cybersecurityCapability",
-    "R&DCollaboration",
     "patentOutput",
     "computingTechnology"
   ]
