@@ -341,6 +341,54 @@
         "landForces": {
           "type": "object",
           "properties": {
+            "troopMotivation": {
+              "type": "string",
+              "enum": [
+                "Utterly Demoralized (Troops refuse to fight, widespread desertion and mutiny)",
+                "Extremely Low (Unwilling conscripts, high desertion rates, no loyalty to command)",
+                "Very Low (Poor morale, reluctant combatants, easily routed in battle)",
+                "Low (Unenthusiastic but functional troops, little personal investment in war effort)",
+                "Moderate (Motivated by duty, will fight but lacks strong ideological commitment)",
+                "Above Average (Patriotic or well-trained soldiers with some unit cohesion)",
+                "High (Strong belief in cause, disciplined, and eager for combat)",
+                "Very High (Highly dedicated, ideological or elite forces with deep loyalty)",
+                "Fanatical (Unwavering commitment, willing to fight to the death, no fear of casualties)",
+                "Unbreakable (Elite forces with absolute discipline, never surrender under any conditions)"
+              ],
+              "description": "Measures the morale and commitment of soldiers, ranging from unwilling conscripts to fanatical warriors."
+            },
+            "troopCompetency": {
+              "type": "string",
+              "enum": [
+                "Completely Incompetent (Troops are untrained, unable to follow basic orders)",
+                "Extremely Poor (Severe lack of combat training, logistical failures common)",
+                "Very Poor (Minimal discipline, limited understanding of battlefield tactics)",
+                "Poor (Basic training but lacking real combat experience and coordination)",
+                "Moderate (Standard training, able to execute conventional operations)",
+                "Above Average (Well-trained soldiers, good tactical understanding, some combat experience)",
+                "High (Veteran troops, proficient in combined arms and maneuver warfare)",
+                "Very High (Elite special forces, high adaptability, outstanding unit cohesion)",
+                "Exceptional (Highly trained, experienced, and versatile troops, superior to most opponents)",
+                "Legendary (Top-tier forces, highly specialized, world-renowned for combat excellence)"
+              ],
+              "description": "Evaluates the general competency of military personnel in combat, training, and operational effectiveness."
+            },
+            "officerCompetency": {
+              "type": "string",
+              "enum": [
+                "Utterly Incompetent (Officers lack any formal training, catastrophic decision-making)",
+                "Extremely Poor (Frequent tactical blunders, no strategic vision, low respect from troops)",
+                "Very Poor (Corrupt or ineffective leadership, little control over forces)",
+                "Poor (Limited understanding of military doctrine, struggles with battlefield adaptation)",
+                "Moderate (Standard military training, able to follow doctrine but lacks creativity)",
+                "Above Average (Competent leadership, tactical awareness, maintains control of forces)",
+                "High (Well-educated officers, adaptive battlefield thinking, strong command presence)",
+                "Very High (Strategically sound leadership, excellent logistical and tactical execution)",
+                "Exceptional (Brilliant military minds, elite officer corps, able to lead under any conditions)",
+                "Genius-Level (Master tacticians and strategists, revered leaders with legendary reputations)"
+              ],
+              "description": "Assesses the competency and leadership ability of officers, from disastrous leadership to military genius."
+            },
             "tankQuality": {
               "type": "string",
               "enum": [

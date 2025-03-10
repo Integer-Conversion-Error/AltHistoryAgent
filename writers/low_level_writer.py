@@ -65,13 +65,19 @@ def generate_json_object(model, json_schema, action, context):
     """
     Use AI to generate a JSON object following the schema.
     """
-    time.sleep(3)
+    start_time = time.time()
+    #time.sleep(2.05)
     prompt = generate_object_prompt(json_schema, action, context)
     response = model.generate_content(prompt)
     text = response.text[7:-3]
     #print(text)
     try:
         generated_json = json.loads(text)
+        end_time = time.time() - start_time
+        print(f"Low-Level Write operation took {end_time:.2f}s")
+        if end_time <= 2:
+            time.sleep(2.05-end_time)
+            print(f"Extra Wait (+50ms): {2.05-end_time:.2f}s")
         return generated_json
     except json.JSONDecodeError:
         print("Error: AI did not return valid JSON.")

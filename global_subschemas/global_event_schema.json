@@ -48,11 +48,86 @@
                     }
                 ],
                 "description": "The detailed data of the event, based on the specific event type."
+            },
+            "ramifications": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "ramificationType": {
+                            "type": "string",
+                            "enum": [
+                                "Political",
+                                "Economic",
+                                "Social",
+                                "Technological",
+                                "Military",
+                                "Diplomatic",
+                                "Environmental",
+                                "Cultural",
+                                "Humanitarian",
+                                "Legal",
+                                "Other"
+                            ],
+                            "description": "The category of the event's effect (e.g., political crisis, economic downturn, social unrest)."
+                        },
+                        "severity": {
+                            "type": "string",
+                            "enum": [
+                                "Minimal (Minor inconvenience, limited to small groups)",
+                                "Low (Noticeable impact, but recoverable in the short term)",
+                                "Moderate (Significant disruption, requiring policy changes or resource allocation)",
+                                "High (Broad-scale impact, multiple sectors affected, long recovery needed)",
+                                "Severe (Extensive damage or upheaval, major intervention required)",
+                                "Critical (Nationwide or international crisis, potentially catastrophic)",
+                                "Unprecedented (Historic level of disruption, global ramifications)"
+                            ],
+                            "description": "The level of intensity or extent of impact."
+                        },
+                        "affectedParties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "List of groups, institutions, or nations significantly impacted by this ramification (e.g., local businesses, global markets, civilians)."
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "A concise explanation of how this specific ramification affects the scenario (e.g., potential outcomes, chain reactions)."
+                        },
+                        "timeframe": {
+                            "type": "string",
+                            "enum": [
+                                "Instantaneous (Immediate impact, occurring within hours)",
+                                "Ultra-Short-Term (Within a few days)",
+                                "Very Short-Term (1-2 weeks)",
+                                "Short-Term (2 weeks to 3 months)",
+                                "Moderate Short-Term (3-6 months)",
+                                "Medium-Term (6-12 months)",
+                                "Extended Medium-Term (1-2 years, ongoing but reversible impact)",
+                                "Long-Term (2-5 years, lasting structural or policy shifts)",
+                                "Extended Long-Term (5-10 years, sustained effect with major influence)",
+                                "Multi-Decade (10-30 years, major historical repercussions)",
+                                "Generational (30-70 years, shaping future societal norms)",
+                                "Civilizational (Over 70 years, deeply ingrained and irreversible changes)",
+                                "Indefinite (Unclear timeline, effects could last indefinitely)"
+                            ],
+                            "description": "Indicates how quickly this ramification manifests and how long it might last, ranging from immediate effects to fundamental shifts spanning entire civilizations."
+                        }
+                    },
+                    "required": [
+                        "ramificationType",
+                        "severity",
+                        "description"
+                    ]
+                },
+                "description": "A list of consequential outcomes or effects triggered by this event, each describing a specific domain, severity, and impacted parties."
             }
         },
         "required": [
             "eventType",
-            "eventData"
+            "eventData",
+            "ramifications"
         ]
     }
 }

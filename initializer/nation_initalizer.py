@@ -60,7 +60,7 @@ def generate_subfield_json_prompt(subfield: str, json_schema: dict,  context: st
     The output must be a fully valid JSON object matching the schema.
     """
     return f"""
-    You are an expert in generating structured JSON data for an alternate history scenario.
+    You are an expert in generating structured JSON data for a historical scenario.
     Your task is to produce a JSON object for the '{subfield}' section according to the following schema:
     
     {json.dumps(json_schema, indent=2)}
@@ -68,7 +68,8 @@ def generate_subfield_json_prompt(subfield: str, json_schema: dict,  context: st
     Additional context: {context}
     
     Please output only the JSON object (no explanations or extra text) and ensure that all required
-    fields are present and adhere exactly to the schema.
+    fields are present and adhere exactly to the schema. Make sure to include the entirety of the enum string selected for a given field, and not just the first word from the given enum's string.
+    If a part of the schema is not mentioned directly, get the time period from the additional context provided and find the historically correct value(s) for that part yourself.
     """
 
 
@@ -80,9 +81,9 @@ def generate_subfield_prompt(country_name: str, time_period: str, subfield: str)
     """
     return f"""
     Write a concise paragraph about the {subfield} of {country_name} during the {time_period}.
-    Please include historically plausible or alternate-historical details,
-    focusing on how the {subfield} works, its key features, and any notable aspects relevant 
-    to that era. 
+    Please include historically plausible details,
+    focusing on how the {subfield} works for {country_name}, its key features, and any notable aspects relevant 
+    to that era. Capture a full, all-encompassing view of the {subfield} of the nation, and make sure everything is historically accurate for the time period of {time_period}.
     
     Do not produce JSON or bullet points; just a single paragraph of text.
     """
@@ -90,14 +91,35 @@ def generate_subfield_prompt(country_name: str, time_period: str, subfield: str)
 def fetch_paragraph_for_subfield(model, country_name: str, time_period: str, subfield: str) -> str:
     """
     Call the AI to get a single paragraph about this subfield for the 
-    specified country/time period.
+    specified country/time period. Retries up to 3 times if an error occurs.
     """
-    time.sleep(7)
-    prompt = generate_subfield_prompt(country_name, time_period, subfield)
-    response = model.generate_content(prompt)
+    max_retries = 30
+    retry_delay = 5  # Wait time in seconds before retrying
     
-    print(f"Adding subfield {subfield} for nation {country_name}")
-    return response.text.strip()
+    for attempt in range(max_retries):
+        try:
+            start_time = time.time()
+            prompt = generate_subfield_prompt(country_name, time_period, subfield)
+            response = model.generate_content(prompt)
+            end_time = time.time() - start_time
+
+            print(f"Write operation took {end_time:.2f}s")
+
+            if end_time <= 6:
+                time.sleep(6 - end_time)
+                print(f"Extra Wait: {6 - end_time:.2f}s")
+
+            print(f"Adding subfield {subfield} for nation {country_name}")
+            return response.text.strip()
+
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {retry_delay} seconds... (Attempt {attempt + 2}/{max_retries})")
+                time.sleep(retry_delay)
+            else:
+                print("Maximum retry attempts reached. Skipping this request.")
+                return f"Error fetching data for {subfield} in {country_name}."
 
 ###############################################################################
 #           3) High-Level Function to Fill Each Part with Paragraphs         #
@@ -146,6 +168,7 @@ def fill_nation_data_with_paragraphs(model, country_name: str, time_period: str)
     results = {}
     for sf in subfields:
         paragraph = fetch_paragraph_for_subfield(model, country_name, time_period, sf)
+        print(f"{sf} - {paragraph}")
         results[sf] = paragraph
 
     return results
@@ -168,8 +191,10 @@ def main():
     ]
     
     # Example countries and time period
-    countries = ["Germany", "Soviet Russia", "United States of America", "Japan"]#, "United Kingdom", "France", "Spain", "Republic of China", "Communist China", "Japan","Finland","Hungary"]
-    time_period = "Early 1939"
+    countries = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
+    time_period = "1965"
+
+
     
     # Store all nations' data
     all_nations_data = {}
