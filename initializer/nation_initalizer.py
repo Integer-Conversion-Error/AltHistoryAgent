@@ -279,5 +279,121 @@ def main():
     # If you wanted, you could now store all_nations_data as JSON in a file.
 
 
+
+def nation_init_main(
+    countries: list = ["Germany", "Soviet Union"],
+    time_period: str = "1965"
+):
+    """
+    Initializes nation data and saves it in a structured format within the simulation_data folder.
+    Each simulation instance is stored under 'simulation_data/Simulation_<Time-Period>/nations/<Country>/'
+    
+    :param countries: List of country names to initialize.
+    :param time_period: The historical time period for the scenario.
+    """
+    model = configure_genai()
+    
+    internal_subfields = [
+        "crimeLawEnforcement",
+        "demographics",
+        "economicPolicies",
+        "education",
+        "energyAndResources",
+        "healthcare",
+        "infrastructure"
+    ]
+
+    # Define the directory structure for this simulation instance
+    simulation_dir = os.path.join("simulation_data", f"Simulation_{time_period}")
+    nations_dir = os.path.join(simulation_dir, "nations")
+    os.makedirs(nations_dir, exist_ok=True)
+
+    print(f"\nInitialized simulation directory: {simulation_dir}")
+
+    # Store all nations' data
+    all_nations_data = {}
+
+    for country_name in countries:
+        start_time = time.time()
+        print(f"\nProcessing data for {country_name}...")
+
+        # Create a directory for the country within the simulation instance
+        country_dir = os.path.join(nations_dir, country_name)
+        os.makedirs(country_dir, exist_ok=True)
+
+        # Gather paragraphs for each subfield
+        paragraphs_dict = fill_nation_data_with_paragraphs(model, country_name, time_period)
+        all_nations_data[country_name] = paragraphs_dict
+
+        # Store internal affairs information in one file
+        nation_internal_info = ""
+
+        for sf, para in paragraphs_dict.items():
+            print(f"\n--- Generating JSON for {country_name}: {sf} ---")
+
+            if sf in internal_subfields:
+                # Accumulate internal affairs information
+                nation_internal_info += f"\n{sf}\n{para}"
+            else:
+                # Map subfields to schemas
+                schema_mapping = {
+                    "diplomacy": "diplomacy_schema.json",
+                    "government": "government_schema.json",
+                    "technology": "technology_schema.json",
+                    "military": "military_schema.json"
+                }
+                schema_filename = schema_mapping.get(sf)
+                
+                if schema_filename:
+                    schema_filepath = os.path.join("nation_subschemas/external_affairs_subschemas", schema_filename)
+
+                    # Load the relevant schema
+                    with open(schema_filepath, "r", encoding="utf-8") as file:
+                        json_schema = json.load(file)
+
+                    # Generate structured data
+                    structured_data = low_level_writer.produce_structured_data(
+                        json_schema, generate_subfield_json_prompt(sf, json_schema, para), para
+                    )
+
+                    # Save the structured data as a JSON file
+                    json_output_path = os.path.join(country_dir, f"{sf}.json")
+                    with open(json_output_path, "w", encoding="utf-8") as json_file:
+                        json.dump(structured_data, json_file, indent=2)
+
+                    print(f"Saved {sf}.json for {country_name}")
+
+        # Process and save internal affairs as a single JSON
+        if nation_internal_info:
+            internal_schema_path = os.path.join("nation_subschemas/internal_affairs_subschemas", "internal_affairs_schema.json")
+            with open(internal_schema_path, "r", encoding="utf-8") as file:
+                internal_json_schema = json.load(file)
+
+            subfields_string = ",".join(internal_subfields)
+
+            # Generate structured internal affairs data
+            internal_affairs_data = low_level_writer.produce_structured_data(
+                internal_json_schema, generate_subfield_json_prompt(subfields_string, internal_json_schema, nation_internal_info), nation_internal_info
+            )
+
+            # Save internal affairs JSON file
+            internal_json_output_path = os.path.join(country_dir, "internal_affairs.json")
+            with open(internal_json_output_path, "w", encoding="utf-8") as json_file:
+                json.dump(internal_affairs_data, json_file, indent=2)
+
+            print(f"Saved internal_affairs.json for {country_name}")
+
+        endtime = time.time() - start_time
+        print(f"{country_name} took {endtime:.2f}s")
+
+    print("\nAll countries processed and JSON files saved successfully!")
+
+
+
+        
+
+    # If you wanted, you could now store all_nations_data as JSON in a file.
+
+
 if __name__ == "__main__":
     main()

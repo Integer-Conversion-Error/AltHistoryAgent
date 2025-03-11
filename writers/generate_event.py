@@ -35,7 +35,7 @@ def configure_genai():
     }
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash-exp",
+        model_name="gemini-2.0-flash",
         generation_config=generation_config,
     )
     return model

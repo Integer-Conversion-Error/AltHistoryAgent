@@ -1,0 +1,17 @@
+{
+  "current_date": "1970-03-02",
+  "nations": [],
+  "conflicts": {
+    "activeWars": [],
+    "borderSkirmishes": [],
+    "internalUnrest": [],
+    "proxyWars": []
+  },
+  "globalEconomy": [],
+  "globalEvents": [],
+  "humanitarianCrises": [],
+  "naturalDisasters": [],
+  "politicalEvents": [],
+  "politicalViolence": [],
+  "scientificDiscoveries": []
+}

@@ -1,0 +1,169 @@
+{
+    "$id": "https://example.com/schemas/nation_effects",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Nation Effects Tracker",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "nation": {
+                "type": "string",
+                "description": "The name of the nation affected by this event."
+            },
+            "effectId": {
+                "type": "string",
+                "description": "Unique identifier for this effect."
+            },
+            "originEventId": {
+                "type": "string",
+                "description": "The unique ID of the event that caused this effect."
+            },
+            "originEventType": {
+                "type": "string",
+                "enum": [
+                    "Conflict",
+                    "Economic Event",
+                    "Political Violence",
+                    "Scientific Discovery",
+                    "Natural Disaster",
+                    "Humanitarian Crisis",
+                    "Political Event",
+                    "Generic Event"
+                ],
+                "description": "The type of event that triggered this effect."
+            },
+            "ramificationType": {
+                "type": "string",
+                "enum": [
+                    "Political",
+                    "Economic",
+                    "Social",
+                    "Technological",
+                    "Military",
+                    "Diplomatic",
+                    "Environmental",
+                    "Cultural",
+                    "Humanitarian",
+                    "Legal",
+                    "Other"
+                ],
+                "description": "The category of the event's effect."
+            },
+            "severity": {
+                "type": "string",
+                "enum": [
+                    "Minimal",
+                    "Low",
+                    "Moderate",
+                    "High",
+                    "Severe",
+                    "Critical",
+                    "Unprecedented"
+                ],
+                "description": "The intensity of the effect on the nation."
+            },
+            "affectedSectors": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "Government",
+                        "Economy",
+                        "Healthcare",
+                        "Military",
+                        "Technology",
+                        "Infrastructure",
+                        "Education",
+                        "Energy",
+                        "Food Supply",
+                        "Transportation",
+                        "Media",
+                        "Public Sentiment",
+                        "Trade",
+                        "Industry",
+                        "Security",
+                        "Other"
+                    ]
+                },
+                "description": "The key sectors of the nation that are affected by this effect."
+            },
+            "description": {
+                "type": "string",
+                "description": "A detailed explanation of how this effect manifests and its broader implications for the nation."
+            },
+            "timeframe": {
+                "type": "string",
+                "enum": [
+                    "Instantaneous",
+                    "Ultra-Short-Term",
+                    "Very Short-Term",
+                    "Short-Term",
+                    "Moderate Short-Term",
+                    "Medium-Term",
+                    "Extended Medium-Term",
+                    "Long-Term",
+                    "Extended Long-Term",
+                    "Multi-Decade",
+                    "Generational",
+                    "Civilizational",
+                    "Indefinite"
+                ],
+                "description": "How long this effect is expected to last."
+            },
+            "startDate": {
+                "type": "string",
+                "format": "date",
+                "description": "The date when this effect first began."
+            },
+            "isActive": {
+                "type": "boolean",
+                "description": "Indicates if this effect is still ongoing."
+            },
+            "estimatedEndDate": {
+                "type": "string",
+                "format": "date",
+                "description": "The estimated date when this effect will subside (if applicable)."
+            },
+            "nationalMemoryImpact": {
+                "type": "string",
+                "enum": [
+                    "Forgotten (No longer part of national consciousness)",
+                    "Barely Remembered (Only historians and specialists discuss it)",
+                    "Moderately Remembered (Occasionally referenced in media or academia)",
+                    "Well Remembered (Common knowledge, still politically or socially relevant)",
+                    "Strongly Remembered (Regularly discussed, major part of national discourse)",
+                    "Historic Landmark (Permanent impact on national identity or policy)"
+                ],
+                "description": "How prominently this effect is remembered by the nation's population and government."
+            },
+            "policyResponses": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "List of major government policies or actions enacted in response to this effect."
+            },
+            "legacyEffects": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "A list of any new ramifications or policies that have emerged as a result of this effect."
+            }
+        },
+        "required": [
+            "nation",
+            "effectId",
+            "originEventId",
+            "originEventType",
+            "ramificationType",
+            "severity",
+            "affectedSectors",
+            "description",
+            "timeframe",
+            "startDate",
+            "isActive",
+            "nationalMemoryImpact"
+        ]
+    }
+}
