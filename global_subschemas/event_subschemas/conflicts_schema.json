@@ -53,18 +53,187 @@
                     "casualties": {
                         "type": "object",
                         "properties": {
-                            "military": {
-                                "type": "integer",
-                                "minimum": 0
+                            "totalMilitary": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-500 casualties)",
+                                    "Low (500-5,000 casualties)",
+                                    "Moderate (5,000-50,000 casualties)",
+                                    "High (50,000-250,000 casualties)",
+                                    "Severe (250,000-1,000,000 casualties)",
+                                    "Catastrophic (1,000,000-5,000,000 casualties)",
+                                    "Apocalyptic (5,000,000-10,000,000 casualties)",
+                                    "Existential (>10,000,000 casualties)"
+                                ],
+                                "description": "Total estimated military casualties across all branches."
+                            },
+                            "landForces": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-500 casualties)",
+                                    "Low (500-5,000 casualties)",
+                                    "Moderate (5,000-50,000 casualties)",
+                                    "High (50,000-250,000 casualties)",
+                                    "Severe (250,000-1,000,000 casualties)",
+                                    "Catastrophic (>1,000,000 casualties)"
+                                ],
+                                "description": "Casualties specifically among the army, mechanized infantry, and armored divisions."
+                            },
+                            "airForces": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-100 casualties)",
+                                    "Low (100-1,000 casualties)",
+                                    "Moderate (1,000-10,000 casualties)",
+                                    "High (10,000-50,000 casualties)",
+                                    "Severe (50,000-100,000 casualties)",
+                                    "Catastrophic (>100,000 casualties)"
+                                ],
+                                "description": "Casualties among air force personnel, including pilots and ground crews."
+                            },
+                            "navalForces": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-200 casualties)",
+                                    "Low (200-2,000 casualties)",
+                                    "Moderate (2,000-20,000 casualties)",
+                                    "High (20,000-50,000 casualties)",
+                                    "Severe (50,000-100,000 casualties)",
+                                    "Catastrophic (>100,000 casualties)"
+                                ],
+                                "description": "Casualties among navy personnel, including sailors and marines."
+                            },
+                            "specialForces": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-50 casualties)",
+                                    "Low (50-500 casualties)",
+                                    "Moderate (500-5,000 casualties)",
+                                    "High (5,000-10,000 casualties)",
+                                    "Severe (10,000-25,000 casualties)",
+                                    "Catastrophic (>25,000 casualties)"
+                                ],
+                                "description": "Casualties among elite military units such as special forces and covert operations teams."
+                            },
+                            "paramilitaryForces": {
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-100 casualties)",
+                                    "Low (100-1,000 casualties)",
+                                    "Moderate (1,000-10,000 casualties)",
+                                    "High (10,000-50,000 casualties)",
+                                    "Severe (50,000-100,000 casualties)",
+                                    "Catastrophic (>100,000 casualties)"
+                                ],
+                                "description": "Casualties among paramilitary forces, including national guards, militias, and irregular forces."
                             },
                             "civilian": {
-                                "type": "integer",
-                                "minimum": 0
+                                "type": "string",
+                                "enum": [
+                                    "None (0 casualties)",
+                                    "Minimal (1-1,000 casualties)",
+                                    "Low (1,000-10,000 casualties)",
+                                    "Moderate (10,000-100,000 casualties)",
+                                    "High (100,000-1,000,000 casualties)",
+                                    "Severe (1,000,000-5,000,000 casualties)",
+                                    "Catastrophic (5,000,000-20,000,000 casualties)",
+                                    "Genocidal (>20,000,000 casualties)"
+                                ],
+                                "description": "Estimated civilian casualties in the conflict, including direct and indirect losses."
+                            },
+                            "equipmentLosses": {
+                                "type": "object",
+                                "properties": {
+                                    "tanks": {
+                                        "type": "string",
+                                        "enum": [
+                                            "None (0 losses)",
+                                            "Minimal (1-50 tanks lost)",
+                                            "Low (50-250 tanks lost)",
+                                            "Moderate (250-1,000 tanks lost)",
+                                            "High (1,000-5,000 tanks lost)",
+                                            "Severe (5,000-10,000 tanks lost)",
+                                            "Catastrophic (>10,000 tanks lost)"
+                                        ],
+                                        "description": "Estimated losses of tanks and armored vehicles."
+                                    },
+                                    "aircraft": {
+                                        "type": "string",
+                                        "enum": [
+                                            "None (0 losses)",
+                                            "Minimal (1-20 aircraft lost)",
+                                            "Low (20-100 aircraft lost)",
+                                            "Moderate (100-500 aircraft lost)",
+                                            "High (500-1,000 aircraft lost)",
+                                            "Severe (1,000-5,000 aircraft lost)",
+                                            "Catastrophic (>5,000 aircraft lost)"
+                                        ],
+                                        "description": "Estimated losses of aircraft, including fighters, bombers, and transport planes."
+                                    },
+                                    "warships": {
+                                        "type": "string",
+                                        "enum": [
+                                            "None (0 losses)",
+                                            "Minimal (1-5 warships lost)",
+                                            "Low (5-20 warships lost)",
+                                            "Moderate (20-50 warships lost)",
+                                            "High (50-100 warships lost)",
+                                            "Severe (100-200 warships lost)",
+                                            "Catastrophic (>200 warships lost)"
+                                        ],
+                                        "description": "Estimated losses of warships, including aircraft carriers, destroyers, and submarines."
+                                    },
+                                    "artillery": {
+                                        "type": "string",
+                                        "enum": [
+                                            "None (0 losses)",
+                                            "Minimal (1-100 artillery pieces lost)",
+                                            "Low (100-500 artillery pieces lost)",
+                                            "Moderate (500-2,000 artillery pieces lost)",
+                                            "High (2,000-5,000 artillery pieces lost)",
+                                            "Severe (5,000-10,000 artillery pieces lost)",
+                                            "Catastrophic (>10,000 artillery pieces lost)"
+                                        ],
+                                        "description": "Estimated losses of artillery and multiple rocket launch systems."
+                                    },
+                                    "logisticsVehicles": {
+                                        "type": "string",
+                                        "enum": [
+                                            "None (0 losses)",
+                                            "Minimal (1-500 vehicles lost)",
+                                            "Low (500-2,000 vehicles lost)",
+                                            "Moderate (2,000-10,000 vehicles lost)",
+                                            "High (10,000-50,000 vehicles lost)",
+                                            "Severe (50,000-100,000 vehicles lost)",
+                                            "Catastrophic (>100,000 vehicles lost)"
+                                        ],
+                                        "description": "Estimated losses of trucks, fuel tankers, and logistics support vehicles."
+                                    }
+                                },
+                                "required": [
+                                    "tanks",
+                                    "aircraft",
+                                    "warships",
+                                    "artillery",
+                                    "logisticsVehicles"
+                                ]
                             }
                         },
                         "required": [
-                            "military",
-                            "civilian"
+                            "totalMilitary",
+                            "landForces",
+                            "airForces",
+                            "navalForces",
+                            "specialForces",
+                            "paramilitaryForces",
+                            "civilian",
+                            "equipmentLosses"
                         ]
                     },
                     "territorialChanges": {
@@ -73,15 +242,216 @@
                             "type": "object",
                             "properties": {
                                 "region": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "The name of the region or territory affected."
+                                },
+                                "previousController": {
+                                    "type": "string",
+                                    "description": "The entity or nation that controlled the region before the change."
                                 },
                                 "newController": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "The entity or nation that currently holds the region."
+                                },
+                                "changeType": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Annexation",
+                                        "Seized by Military Force",
+                                        "Diplomatic Agreement",
+                                        "Colonization",
+                                        "Protectorate Established",
+                                        "Partition",
+                                        "Occupied (Temporary Military Control)",
+                                        "Secession",
+                                        "Reunification",
+                                        "Internationally Mandated Transfer",
+                                        "Unilateral Declaration",
+                                        "Still Contested (Active Frontline)"
+                                    ],
+                                    "description": "The manner in which control changed."
+                                },
+                                "dateOfChange": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "The official date when the territorial change took effect or the most recent update."
+                                },
+                                "isControlStable": {
+                                    "type": "boolean",
+                                    "description": "Indicates whether the new controller has firm, uncontested control over the region."
+                                },
+                                "conflictStatus": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Fully Controlled",
+                                        "Partially Controlled",
+                                        "Disputed (Active Fighting)",
+                                        "No Man’s Land (No Clear Control)"
+                                    ],
+                                    "description": "Current status of control over the region."
+                                },
+                                "populationImpact": {
+                                    "type": "object",
+                                    "properties": {
+                                        "populationDisplacement": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "description": "Estimated number of people displaced due to the change."
+                                        },
+                                        "casualtiesFromConflict": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "description": "Estimated casualties resulting from the territorial change."
+                                        },
+                                        "ethnicOrCulturalImpact": {
+                                            "type": "string",
+                                            "enum": [
+                                                "None",
+                                                "Minor Assimilation Efforts",
+                                                "Forced Assimilation",
+                                                "Ethnic Cleansing",
+                                                "Mass Deportation",
+                                                "Genocide"
+                                            ],
+                                            "description": "The effect on the ethnic or cultural composition of the region."
+                                        }
+                                    },
+                                    "required": [
+                                        "populationDisplacement",
+                                        "casualtiesFromConflict",
+                                        "ethnicOrCulturalImpact"
+                                    ],
+                                    "description": "The impact of the territorial change on the local population."
+                                },
+                                "futureDisputeRisk": {
+                                    "type": "string",
+                                    "enum": [
+                                        "None (Peaceful Resolution)",
+                                        "Low (Some Diplomatic Tensions)",
+                                        "Moderate (Occasional Skirmishes & Claims)",
+                                        "High (Likely Future Conflict)",
+                                        "Extreme (Ongoing Armed Dispute)"
+                                    ],
+                                    "description": "The likelihood of future territorial conflict or disputes over this change."
+                                },
+                                "relatedTreatiesOrResolutions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Treaties, agreements, or UN resolutions related to the territorial change."
                                 }
                             },
                             "required": [
                                 "region",
-                                "newController"
+                                "previousController",
+                                "newController",
+                                "changeType",
+                                "dateOfChange",
+                                "isControlStable",
+                                "conflictStatus",
+                                "populationImpact",
+                                "futureDisputeRisk"
+                            ]
+                        }
+                    },
+                    "importantBattles": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "battleName": {
+                                    "type": "string"
+                                },
+                                "date": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "location": {
+                                    "type": "string"
+                                },
+                                "belligerents": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sideA": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "sideB": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "sideA",
+                                        "sideB"
+                                    ]
+                                },
+                                "outcome": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Decisive Victory for Side A",
+                                        "Decisive Victory for Side B",
+                                        "Pyrrhic Victory for Side A",
+                                        "Pyrrhic Victory for Side B",
+                                        "Tactical Victory for Side A",
+                                        "Tactical Victory for Side B",
+                                        "Strategic Stalemate",
+                                        "Inconclusive"
+                                    ]
+                                },
+                                "ramifications": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "ramificationType": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Military Shift",
+                                                    "Political Change",
+                                                    "Economic Impact",
+                                                    "Strategic Consequence",
+                                                    "Technological Advancement",
+                                                    "Diplomatic Repercussion",
+                                                    "Public Morale",
+                                                    "Territorial Repercussion"
+                                                ]
+                                            },
+                                            "severity": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Minimal",
+                                                    "Low",
+                                                    "Moderate",
+                                                    "High",
+                                                    "Severe",
+                                                    "Extreme"
+                                                ]
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "ramificationType",
+                                            "severity",
+                                            "description"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "battleName",
+                                "date",
+                                "location",
+                                "belligerents",
+                                "outcome",
+                                "ramifications"
                             ]
                         }
                     }
@@ -91,7 +461,8 @@
                     "startDate",
                     "status",
                     "belligerents",
-                    "casualties"
+                    "casualties",
+                    "importantBattles"
                 ]
             }
         },
