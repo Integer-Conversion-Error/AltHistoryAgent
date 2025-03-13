@@ -4,10 +4,7 @@
     "title": "Economic Events",
     "type": "object",
     "properties": {
-        "eventId": {
-            "type": "string",
-            "description": "A unique identifier for the economic event."
-        },
+        
         "name": {
             "type": "string",
             "description": "The official or widely recognized name of the economic event."

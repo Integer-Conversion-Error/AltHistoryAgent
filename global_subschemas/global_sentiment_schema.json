@@ -34,12 +34,6 @@
                 "maximum": 100,
                 "description": "Scale from 0 (peaceful) to 100 (imminent war)."
             },
-            "historicalConflicts": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "ideologicalAlignment": {
                 "type": "string",
                 "enum": [
@@ -50,28 +44,42 @@
                     "Opposed"
                 ]
             },
-            "recentIncidents": {
+            "relevantEvents": {
                 "type": "array",
                 "items": {
                     "type": "object",
                     "properties": {
-                        "incidentName": {
-                            "type": "string"
+                        "eventId": {
+                            "type": "string",
+                            "description": "The unique ID of the referenced conflict or event that shaped these nations' relations."
                         },
                         "date": {
                             "type": "string",
-                            "format": "date"
+                            "format": "date",
+                            "description": "When the referenced event took place."
                         },
-                        "impact": {
+                        "impactOnRelations": {
                             "type": "string",
                             "enum": [
-                                "Minor",
+                                "Minimal",
                                 "Moderate",
-                                "Severe"
-                            ]
+                                "Severe",
+                                "Transformational"
+                            ],
+                            "description": "Describes how strongly this event affected the relationship between the two nations."
+                        },
+                        "notes": {
+                            "type": "string",
+                            "description": "Optional freeform text to capture any additional details about how this event influenced relations."
                         }
-                    }
-                }
+                    },
+                    "required": [
+                        "eventId",
+                        "date",
+                        "impactOnRelations"
+                    ]
+                },
+                "description": "A list of references to actual events (e.g., conflicts, treaties) that significantly impacted relations between nationA and nationB."
             }
         },
         "required": [
@@ -80,7 +88,6 @@
             "diplomaticRelations",
             "economicTrust",
             "militaryTensions",
-            "historicalConflicts",
             "ideologicalAlignment"
         ]
     }

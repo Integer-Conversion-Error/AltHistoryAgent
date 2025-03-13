@@ -191,7 +191,10 @@ def main():
     ]
     
     # Example countries and time period
-    countries = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
+    
+    #countries = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
+    
+    countries = ["United States of America", "Soviet Union", "United Kingdom"]
     time_period = "1965"
 
 
@@ -204,7 +207,7 @@ def main():
         print(f"\nProcessing data for {country_name}...")
 
         # Create a directory for the country if it doesn't exist
-        country_dir = os.path.join("generated_timelines/generated_nations_"+time_period, country_name)
+        country_dir = os.path.join(f"simulation_data/generated_timeline_{time_period}/generated_nations", country_name)
         os.makedirs(country_dir, exist_ok=True)
 
         # Gather paragraphs for each subfield

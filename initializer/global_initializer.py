@@ -50,7 +50,20 @@ try:
 except ImportError:
     print("Error: Could not import 'nation_initalizer'. Check file structure or naming.")
     sys.exit(1)
+    
+    
+try:
+    import fetch_nation_events
+except ImportError:
+    print("Error: Could not import 'fetch_nation_events'. Check file structure or naming.")
+    sys.exit(1)
 
+
+try:
+    import ramification_generator
+except ImportError:
+    print("Error: Could not import 'ramification_generator'. Check file structure or naming.")
+    sys.exit(1)
 try:
     from writers import low_level_writer
 except ImportError:
@@ -61,6 +74,10 @@ try:
     from writers import generate_event
 except ImportError:
     print("Warning: Could not import 'generate_event'. We'll placeholder event generation calls.")
+    
+try: from summarizers import lazy_nation_summarizer
+except ImportError:
+    print("Error: Could not import 'lazy_nation_summarizer'. Check file structure or naming.")
 
 ###############################################################################
 #                            1) HELPER FUNCTIONS                              #
@@ -132,124 +149,8 @@ def init_nations(nations: list, start_date: str):
     except Exception as e:
         print(f"Error calling nation_initalizer: {e}")
         sys.exit(1)
-        
-        
-def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year: int) -> list:
-    """
-    Asks the AI model for a simplified JSON array of important events in which 'nation_name' was involved,
-    during the time period [start_year, end_year]. Each event in the array should only include:
     
-    [
-      {
-        "date": "YYYY-MM-DD",
-        "title": "Short title of the event",
-        "description": "Brief explanation of the event"
-      },
-      ...
-    ]
 
-    :param model: A configured generative AI model (e.g. from configure_genai()).
-    :param nation_name: The nation for which we want to gather historical events.
-    :param start_year: The earliest year (inclusive) to look for events.
-    :param end_year: The latest year (inclusive) to look for events.
-    :return: A Python list of dictionaries, each with keys "date", "title", and "description".
-             Returns an empty list if parsing fails or if the AI does not produce the desired format.
-    """
-    
-    # 1) Build a prompt instructing the AI to produce a JSON array 
-    #    with the minimal keys: date, title, description.
-    prompt = f"""
-    You are an expert historian. Provide a valid JSON array of important events 
-    involving '{nation_name}' between {start_year} and {end_year}. 
-    Each event object in the array must ONLY include these keys:
-      "date" (in YYYY-MM-DD format),
-      "title" (short name of the event),
-      "description" (a concise explanation, no more than two sentences).
-
-    The final output must be strictly valid JSON containing only an array of objects, 
-    with no extra text or explanation. Do not wrap in quotes or add extra fields.
-    """
-    
-    # 2) Send the prompt to the AI model and collect the response
-    response = model.generate_content(prompt)
-    
-    # 3) Try parsing the AI response as JSON. 
-    #    We expect a top-level array containing {date, title, description} objects.
-    try:
-        raw_output = response.text.strip()
-        parsed_events = json.loads(raw_output)
-        
-        # Validate that it's a list of objects with the required keys
-        if not isinstance(parsed_events, list):
-            print("AI did not return a JSON array. Returning empty list.")
-            return []
-        
-        # Optional: further check each item for date/title/description
-        valid_events = []
-        for ev in parsed_events:
-            if (
-                isinstance(ev, dict) 
-                and all(k in ev for k in ["date", "title", "description"])
-            ):
-                valid_events.append(ev)
-            else:
-                print(f"Warning: One event is missing required keys or is not a dict:\n{ev}")
-
-        return valid_events
-    
-    except json.JSONDecodeError:
-        print("Failed to parse AI output as valid JSON. Raw output:")
-        print(response.text)
-        return []
-
-
-def generate_historical_events(nations: list, start_date: str, lookback: int) -> list:
-    """
-    Generate or gather major events that impacted these nations in the last 'lookback' years.
-    For demonstration, we create a placeholder event. In real usage, you might call an AI-based
-    generator or load from a data source.
-
-    :param nations: List of nation names
-    :param start_date: The starting year of the scenario
-    :param lookback: How many years to go back
-    :return: A list of event objects (matching global_event_schema, typically)
-    """
-    print("\n--- Generating important events for each nation (looking back) ---")
-    global_events = []
-
-    if not nations:
-        return global_events
-
-    # Just one placeholder conflict for demonstration:
-    placeholder_event = {
-        "eventType": "Conflict",
-        "eventData": {
-            "conflictName": "Placeholder War",
-            "startDate": f"{int(start_date) - 2}-01-15",
-            "endDate": None,
-            "status": "Ongoing",
-            "belligerents": {
-                "sideA": [nations[0]] if nations else ["ExampleN1"],
-                "sideB": [nations[-1]] if len(nations) > 1 else ["ExampleN2"]
-            },
-            "casualties": {"military": 1000, "civilian": 500},
-            "territorialChanges": []
-        },
-        "ramifications": [
-            {
-                "ramificationType": "Military",
-                "severity": "High (Broad-scale impact, multiple sectors affected, long recovery needed)",
-                "affectedParties": (
-                    [nations[0], nations[-1]] if len(nations) > 1 else ["ExampleN1", "ExampleN2"]
-                ),
-                "description": "Regional instability leading to arms race.",
-                "timeframe": "Short-Term (2 weeks to 3 months)"
-            }
-        ]
-    }
-
-    global_events.append(placeholder_event)
-    return global_events
 
 def apply_ramifications_to_nations(nations: list, start_date: str, global_events: list):
     """
@@ -262,7 +163,7 @@ def apply_ramifications_to_nations(nations: list, start_date: str, global_events
     """
     print("\n--- Adding ramifications to each nation's effects ---")
     simulation_dir = os.path.join("simulation_data", f"Simulation_{start_date}", "nations")
-    nat_effects_schema_path = "national_effect_schema.json"
+    nat_effects_schema_path = "nation_subschemas/internal_affairs_subschemas/national_effect_schema.json"
     try:
         with open(nat_effects_schema_path, "r", encoding="utf-8") as f:
             nat_effects_schema = json.load(f)
@@ -272,12 +173,13 @@ def apply_ramifications_to_nations(nations: list, start_date: str, global_events
 
     for ev in global_events:
         ramifications = ev.get("ramifications", [])
-        # This placeholder uses eventData.conflictName as an eventId, real usage might differ
-        event_id_label = ev["eventData"].get("conflictName", "EventNoName")
+        
+        event_id_label = ev.get("eventID", "NoEventID")
 
         for ram in ramifications:
             impacted_nations = ram.get("affectedParties", [])
             for nation_name in impacted_nations:
+                nation_summary = lazy_nation_summarizer.load_and_summarize_nation(nation=nation_name,timeline=start_date)
                 if nation_name not in nations:
                     continue  # skip if it's not in the chosen list
                 nation_path = os.path.join(simulation_dir, nation_name)
@@ -294,71 +196,43 @@ def apply_ramifications_to_nations(nations: list, start_date: str, global_events
                             existing_effects = json.load(ef)
                         except json.JSONDecodeError:
                             existing_effects = []
+                
+                effects = ramification_generator.fetch_and_save_nation_effects(ram,nation_name,nation_summary,start_date)
 
-                new_effect = {
-                    "nation": nation_name,
-                    "effectId": f"{nation_name}-{int(time.time())}",
-                    "originEventId": event_id_label,
-                    "originEventType": ev["eventType"],
-                    "ramificationType": ram.get("ramificationType", "Other"),
-                    "severity": ram.get("severity", "Minimal"),
-                    "affectedSectors": ["Military"],  # minimal
-                    "description": ram.get("description", ""),
-                    "timeframe": ram.get("timeframe", "Short-Term (2 weeks to 3 months)"),
-                    "startDate": datetime.datetime.now().strftime("%Y-%m-%d"),
-                    "isActive": True,
-                    "nationalMemoryImpact": "Moderately Remembered (Occasionally referenced in media or academia)"
-                }
-
-                existing_effects.append(new_effect)
+                existing_effects += effects
                 with open(effects_file, "w", encoding="utf-8") as ef:
                     json.dump(existing_effects, ef, indent=2)
+                for effect in effects:
+                    print(f"Added effect to {nation_name}: {effect['ramificationType']}")
 
-                print(f"Added effect to {nation_name}: {new_effect['ramificationType']}")
-
-def generate_global_structures(nations: list, start_date: str, char_count: int):
+def create_simulation_directory(start_date: str) -> str:
     """
-    Creates the overarching global data files, including:
-    - global_sentiment.json
-    - global_trade.json
-    - notable_characters.json
-    - organizations.json
-    - strategic_interests.json
-    - global_economy.json
+    Creates and returns the path to the simulation directory for the given start_date.
     """
-    simulation_path = os.path.join("simulation_data", f"Simulation_{start_date}")
+    simulation_path = os.path.join("simulation_data", f"generated_timeline_{start_date}")
     os.makedirs(simulation_path, exist_ok=True)
+    return simulation_path
 
-    # --- Global Sentiment ---
-    if len(nations) > 1:
-        print("\n--- Generating global_sentiment.json ---")
-        global_sentiment_path = os.path.join(simulation_path, "global_sentiment.json")
-        sentiment_array = []
-        for i in range(len(nations)):
-            for j in range(i+1, len(nations)):
-                pair = {
-                    "nationA": nations[i],
-                    "nationB": nations[j],
-                    "diplomaticRelations": "Neutral",
-                    "economicTrust": 50,
-                    "militaryTensions": 50,
-                    "ideologicalAlignment": "Neutral"
-                }
-                sentiment_array.append(pair)
-        with open(global_sentiment_path, "w", encoding="utf-8") as gf:
-            json.dump(sentiment_array, gf, indent=2)
-        print(f"Saved global_sentiment.json with {len(sentiment_array)} pairs.")
-    else:
-        print("Only one nation chosen, skipping global sentiment array creation.")
+def generate_global_sentiment(nations: list, start_date: str, simulation_path: str):
+    """
+    Generates a `global_sentiment.json` file containing pairwise diplomatic/economic relations
+    for the provided list of nations, if more than one nation is present.
+    """
+    import sentiment_initializer
+    sentiment_initializer.initialize_sentiment(nations,simulation_path+"/global_sentiment.json",start_date)
 
-    # --- Global Trade ---
+def generate_global_trade(nations: list, start_date: str, simulation_path: str):
+    """
+    Generates a `global_trade.json` file containing pairwise trade relations
+    for the provided list of nations, if more than one nation is present.
+    """
     if len(nations) > 1:
         print("\n--- Generating global_trade.json ---")
         global_trade_path = os.path.join(simulation_path, "global_trade.json")
         trade_relations = []
         relation_id_count = 1
         for i in range(len(nations)):
-            for j in range(i+1, len(nations)):
+            for j in range(i + 1, len(nations)):
                 rel = {
                     "relationId": f"trade-rel-{relation_id_count}",
                     "year": int(start_date),
@@ -382,7 +256,10 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
     else:
         print("Only one nation chosen, skipping global trade array creation.")
 
-    # --- Notable Characters ---
+def generate_notable_characters(nations: list, start_date: str, char_count: int, simulation_path: str):
+    """
+    Generates a `notable_characters.json` file containing placeholder characters for each nation.
+    """
     print("\n--- Generating notable_characters.json ---")
     notable_chars_path = os.path.join(simulation_path, "notable_characters.json")
     all_chars = []
@@ -407,7 +284,11 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
         json.dump(all_chars, cf, indent=2)
     print(f"Saved notable_characters.json with {len(all_chars)} character entries.")
 
-    # --- Organizations (placeholder) ---
+def generate_organizations(nations: list, start_date: str, simulation_path: str):
+    """
+    Generates an `organizations.json` file with placeholder content describing
+    international or otherwise notable organizations.
+    """
     print("\n--- Generating organizations.json ---")
     organizations_path = os.path.join(simulation_path, "organizations.json")
     orgs_array = [
@@ -428,7 +309,11 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
         json.dump(orgs_array, of, indent=2)
     print(f"Saved organizations.json with {len(orgs_array)} entries.")
 
-    # --- Strategic Interests (placeholder) ---
+def generate_strategic_interests(nations: list, start_date: str, simulation_path: str):
+    """
+    Generates a `strategic_interests.json` file with placeholder content describing
+    strategic interests for the listed nations.
+    """
     print("\n--- Generating strategic_interests.json ---")
     interests_path = os.path.join(simulation_path, "strategic_interests.json")
     interests_array = [
@@ -449,7 +334,10 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
         json.dump(interests_array, sf, indent=2)
     print(f"Saved strategic_interests.json with {len(interests_array)} entries.")
 
-    # --- Global Economy (placeholder) ---
+def generate_global_economy(nations: list, start_date: str, simulation_path: str):
+    """
+    Generates a `global_economy.json` file with placeholder data about the global economy.
+    """
     print("\n--- Generating global_economy.json ---")
     global_economy_path = os.path.join(simulation_path, "global_economy.json")
     global_economy_data = {
@@ -467,7 +355,28 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
         json.dump(global_economy_data, gf, indent=2)
     print("Saved global_economy.json")
 
+def generate_global_structures(nations: list, start_date: str, char_count: int):
+    """
+    Orchestrates the creation of multiple global structure files.
+    Calls separate helper functions for each file:
+     - global_sentiment.json
+     - global_trade.json
+     - notable_characters.json
+     - organizations.json
+     - strategic_interests.json
+     - global_economy.json
+    """
+    simulation_path = create_simulation_directory(start_date)
+
+    generate_global_sentiment(nations, start_date, simulation_path)
+    generate_global_trade(nations, start_date, simulation_path)
+    generate_notable_characters(nations, start_date, char_count, simulation_path)
+    generate_organizations(nations, start_date, simulation_path)
+    generate_strategic_interests(nations, start_date, simulation_path)
+    generate_global_economy(nations, start_date, simulation_path)
+
     print("\n=== Finished generating global structures ===")
+
 
 
 ###############################################################################
@@ -499,7 +408,7 @@ def main():
     init_nations(nations, start_date)
 
     # 3) Generate major events that impacted these nations
-    global_events = generate_historical_events(nations, start_date, lookback)
+    global_events = fetch_nation_events.fetch_and_save_nations_events(nations, start_date, lookback)
 
     # 4) For each event, apply ramifications to the relevant nations
     apply_ramifications_to_nations(nations, start_date, global_events)

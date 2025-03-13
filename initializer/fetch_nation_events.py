@@ -43,9 +43,9 @@ def configure_genai():
     genai.configure(api_key=config["GEMINI_API_KEY"])
 
     generation_config = {
-        "temperature": 0.8,  # Balanced randomness
-        "top_p": 0.95,
-        "top_k": 40
+        "temperature": 0.1,  # Keeps randomness low for accuracy
+        "top_p": 0.85,       # Limits output to the most probable choices while allowing some flexibility
+        "top_k": 40,         # Ensures diversity but prevents extreme randomness
     }
 
     model = genai.GenerativeModel(
@@ -101,7 +101,7 @@ def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year
     Before finalizing an event, **validate** that the selected "eventType" is the most appropriate category for it.
     
     **Validation Rules:**
-    - "Conflict" → Must involve armed combat, military confrontations, wars, or large-scale violence between nations or factions.
+    - "Conflict" → Must involve armed combat, military confrontations, wars, or large-scale violence between nations or factions. Peace treaties, truces, ceasefires, and/or the end of conflicts are NOT included here.
     - "Battle" → A specific engagement within a larger conflict. Must have clear belligerents, a location, and an outcome.
     - "Economic Event" → Must involve financial crises, economic recessions, market crashes, trade agreements, or monetary policies with national/global impact.
     - "Political Violence" → Must involve assassinations, coups, terror attacks, uprisings, insurgencies, or any politically motivated large-scale violence.
@@ -163,7 +163,7 @@ def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year
     return []
 
 
-def save_events_as_json(events, nation_name, save_path="simulation_data/events"):
+def save_events_as_json(events, save_path="simulation_data/events"):
     """
     Converts raw event descriptions into structured JSON files, following
     the correct schema based on eventType.
@@ -173,7 +173,7 @@ def save_events_as_json(events, nation_name, save_path="simulation_data/events")
     :param save_path: Directory where JSON files will be saved.
     """
     if not events:
-        print(f"No events to process for {nation_name}.")
+        print(f"No events to process.")
         return
 
     os.makedirs(save_path, exist_ok=True)
@@ -216,7 +216,7 @@ def save_events_as_json(events, nation_name, save_path="simulation_data/events")
             )
 
             if structured_event:
-                event_file = os.path.join(save_path, f"{nation_name}_{event['date']}_{event_type}.json")
+                event_file = os.path.join(save_path, f"{event['date']}_{event_type}.json")
                 with open(event_file, "w", encoding="utf-8") as f:
                     json.dump(structured_event, f, indent=2)
                 print(f"Saved: {event_file}")
@@ -243,6 +243,27 @@ def test_fetch_and_save_nation_events():
         print(json.dumps(e, indent=2))
 
     save_events_as_json(events, nation_name)
+    
+    
+def fetch_and_save_nations_events(nations = ["United States of America"], start_year = 1920, end_year = 1965):
+    """
+    Calls `fetch_nation_events_brief` and `save_events_as_json` to fully test
+    fetching and storing structured event data.
+    """
+    
+    save_dir = f"simulation_data/generated_timeline_{end_year}/events"
+    model = configure_genai()
+    events = []
+    for nation_name in nations:
+        events = fetch_nation_events_brief(model, nation_name, start_year, end_year)
+
+        print(f"\nFetched {len(events)} events for {nation_name}:")
+        for e in events:
+            print(json.dumps(e, indent=2))
+
+    save_events_as_json(events, save_dir)
+    
+    return events
 
 # If run as a script, trigger the test
 if __name__ == "__main__":

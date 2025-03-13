@@ -51,6 +51,10 @@
     "internalAffairs": {
       "$ref": "nation_subschemas/internal_affairs_subschemas/internal_affairs_schema.json",
       "description": "Internal affairs, including domestic policies, governance, and societal stability."
+    },
+    "nationalEffects": {
+      "$ref": "nation_subschemas/internal_affairs_subschemas/national_effect_schema.json",
+      "description": "Internal affairs, including domestic policies, governance, and societal stability."
     }
   },
   "required": [
@@ -61,6 +65,7 @@
     "GDP",
     "currency",
     "externalAffairs",
-    "internalAffairs"
+    "internalAffairs",
+    "nationalEffects"
   ]
 }

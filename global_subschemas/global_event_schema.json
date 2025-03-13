@@ -6,6 +6,10 @@
     "items": {
         "type": "object",
         "properties": {
+            "eventId": {
+                "type": "string",
+                "description": "A unique identifier for the event."
+            },
             "eventType": {
                 "type": "string",
                 "enum": [
@@ -125,6 +129,7 @@
             }
         },
         "required": [
+            "eventID",
             "eventType",
             "eventData",
             "ramifications"

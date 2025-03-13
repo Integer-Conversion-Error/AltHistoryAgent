@@ -6,10 +6,6 @@
     "items": {
         "type": "object",
         "properties": {
-            "eventId": {
-                "type": "string",
-                "description": "A unique identifier for the attack or assassination."
-            },
             "name": {
                 "type": "string",
                 "description": "The official or commonly used name of the attack or killing."
@@ -52,10 +48,15 @@
                                 "type": "number"
                             }
                         },
-                        "required": ["latitude", "longitude"]
+                        "required": [
+                            "latitude",
+                            "longitude"
+                        ]
                     }
                 },
-                "required": ["country"]
+                "required": [
+                    "country"
+                ]
             },
             "perpetrators": {
                 "type": "array",
@@ -80,7 +81,10 @@
                         "description": "The organization or nation the target was associated with."
                     }
                 },
-                "required": ["name", "role"]
+                "required": [
+                    "name",
+                    "role"
+                ]
             },
             "casualties": {
                 "type": "object",
@@ -96,7 +100,9 @@
                         "description": "Number of reported injuries."
                     }
                 },
-                "required": ["fatalities"]
+                "required": [
+                    "fatalities"
+                ]
             },
             "motive": {
                 "type": "string",
@@ -130,10 +136,16 @@
                                     "description": "Organizations, nations, or populations affected."
                                 }
                             },
-                            "required": ["description", "affectedEntities"]
+                            "required": [
+                                "description",
+                                "affectedEntities"
+                            ]
                         }
                     },
-                    "required": ["category", "details"]
+                    "required": [
+                        "category",
+                        "details"
+                    ]
                 },
                 "description": "Consequences and political effects of the attack."
             },
@@ -151,7 +163,10 @@
                             "description": "How the country responded (e.g., military action, diplomatic protest, countermeasures)."
                         }
                     },
-                    "required": ["nation", "reaction"]
+                    "required": [
+                        "nation",
+                        "reaction"
+                    ]
                 },
                 "description": "How the international community responded to the event."
             },

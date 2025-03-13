@@ -4,10 +4,6 @@
     "title": "Political Events",
     "type": "object",
     "properties": {
-        "eventId": {
-            "type": "string",
-            "description": "A unique identifier for the event."
-        },
         "name": {
             "type": "string",
             "description": "The official or widely recognized name of the event."

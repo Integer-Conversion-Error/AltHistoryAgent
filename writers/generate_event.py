@@ -51,7 +51,8 @@ def generate_global_event_prompt(json_schema: dict, action: str, context: str) -
     in the array.
     """
     return f"""
-    You are an expert in generating structured JSON data for an alternate history or scenario.
+    You are an expert in generating structured JSON data for an alternate history timeline, or a real historical timeline.
+    If it is a real historical timeline event, then this will be clarified in the Additional context part below, and you will take real historical information, being careful to get factual information only
     Your task is to produce a **single array** containing exactly **one** event object, 
     strictly following this schema:
 

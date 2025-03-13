@@ -4,10 +4,6 @@
     "title": "Generic Global Event",
     "type": "object",
     "properties": {
-        "eventId": {
-            "type": "string",
-            "description": "A unique identifier for the event."
-        },
         "name": {
             "type": "string",
             "description": "The official or commonly recognized name of the event."

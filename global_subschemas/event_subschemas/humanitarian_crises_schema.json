@@ -6,10 +6,6 @@
     "items": {
         "type": "object",
         "properties": {
-            "crisisId": {
-                "type": "string",
-                "description": "A unique identifier for the crisis."
-            },
             "crisisName": {
                 "type": "string",
                 "description": "The official or widely recognized name of the humanitarian crisis."

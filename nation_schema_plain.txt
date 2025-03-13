@@ -1,0 +1,275 @@
+Purpose: Defines the structure of a Nation object.
+
+Key Identifiers:
+
+	nationId (string): Unique ID for the nation.
+
+	name (string): Official nation name.
+
+	abbreviation (string, max length 5): Short-form label (e.g., “USA”).
+
+Core Data Fields:
+
+	capital (string): Country’s capital city.
+
+	GDP (string, currency pattern): Nation’s Gross Domestic Product (e.g., “$300 billion”).
+
+	currency (string): Official currency in use.
+
+External Affairs (object):
+
+	diplomacy: 
+	
+		Foreign Policy & Global Positioning
+
+			Foreign Policy – Defines stance on international relations (e.g., isolationist, interventionist, expansionist).
+			Diplomatic Influence – Measures global presence through:
+				UN Influence Score (0-100)
+				Regional Power Index (0-100)
+				Global Soft Power Ranking (numeric ranking)
+
+		Alliances & Rivalries
+
+			Alliances – Tracks international alliances, including:
+				Name, member states, formation year, type (military, economic, political, scientific).
+			Rivalries – Lists rival nations and tensions, categorized by:
+				Cause (e.g., ideological conflict, resource disputes).
+				Escalation Level (Cold War, trade war, border skirmishes, active conflict).
+
+		International Agreements & Sanctions
+
+			Treaties – Documents global agreements:
+				Name, signing year, involved nations, status (active, expired, violated).
+			Sanctions – Records imposed restrictions:
+				Target nation, reason, type (economic, military, political, technological).
+				Severity (mild, moderate, severe).
+
+		Proxy Conflicts & Diplomatic Incidents
+
+			Proxy Involvement – Details indirect participation in foreign conflicts:
+				Conflict name, proxy nation, support type (military aid, covert operations, financial, diplomatic).
+				Level of involvement (minimal to primary belligerent).
+			Diplomatic Incidents – Tracks international disputes:
+				Incident name, date, involved nations, cause, resolution (resolved, ongoing, escalating).
+
+	government: 
+	
+		Government Structure
+
+			Government Type – Defines the system of governance (e.g., democracy, monarchy, dictatorship).
+			Constitutional Structure – Specifies federal, unitary, or decentralized governance.
+			Leader – Tracks head of state details (name, title, years in power, approval rating, emergency powers).
+
+		Political System
+
+			Political Parties – Lists parties, their ideology, power status, and representation percentage.
+			Political Coalitions – Defines alliances among political parties and dominant ideology.
+			Legislature – Specifies legislative structure (unicameral, bicameral, military council) and ruling party.
+			Judiciary – Measures independence level from political interference.
+
+		Stability & Corruption
+
+			Stability Index – Ranks political and social stability from perfectly stable to failed state.
+			Corruption Index – Measures governance integrity, from transparent to state failure due to corruption.
+
+		Governance & Foreign Policy
+
+			Governance Style – Categorizes rule style (authoritarian, technocratic, democratic, etc.).
+			Foreign Policy – Defines interventionism level (isolationist to expansionist), alliances, and major rivals.
+
+	military: 
+		
+		Intelligence Capabilities
+
+			Espionage Capabilities – Strength of covert intelligence, ranging from nonexistent to full-spectrum dominance.
+			Cyber Warfare – Ability to conduct cyber attacks and defend against digital threats.
+			Electronic Surveillance – Extent of domestic and international surveillance operations.
+			Covert Operations – Skill in conducting secret military and intelligence missions.
+			Counterintelligence – Effectiveness in preventing foreign espionage and security threats.
+
+		Personnel & Budget
+
+			Active Personnel – Size of standing military forces.
+			Reserve Personnel – Number of trained reserves available for mobilization.
+			Paramilitary Forces – Strength of non-traditional armed groups.
+			Defense Budget – Financial resources allocated to military spending.
+
+		Nuclear Capability
+
+			Nuclear Stockpile – Number of nuclear warheads.
+			Delivery Systems – Methods for deploying nuclear weapons (e.g., ICBMs, submarines, bombers).
+
+		Land Forces
+
+			Troop Motivation – Morale and willingness to fight.
+			Troop Competency – Training, experience, and battlefield effectiveness.
+			Officer Competency – Leadership skill and strategic capability.
+			Tank Quality – Technological level of armored vehicles, from outdated models to next-gen AI-driven tanks.
+			Armored Vehicles, Artillery, Rocket Systems – Strength of mechanized and fire support forces.
+			Anti-Tank & Air Defense Weapons – Effectiveness of countermeasures against enemy armor and aircraft.
+			Infantry Equipment Quality – Small arms, body armor, and battlefield communication.
+			Logistics Vehicle Quality – Efficiency of military transport and supply vehicles.
+
+		Air Forces
+
+			Fighter Jets, Bombers, Transport Aircraft, Attack Helicopters – Size of each aircraft fleet.
+			Stealth Fighters, Hypersonic Aircraft – Advanced aviation capabilities.
+			Drones – Number and effectiveness of unmanned combat aerial vehicles.
+			Early Warning & Electronic Warfare Aircraft – Capability for battlefield reconnaissance and electronic attacks.
+			Aircraft Quality – Overall technological level of fighter jets, bombers, drones, and support aircraft.
+
+		Naval Forces
+
+			Aircraft Carriers, Destroyers, Frigates, Submarines – Size of each fleet component.
+			Amphibious Assault Ships, Corvettes, Coastal Patrol Vessels – Capability for force projection and coastal defense.
+			Nuclear Submarines – Presence of nuclear-powered attack or ballistic missile submarines.
+			Naval Quality – Technological sophistication of ships, from outdated vessels to AI-assisted warships.
+
+		Logistics & Strategic Mobility
+
+			Fuel Reserves – Amount of stored fuel available for military operations.
+			Munitions Stockpile – Ammunition and explosives reserves.
+			Supply Chain Efficiency – Speed and reliability of resupply operations.
+			Strategic Transport Capacity – Ability to deploy troops and equipment across regions or globally.
+
+	technology: 
+	
+		Global Technology Standing
+
+			Global Tech Ranking – The nation's overall tech position, from undeveloped to unmatched.
+			Global Tech Tier – Competitiveness level, from undeveloped to world-class.
+
+		Research & Development
+
+			R&D Investment – Funding dedicated to research, from negligible to dominant.
+			Major Technological Advancements – Breakthroughs in fields like semiconductors, biotech, and space.
+
+		Space Program
+
+			Status – Active or inactive.
+			Budget – Funding level, from minimal to very high.
+			Launch Capability – Ability to send payloads to orbit or beyond.
+			Milestones – Achievements such as satellite launches, manned spaceflights, and planetary missions.
+			Space Weaponization – Level of military assets in space.
+			International Collaboration – Extent of cooperation with other nations.
+
+		Cybersecurity & Intellectual Property
+
+			Cybersecurity Capability – Strength of cyber defenses, from basic to elite.
+			Patent Output – Innovation output, from minimal to very high.
+
+		Computing & Semiconductor Industry
+
+			Computing Power – Performance of national computing resources, from obsolete to exascale.
+			Semiconductor Industry – Development stage, from no industry to next-gen nano-level chips.
+			Quantum Computing Capability – Readiness level, from none to world-leading research.
+			AI Research Level – AI development progress, from basic models to AGI research.
+			Network Infrastructure – Connectivity level, from pre-2G to next-gen networks.
+			Supercomputer Ranking – Presence in global supercomputing, from none to world's fastest.
+
+		Data & Automation
+
+			Cybersecurity Capability – Defensive and offensive cyber capabilities.
+			Data Center Infrastructure – National cloud computing and data storage capacity.
+			Robotics Industry – Development of industrial and autonomous robotics.
+
+Internal Affairs (object):
+
+	Crime, Law Enforcement & State Surveillance
+
+		Crime Level – Severity of crime in society.
+		Police Presence – Strength of law enforcement.
+		Judicial Strictness – Severity of legal punishments.
+		State Surveillance – Level of government monitoring.
+		Civil Liberties – Degree of personal freedoms.
+		Organized Crime Influence – Impact of mafias, cartels, and terrorist organizations.
+		Corruption in Law Enforcement – Extent of bribery and misconduct in policing.
+		Judicial Independence – Degree of government interference in the judiciary.
+		Civil Unrest Level – Frequency and intensity of protests and riots.
+
+	Demographics
+
+		Literacy Rate – Population percentage that can read/write.
+		Employment Rate – Workforce participation and unemployment levels.
+		Social Mobility – Ease of economic and social advancement.
+		Population Size – General population level.
+		Population Growth – Rate of population increase or decline.
+		Age Structure – Distribution of age groups.
+		Urbanization Level – Proportion of people living in cities.
+		Birth Rate – Frequency of births per capita.
+		Ethnic Composition – Breakdown of major ethnic groups.
+		Religious Composition – Distribution of religious affiliations.
+
+	Economic Policies
+
+		Wealth Distribution – Economic inequality levels.
+		Government Subsidies – Financial support to industries and sectors.
+		State-Owned Enterprises – Government control over businesses.
+		Labor Rights Protections – Strength of worker protections and unions.
+		Currency Stability – Reliability and volatility of national currency.
+		Tax Policy – Corporate and income tax levels.
+
+	Education
+
+		Private vs. Public Education – Ratio of students in public vs. private schools.
+		Higher Education Enrollment – Percentage advancing to tertiary education.
+		Vocational & Technical Training – Availability of trade schools.
+		Research Institutions – Presence of major universities and research centers.
+		Education Quality – Effectiveness of the schooling system.
+		Funding Level – Investment in education.
+		STEM Development – Focus on science, technology, engineering, and mathematics.
+
+	Energy & Resources
+
+		Energy Production – Total national energy output.
+		Water Security – Availability of freshwater supply.
+		Food Security – Self-sufficiency in food production.
+		Rare Earth Mineral Extraction – Control over critical minerals.
+		Energy Dependence – Reliance on foreign energy imports.
+		Environmental Protection Policies – Sustainability and conservation efforts.
+		Renewable Energy Percentage – Share of renewable energy sources.
+		Oil Procurement & Production – Oil acquisition and production levels.
+
+	Healthcare
+
+		Healthcare Quality – Overall effectiveness of healthcare.
+		Funding Level – Investment in medical services.
+		Public Health Effectiveness – Success of disease prevention and response measures.
+
+	Infrastructure
+
+		Housing Quality & Availability – Affordability and accessibility of housing.
+		Public Transport Efficiency – Reliability of urban and national transportation.
+		Road & Highway Development – State of major transport networks.
+		Airport & Port Infrastructure – Level of air and sea trade facilities.
+		Disaster Preparedness – Readiness for natural disasters.
+		Urbanization Level – Degree of city-based development.
+		Transportation Infrastructure – Roads, rail, and transit systems.
+		Communication Infrastructure – Strength of telecommunications and internet networks.
+
+National Effects
+
+	Purpose: Tracks how each event affects a particular nation.
+	Format: An array of effect objects, each describing a single consequence or impact.
+	Core Identifiers:
+
+		nation (string): The nation’s name.
+		effectId (string): A unique identifier for the effect.
+		originEventId (string): The event (by ID) that triggered the effect.
+		originEventType (enum): Specifies the type of origin event (Conflict, Economic, etc.).
+
+	Effect Details:
+
+		ramificationType (enum): Category (Political, Economic, Social, etc.).
+		severity (enum): Intensity (Minimal to Unprecedented).
+		affectedSectors (array of enums): Which parts of the nation are impacted (Government, Economy, etc.).
+		description (string): Brief explanation of the effect’s nature.
+		timeframe (enum): Expected duration (Instantaneous to Indefinite).
+		startDate (string, date): When the effect began.
+		isActive (boolean): Whether the effect is ongoing.
+		estimatedEndDate (string, date, optional): Projected conclusion.
+		nationalMemoryImpact (enum): How strongly this effect is remembered.
+		policyResponses (array): List of major policies enacted in response.
+		legacyEffects (array): Additional outcomes or policies that arose from this effect.
+
+Required Fields: Must include nation, effectId, originEventId, originEventType, ramificationType, severity, affectedSectors, description, timeframe, startDate, isActive, and nationalMemoryImpact.
