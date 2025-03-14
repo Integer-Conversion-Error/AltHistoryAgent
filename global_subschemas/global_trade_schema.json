@@ -25,6 +25,7 @@
             "totalTradeVolume": {
                 "type": "string",
                 "enum": [
+                    "No Trade/Embargo ($0)",
                     "Minimal Trade (<$10B)",
                     "Low Trade ($10B-$50B)",
                     "Moderate Trade ($50B-$100B)",

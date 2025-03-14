@@ -226,35 +226,9 @@ def generate_global_trade(nations: list, start_date: str, simulation_path: str):
     Generates a `global_trade.json` file containing pairwise trade relations
     for the provided list of nations, if more than one nation is present.
     """
-    if len(nations) > 1:
-        print("\n--- Generating global_trade.json ---")
-        global_trade_path = os.path.join(simulation_path, "global_trade.json")
-        trade_relations = []
-        relation_id_count = 1
-        for i in range(len(nations)):
-            for j in range(i + 1, len(nations)):
-                rel = {
-                    "relationId": f"trade-rel-{relation_id_count}",
-                    "year": int(start_date),
-                    "nationA": nations[i],
-                    "nationB": nations[j],
-                    "totalTradeVolume": "Minimal Trade (<$10B)",
-                    "tradeDifference": {
-                        "balance": "Perfectly Balanced (0%)",
-                        "surplusNation": "",
-                        "deficitNation": ""
-                    },
-                    "exportsFromA": [],
-                    "exportsFromB": [],
-                    "tradeAgreements": []
-                }
-                relation_id_count += 1
-                trade_relations.append(rel)
-        with open(global_trade_path, "w", encoding="utf-8") as tf:
-            json.dump(trade_relations, tf, indent=2)
-        print(f"Saved global_trade.json with {len(trade_relations)} pairwise trade records.")
-    else:
-        print("Only one nation chosen, skipping global trade array creation.")
+    import trade_initializer
+    trade_initializer.initialize_trade(nations,start_date)
+    
 
 def generate_notable_characters(nations: list, start_date: str, char_count: int, simulation_path: str):
     """
