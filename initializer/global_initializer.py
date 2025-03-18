@@ -38,46 +38,16 @@ import json
 import sys
 import datetime
 import time
+from initializer_util import *
+import nation_initalizer
+import fetch_nation_events
+import ramification_generator
 
-# We assume you have these modules available:
-# - nation_initalizer.py (with a main function or a known function called nation_init_main)
-# - generate_event.py or other references for event creation
-# - some produce_structured_data logic in low_level_writer.py
-# Adjust imports based on your actual code structure:
+from writers import low_level_writer
+from writers import generate_event
 
-try:
-    import nation_initalizer
-except ImportError:
-    print("Error: Could not import 'nation_initalizer'. Check file structure or naming.")
-    sys.exit(1)
-    
-    
-try:
-    import fetch_nation_events
-except ImportError:
-    print("Error: Could not import 'fetch_nation_events'. Check file structure or naming.")
-    sys.exit(1)
+from summarizers import lazy_nation_summarizer
 
-
-try:
-    import ramification_generator
-except ImportError:
-    print("Error: Could not import 'ramification_generator'. Check file structure or naming.")
-    sys.exit(1)
-try:
-    from writers import low_level_writer
-except ImportError:
-    print("Error: Could not import 'low_level_writer' from 'writers'. Check file structure.")
-    sys.exit(1)
-
-try:
-    from writers import generate_event
-except ImportError:
-    print("Warning: Could not import 'generate_event'. We'll placeholder event generation calls.")
-    
-try: from summarizers import lazy_nation_summarizer
-except ImportError:
-    print("Error: Could not import 'lazy_nation_summarizer'. Check file structure or naming.")
 
 ###############################################################################
 #                            1) HELPER FUNCTIONS                              #
@@ -219,7 +189,7 @@ def generate_global_sentiment(nations: list, start_date: str, simulation_path: s
     for the provided list of nations, if more than one nation is present.
     """
     import sentiment_initializer
-    sentiment_initializer.initialize_sentiment(nations,simulation_path+"/global_sentiment.json",start_date)
+    return sentiment_initializer.initialize_sentiment(nations,simulation_path+"/global_sentiment.json",start_date)
 
 def generate_global_trade(nations: list, start_date: str, simulation_path: str):
     """
@@ -227,86 +197,34 @@ def generate_global_trade(nations: list, start_date: str, simulation_path: str):
     for the provided list of nations, if more than one nation is present.
     """
     import trade_initializer
-    trade_initializer.initialize_trade(nations,start_date)
+    return trade_initializer.initialize_trade(nations,start_date)
     
 
 def generate_notable_characters(nations: list, start_date: str, char_count: int, simulation_path: str):
     """
     Generates a `notable_characters.json` file containing placeholder characters for each nation.
     """
-    print("\n--- Generating notable_characters.json ---")
-    notable_chars_path = os.path.join(simulation_path, "notable_characters.json")
-    all_chars = []
-    for n in nations:
-        for c_i in range(char_count):
-            c_obj = {
-                "fullName": f"{n} Character {c_i+1}",
-                "aliases": [],
-                "birthDate": "1900-01-01",
-                "deathDate": None,
-                "nationality": n,
-                "politicalAffiliation": "Independent",
-                "role": "Other",
-                "majorContributions": [],
-                "associatedEvents": [],
-                "publicPerception": "Unknown",
-                "quotes": [],
-                "legacy": "Moderate"
-            }
-            all_chars.append(c_obj)
-    with open(notable_chars_path, "w", encoding="utf-8") as cf:
-        json.dump(all_chars, cf, indent=2)
-    print(f"Saved notable_characters.json with {len(all_chars)} character entries.")
+    import notable_character_initalizer
+    return notable_character_initalizer.initialize_characters(char_count=char_count,reference_year=start_date,nations=nations)
+    
 
-def generate_organizations(nations: list, start_date: str, simulation_path: str):
+def generate_organizations(nations: list, start_date: str, simulation_path: str,org_count:int):
     """
     Generates an `organizations.json` file with placeholder content describing
     international or otherwise notable organizations.
     """
-    print("\n--- Generating organizations.json ---")
-    organizations_path = os.path.join(simulation_path, "organizations.json")
-    orgs_array = [
-        {
-            "entityId": "ORG-0001",
-            "entityType": "International Organization",
-            "name": "Placeholder Alliance",
-            "formationOrSigningDate": f"{start_date}-01-01",
-            "dissolutionOrExpiryDate": None,
-            "status": "Active",
-            "memberStates": nations,
-            "entityCategory": "Military",
-            "primaryObjectives": ["Collective defense", "Strategic cooperation"],
-            "influenceScore": 75
-        }
-    ]
-    with open(organizations_path, "w", encoding="utf-8") as of:
-        json.dump(orgs_array, of, indent=2)
-    print(f"Saved organizations.json with {len(orgs_array)} entries.")
+    
+    import organizations_initializer
+    return organizations_initializer.initialize_global_agreements(reference_year=start_date,allowed_nations=nations,entity_count=org_count)
+
 
 def generate_strategic_interests(nations: list, start_date: str, simulation_path: str):
     """
     Generates a `strategic_interests.json` file with placeholder content describing
     strategic interests for the listed nations.
     """
-    print("\n--- Generating strategic_interests.json ---")
-    interests_path = os.path.join(simulation_path, "strategic_interests.json")
-    interests_array = [
-        {
-            "interestName": "Arctic Shipping Lanes",
-            "region": "Arctic Circle",
-            "resourceType": "Shipping lane",
-            "importanceLevel": "High",
-            "controllingEntities": ["Canada", "Russia"],
-            "rivalClaims": nations if len(nations) > 2 else [],
-            "strategicValue": "Potential for trade route shortcuts as ice recedes.",
-            "potentialConflicts": [],
-            "economicValue": "$100 billion",
-            "environmentalConcerns": "Melting icecaps, endangered species"
-        }
-    ]
-    with open(interests_path, "w", encoding="utf-8") as sf:
-        json.dump(interests_array, sf, indent=2)
-    print(f"Saved strategic_interests.json with {len(interests_array)} entries.")
+    import strategic_interest_initalizer
+    return strategic_interest_initalizer.initalize_strategic_interests(start_date)
 
 def generate_global_economy(nations: list, start_date: str, simulation_path: str):
     """
@@ -340,13 +258,15 @@ def generate_global_structures(nations: list, start_date: str, char_count: int):
      - strategic_interests.json
      - global_economy.json
     """
+    import trade_sentiment_initializer
     simulation_path = create_simulation_directory(start_date)
 
-    generate_global_sentiment(nations, start_date, simulation_path)
-    generate_global_trade(nations, start_date, simulation_path)
-    generate_notable_characters(nations, start_date, char_count, simulation_path)
-    generate_organizations(nations, start_date, simulation_path)
-    generate_strategic_interests(nations, start_date, simulation_path)
+    # generate_global_sentiment(nations, start_date, simulation_path)
+    # generate_global_trade(nations, start_date, simulation_path)
+    #trade_sentiment_initializer.initialize_combined(nations=nations,year=start_date)
+    #generate_notable_characters(nations, start_date, char_count, simulation_path)
+    generate_organizations(nations, start_date, simulation_path,30)
+    #generate_strategic_interests(nations, start_date, simulation_path)
     generate_global_economy(nations, start_date, simulation_path)
 
     print("\n=== Finished generating global structures ===")
@@ -367,28 +287,30 @@ def main():
       5) Generate global-level structures
     """
     # 1) Gather user inputs
-    nations = input_nations()
-    start_date = input_start_date()
-    lookback = input_lookback_years()
-    char_count = input_characters_count()
+    #nations = input_nations()
+    nations = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
+
+    start_date = 1975#input_start_date()
+    lookback = 1900#input_lookback_years()
+    char_count = 8#input_characters_count()
 
     print("\n=== Starting Global Initialization ===")
     print(f"Selected Nations: {nations}")
     print(f"Timeline Start: {start_date}")
     print(f"Lookback Years: {lookback}")
-    print(f"Characters per Nation: {char_count}")
+    #print(f"Characters per Nation: {char_count}")
 
     # 2) Initialize each nation's data
-    init_nations(nations, start_date)
+    #init_nations(nations, start_date)
 
     # 3) Generate major events that impacted these nations
-    global_events = fetch_nation_events.fetch_and_save_nations_events(nations, start_date, lookback)
+    global_events = fetch_nation_events.fetch_and_save_nations_events(nations, lookback, start_date)
 
     # 4) For each event, apply ramifications to the relevant nations
-    apply_ramifications_to_nations(nations, start_date, global_events)
+    #apply_ramifications_to_nations(nations, start_date, global_events)
 
     # 5) Generate all the global structures (sentiment, trade, characters, organizations, etc.)
-    generate_global_structures(nations, start_date, char_count)
+    #generate_global_structures(nations, start_date, char_count)
 
     print("\n=== Global Initialization Complete ===")
     print(f"Scenario data saved under 'simulation_data/Simulation_{start_date}/'.")

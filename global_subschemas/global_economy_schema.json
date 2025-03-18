@@ -1,50 +1,336 @@
 {
     "$id": "https://example.com/schemas/global_economy",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Global Economic Trends",
+    "description": "Comprehensive economic schema covering GDP, inflation, trade, stock markets, financial systems, and key economic events in an alternate history simulation.",
     "type": "object",
     "properties": {
-        "globalGDP": {
-            "type": "string",
-            "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$"
-        },
         "stockMarketTrends": {
             "type": "object",
+            "description": "Performance of key stock exchanges and market indices.",
             "properties": {
                 "DowJones": {
-                    "type": "number"
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Dow Jones Industrial Average."
                 },
                 "Nasdaq": {
-                    "type": "number"
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Nasdaq Composite Index."
                 },
                 "ShanghaiComposite": {
-                    "type": "number"
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Shanghai Stock Exchange Composite Index."
                 },
                 "EuroStoxx": {
-                    "type": "number"
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Euro Stoxx 50 Index."
+                },
+                "TokyoNikkei": {
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Nikkei 225 Index in Tokyo."
+                },
+                "BerlinExchange": {
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Berlin Stock Exchange."
+                },
+                "MoscowIndex": {
+                    "type": "string",
+                    "enum": [
+                        "Severe Crash",
+                        "Major Decline",
+                        "Steady Decline",
+                        "Minor Decline",
+                        "Near Stability",
+                        "Slight Recovery",
+                        "Moderate Recovery",
+                        "Strong Recovery",
+                        "Bullish Momentum",
+                        "Rapid Growth",
+                        "Speculative Boom",
+                        "Bubble Territory"
+                    ],
+                    "description": "Overall performance of the Moscow Exchange Index."
                 }
             },
             "required": [
                 "DowJones",
                 "Nasdaq",
                 "ShanghaiComposite",
-                "EuroStoxx"
+                "EuroStoxx",
+                "TokyoNikkei",
+                "BerlinExchange",
+                "MoscowIndex"
             ]
         },
-        "majorTradeDisputes": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
         "globalInflationRate": {
-            "type": "number",
-            "minimum": 0
+            "type": "string",
+            "enum": [
+                "Severe Deflation (-5% or lower)",
+                "Major Deflation (-4% to -5%)",
+                "Moderate Deflation (-2% to -4%)",
+                "Mild Deflation (-0.1% to -2%)",
+                "Near Price Stability (0% to 1%)",
+                "Low Inflation (1% to 2%)",
+                "Moderate Inflation (2% to 4%)",
+                "Slightly Elevated Inflation (4% to 6%)",
+                "High Inflation (6% to 10%)",
+                "Very High Inflation (10% to 20%)",
+                "Severe Inflation Crisis (20% to 50%)",
+                "Hyperinflation (50%+)"
+            ],
+            "description": "Average global inflation rate, categorized into detailed economic stages."
+        },
+        "resourceScarcity": {
+            "type": "object",
+            "description": "Overview of global resource scarcity, economic implications, and geopolitical tensions.",
+            "properties": {
+                "scarceResources": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "resourceName": {
+                                "type": "string",
+                                "description": "Name of the scarce resource (e.g., oil, lithium, fresh water, uranium, rare earth metals)."
+                            },
+                            "severity": {
+                                "type": "string",
+                                "enum": [
+                                    "Minor Local Disruptions",
+                                    "Localized Supply Constraints",
+                                    "Regional Imbalances",
+                                    "Persistent Market Deficit",
+                                    "Critical Shortages in Some Nations",
+                                    "Widespread Price Instability",
+                                    "Trade Disputes Over Supply",
+                                    "Industry-Specific Supply Chain Crisis",
+                                    "Severe Regional Resource Wars",
+                                    "Continental Resource Deficit",
+                                    "Near-Global Shortages",
+                                    "Global Resource Collapse"
+                                ],
+                                "description": "Severity of scarcity, ranging from minor local disruptions to global economic collapse."
+                            },
+                            "mainProducers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Countries or corporations that control the majority of production for this resource."
+                            },
+                            "affectedRegions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Regions most affected by scarcity (e.g., Middle East, Sub-Saharan Africa, Arctic Circle)."
+                            },
+                            "substituteResources": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Potential alternative resources that could replace the scarce resource."
+                            }
+                        },
+                        "required": [
+                            "resourceName",
+                            "severity",
+                            "mainProducers",
+                            "affectedRegions"
+                        ]
+                    },
+                    "description": "List of resources experiencing major supply shortages and their global impact."
+                },
+                "priceVolatility": {
+                    "type": "string",
+                    "enum": [
+                        "Stable Prices",
+                        "Mild Fluctuations",
+                        "Slightly Volatile",
+                        "Moderately Volatile",
+                        "High But Manageable",
+                        "Short-Term Price Spikes",
+                        "Long-Term Market Instability",
+                        "Severe Speculation-Induced Swings",
+                        "Massive Disruptions in Global Markets",
+                        "Prolonged Economic Uncertainty",
+                        "Hyperinflationary Effects",
+                        "Total Market Collapse"
+                    ],
+                    "description": "Market volatility level due to resource shortages and demand fluctuations."
+                },
+                "conflictRisk": {
+                    "type": "string",
+                    "enum": [
+                        "No Risk",
+                        "Minimal Diplomatic Strains",
+                        "Occasional Economic Disputes",
+                        "Localized Civil Unrest",
+                        "Regional Political Tensions",
+                        "Limited Border Skirmishes",
+                        "Increased Military Posturing",
+                        "Sanctions & Trade Wars",
+                        "Widespread Proxy Conflicts",
+                        "Direct Resource Wars",
+                        "Continental Military Engagements",
+                        "Global Conflict Over Resources"
+                    ],
+                    "description": "Likelihood of diplomatic tensions or armed conflict over resource access."
+                },
+                "blackMarketActivity": {
+                    "type": "string",
+                    "enum": [
+                        "Negligible Illicit Trade",
+                        "Occasional Smuggling",
+                        "Small-Scale Underground Markets",
+                        "Regional Smuggling Networks",
+                        "Organized Criminal Involvement",
+                        "Increased Government Corruption",
+                        "Widespread Illegal Hoarding",
+                        "State-Sanctioned Illicit Trade",
+                        "Cartel-Controlled Resource Supply",
+                        "Parallel Resource Economy",
+                        "Total Black Market Domination",
+                        "Global Shadow Economy"
+                    ],
+                    "description": "Level of illicit trade and smuggling related to scarce resources."
+                },
+                "economicImpact": {
+                    "type": "string",
+                    "enum": [
+                        "No Impact",
+                        "Minor Localized Effects",
+                        "Sector-Specific Challenges",
+                        "National Supply Chain Stress",
+                        "Higher Consumer Prices",
+                        "Recessionary Pressures",
+                        "Multi-Sector Disruptions",
+                        "Broad Economic Decline",
+                        "Severe Regional Depressions",
+                        "Global Economic Stagnation",
+                        "Major Financial Crashes",
+                        "Worldwide Economic Collapse"
+                    ],
+                    "description": "Macroeconomic impact of resource scarcity on global trade and stability."
+                },
+                "governmentResponses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "No Action Taken",
+                            "Public Awareness Campaigns",
+                            "Minor Policy Adjustments",
+                            "Diplomatic Negotiations",
+                            "Strategic Stockpiling",
+                            "Resource Rationing",
+                            "Market Regulations",
+                            "Trade Restrictions & Tariffs",
+                            "Massive Infrastructure Investment",
+                            "National Resource Control Measures",
+                            "Forced Resource Nationalization",
+                            "Total Resource-Based Martial Law"
+                        ]
+                    },
+                    "description": "Actions taken by governments to address scarcity."
+                }
+            },
+            "required": [
+                "scarceResources",
+                "priceVolatility",
+                "conflictRisk",
+                "economicImpact"
+            ]
         }
     },
     "required": [
-        "globalGDP",
         "stockMarketTrends",
-        "majorTradeDisputes",
-        "globalInflationRate"
+        "globalInflationRate",
+        "resourceScarcity"
     ]
 }

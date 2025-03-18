@@ -27,7 +27,7 @@ import os
 import json
 import time
 import google.generativeai as genai
-
+from initializer_util import *
 ###############################################################################
 #                           CONFIG & MODEL SETUP                              #
 ###############################################################################
@@ -276,7 +276,7 @@ Each effect must impact multiple relevant fields within a single domain, ensurin
 
     # We'll implement a retry mechanism similar to your existing approach.
     attempt = 0
-    max_attempts = 3
+    max_attempts = 15
     while attempt < max_attempts:
         try:
             response = model.generate_content(prompt)
@@ -311,6 +311,10 @@ Each effect must impact multiple relevant fields within a single domain, ensurin
             print(f"Attempt {attempt + 1}: Failed to parse AI output as valid JSON. Retrying...")
             attempt += 1
             time.sleep(5)
+        except Exception as e:
+            print(f"Ran into exception {e} (most likely rate limiting). Retrying (attempt {attempt+1})...")
+            attempt += 1
+            time.sleep(2)
 
     print("Max attempts reached. Returning empty list.")
     return []

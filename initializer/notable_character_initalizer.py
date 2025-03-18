@@ -5,45 +5,7 @@ import json
 import time
 import google.generativeai as genai
 from collections import defaultdict
-
-###############################################################################
-#                           CONFIG & MODEL SETUP                              #
-###############################################################################
-
-def load_config():
-    """
-    Load API keys and other configurations from config.json.
-    You need a file named 'config.json' in the same directory, e.g.:
-    {
-        "GEMINI_API_KEY": "<your-key-here>"
-    }
-    """
-    config_path = "config.json"
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"{config_path} not found. Please create the file with the necessary configurations."
-        )
-    with open(config_path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-def configure_genai():
-    """
-    Configure the generative AI model with API key and settings.
-    """
-    config = load_config()
-    genai.configure(api_key=config["GEMINI_API_KEY"])
-
-    generation_config = {
-        "temperature": 0.7,    # Balanced randomness
-        "top_p": 0.95,
-        "top_k": 40
-    }
-
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",  # or whichever model you've configured
-        generation_config=generation_config
-    )
-    return model
+from initializer_util import *
 
 ###############################################################################
 #                      LOADING THE SCHEMA FROM A JSON FILE                    #
@@ -84,7 +46,7 @@ You are given the following JSON Schema for "Notable Historical Figures". Make o
 We are focusing on the year {reference_year}, so the character should be politically relevant around that time
 (either alive or significantly influential in that period).
 
-Already-generated characters for {nation} have the following names: {used_names_str}.
+Already-generated characters for {nation} have the following names: {used_names_str}. Do not pick these characters.
 Create exactly ONE new notable historical figure (strictly valid JSON) for the nation: {nation},
 with a unique 'fullName' that is different from any listed above.
 
@@ -98,7 +60,7 @@ Key requirements:
 4. Respect the valid enums (e.g., role, publicPerception, legacy).
 5. Output ONLY the JSON object, with no extra commentary or Markdown.
 6. The events they partake in MUST be before {reference_year}
-7. Focus on politically relevant people, like politicians, leaders of movements, major business leaders, figureheads etc.
+7. Focus on politically relevant people, like politicians, leaders of movements, major business leaders, figureheads, etc.
 
 Thank you.
     """
@@ -188,11 +150,16 @@ def build_notable_characters(nations, char_count, schema_text, reference_year):
 def save_notable_characters(characters, filename="notable_characters.json"):
     """
     Saves the final array of characters to a single JSON file.
+    Ensures the directory structure exists before saving.
     """
     if not characters:
         print("No characters to save.")
         return
-
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    
+    # Save the JSON file
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(characters, f, indent=2)
     print(f"Saved {len(characters)} total characters to {filename}")
@@ -223,6 +190,14 @@ def main():
 
     # 7) Save them all to a single JSON file
     save_notable_characters(characters, filename=f"simulation_data/generated_timeline_{reference_year}/notable_characters.json")
+    
+def initialize_characters(char_count = 10,reference_year = 1965,nations = ["US", "UK", "USSR"]):
+    global model
+    model = configure_genai(model="gemini-2.0-flash-exp", temp=0.5)
+    schema_text = load_schema_text("global_subschemas/notable_characters_schema.json")
+    characters = build_notable_characters(nations, char_count, schema_text, reference_year)
+    save_notable_characters(characters,filename=f"simulation_data/generated_timeline_{reference_year}/notable_characters.json")
+    return characters
 
 if __name__ == "__main__":
     main()

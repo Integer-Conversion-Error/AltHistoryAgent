@@ -4,48 +4,9 @@ import os
 import json
 import time
 import google.generativeai as genai
-
+from initializer_util import *
 
 #GET RELEVANT EVENTS WITH A QUERYING METHOD, DON'T LEAVE IT UP TO AI
-
-###############################################################################
-#                           CONFIG & MODEL SETUP                              #
-###############################################################################
-
-def load_config():
-    """
-    Load API keys and other configurations from config.json.
-    You need a file named 'config.json' in the same directory, e.g.:
-    {
-        "GEMINI_API_KEY": "<your-key-here>"
-    }
-    """
-    config_path = "config.json"
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"{config_path} not found. Please create the file with the necessary configurations."
-        )
-    with open(config_path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-def configure_genai():
-    """
-    Configure the generative AI model with API key and settings.
-    """
-    config = load_config()
-    genai.configure(api_key=config["GEMINI_API_KEY"])
-
-    generation_config = {
-        "temperature": 0.7,    # Balanced randomness
-        "top_p": 0.95,
-        "top_k": 40
-    }
-
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",  # or whichever model you've configured
-        generation_config=generation_config
-    )
-    return model
 
 ###############################################################################
 #                        ASKING THE AI FOR ONE RELATION                       #
@@ -89,7 +50,7 @@ Please provide ONLY the JSON object as the final output, with no extra commentar
     """
 
     attempt = 0
-    max_attempts = 3
+    max_attempts = 15
     while attempt < max_attempts:
         try:
             response = model.generate_content(prompt)
@@ -112,6 +73,10 @@ Please provide ONLY the JSON object as the final output, with no extra commentar
 
         except json.JSONDecodeError:
             print(f"Failed to parse AI output as valid JSON. Retrying (attempt {attempt+1})...")
+            attempt += 1
+            time.sleep(2)
+        except Exception as e:
+            print(f"Ran into exception {e} (most likely rate limiting). Retrying (attempt {attempt+1})...")
             attempt += 1
             time.sleep(2)
 
@@ -193,9 +158,10 @@ def main():
     
 def initialize_sentiment(nations:list,filename:str,time_period:str):
     global model
-    model = configure_genai()
+    model = configure_genai(temp=0.7, model="gemini-2.0-flash-exp")
     relations = build_global_sentiment(nations,time_period)
     save_global_sentiment(relations,filename)
+    return relations
 
 if __name__ == "__main__":
     main()

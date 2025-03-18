@@ -1,74 +1,215 @@
 {
-  "$id": "https://example.com/schemas/global_strategic_interests",
+  "$id": "https://example.com/schemas/global_strategic_theatres",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Global Strategic Interests",
+  "title": "Global Strategic Theatres",
   "type": "array",
   "items": {
     "type": "object",
     "properties": {
-      "interestName": {
+      "theatreName": {
         "type": "string",
-        "description": "A brief name or label for this strategic interest."
+        "description": "Name of the strategic theatre (e.g., 'Middle East', 'Arctic Region')."
       },
-      "region": {
+      "theatreRegion": {
         "type": "string",
-        "description": "Geographic location or name of the area containing the strategic interest (e.g., Persian Gulf, Arctic Circle)."
+        "description": "Geopolitical region encompassing the theatre (e.g., 'West Asia & North Africa')."
       },
-      "resourceType": {
+      "theatreDescription": {
         "type": "string",
-        "description": "Describes the primary resource or asset (e.g., oil fields, rare earth metals, shipping lane)."
+        "description": "Summary of the theatre's strategic importance."
       },
-      "importanceLevel": {
-        "type": "string",
-        "enum": [
-          "Low",
-          "Moderate",
-          "High",
-          "Critical"
-        ],
-        "description": "The overall strategic priority assigned to this interest."
-      },
-      "controllingEntities": {
+      "majorFactions": {
         "type": "array",
-        "description": "List of nations, corporations, or groups currently controlling or administering the strategic interest.",
         "items": {
           "type": "string"
-        }
+        },
+        "description": "Key countries, groups, or corporations exerting influence."
       },
-      "rivalClaims": {
+      "dominantIdeologies": {
         "type": "array",
-        "description": "List of nations or entities that dispute or claim this interest.",
         "items": {
           "type": "string"
-        }
+        },
+        "description": "Influential ideologies in the theatre (e.g., 'Communism', 'Neoliberalism')."
       },
-      "strategicValue": {
-        "type": "string",
-        "description": "Narrative summary of why this location or resource is strategically important (e.g., major shipping route, nuclear launch site)."
-      },
-      "potentialConflicts": {
+      "alliances": {
         "type": "array",
-        "description": "Possible conflicts or tensions arising from this interest (e.g., references to conflict events, alliances).",
         "items": {
           "type": "string"
-        }
+        },
+        "description": "Major alliances engaged in the theatre (e.g., 'NATO')."
+      },
+      "rivalries": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Key geopolitical tensions or rivalries."
+      },
+      "primaryConflicts": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Ongoing disputes or wars (e.g., 'South China Sea Dispute')."
       },
       "economicValue": {
         "type": "string",
-        "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(million|billion|trillion)?$",
-        "description": "Estimated monetary value tied to the resource (if applicable, e.g., $300 billion)."
+        "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(billion|trillion)?$",
+        "description": "Economic worth of the theatre."
       },
-      "environmentalConcerns": {
-        "type": "string",
-        "description": "Description of environmental impact or sustainability issues (if relevant)."
+      "criticalInfrastructure": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Key infrastructure (e.g., 'Suez Canal')."
+      },
+      "climateRisks": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Environmental threats (e.g., 'Rising Sea Levels')."
+      },
+      "naturalDisasters": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Common disasters (e.g., 'Hurricanes', 'Droughts')."
+      },
+      "strategicInterests": {
+        "type": "array",
+        "description": "Specific strategic interests within the theatre.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "interestName": {
+              "type": "string",
+              "description": "Name of the strategic interest."
+            },
+            "region": {
+              "type": "string",
+              "description": "Geographic location of the interest."
+            },
+            "resourceType": {
+              "type": "string",
+              "description": "Primary resource or asset (e.g., oil fields, rare earth metals)."
+            },
+            "importanceLevel": {
+              "type": "string",
+              "enum": [
+                "Low",
+                "Moderate",
+                "High",
+                "Critical"
+              ],
+              "description": "Priority level of this interest."
+            },
+            "controllingEntities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Current administrators or controllers."
+            },
+            "rivalClaims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Entities disputing or claiming control."
+            },
+            "strategicValue": {
+              "type": "string",
+              "description": "Why this interest is strategically important."
+            },
+            "potentialConflicts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Potential conflicts related to this interest."
+            },
+            "economicValue": {
+              "type": "string",
+              "pattern": "^\\$[0-9]+(\\.[0-9]+)?\\s?(million|billion|trillion)?$",
+              "description": "Estimated economic worth."
+            },
+            "environmentalConcerns": {
+              "type": "string",
+              "description": "Any environmental risks or concerns."
+            },
+            "majorPlayers": {
+              "type": "array",
+              "description": "Key players and their aims within the interest.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "entityName": {
+                    "type": "string",
+                    "description": "Name of the involved country, corporation, or organization."
+                  },
+                  "aims": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Strategic objectives of this entity."
+                  },
+                  "levelOfInfluence": {
+                    "type": "string",
+                    "enum": [
+                      "Dominant",
+                      "High",
+                      "Moderate",
+                      "Low",
+                      "Marginal",
+                      "Emerging",
+                      "Declining",
+                      "Contested"
+                    ],
+                    "description": "Degree of influence over this interest."
+                  },
+                  "meansOfInfluence": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "How influence is exerted (e.g., 'Military', 'Diplomatic')."
+                  },
+                  "conflictPotential": {
+                    "type": "string",
+                    "enum": [
+                      "Low",
+                      "Moderate",
+                      "High"
+                    ],
+                    "description": "Risk of tensions or conflict."
+                  }
+                },
+                "required": [
+                  "entityName",
+                  "aims",
+                  "levelOfInfluence"
+                ]
+              }
+            }
+          },
+          "required": [
+            "interestName",
+            "region",
+            "resourceType",
+            "importanceLevel",
+            "controllingEntities"
+          ]
+        }
       }
     },
     "required": [
-      "interestName",
-      "region",
-      "resourceType",
-      "importanceLevel",
-      "controllingEntities"
+      "theatreName",
+      "strategicInterests"
     ]
   }
 }

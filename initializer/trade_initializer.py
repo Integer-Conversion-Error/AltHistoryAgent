@@ -3,46 +3,14 @@
 import os
 import json
 import time
-import google.generativeai as genai
 
-###############################################################################
-#                           CONFIG & MODEL SETUP                              #
-###############################################################################
 
-def load_config():
-    """
-    Load API keys and other configurations from config.json.
-    Expected JSON format, e.g.:
-    {
-      "GEMINI_API_KEY": "<YOUR-KEY>"
-    }
-    """
-    config_path = "config.json"
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"{config_path} not found. Please create the file with the necessary configurations."
-        )
-    with open(config_path, "r", encoding="utf-8") as file:
-        return json.load(file)
+import sys
+import os
+from initializer_util import *
 
-def configure_genai():
-    """
-    Configure the generative AI model with the API key and generation settings.
-    """
-    config = load_config()
-    genai.configure(api_key=config["GEMINI_API_KEY"])
 
-    generation_config = {
-        "temperature": 0.7,
-        "top_p": 0.95,
-        "top_k": 40
-    }
 
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",  # or whichever model version you prefer
-        generation_config=generation_config
-    )
-    return model
 
 ###############################################################################
 #                          LOAD THE TRADE SCHEMA FILE                         #
@@ -102,7 +70,7 @@ do not remove or rename any required fields or add extra fields not in the schem
     """.strip()
 
     attempt = 0
-    max_attempts = 3
+    max_attempts = 15
     while attempt < max_attempts:
         try:
             response = model.generate_content(prompt)
@@ -116,6 +84,11 @@ do not remove or rename any required fields or add extra fields not in the schem
 
         except json.JSONDecodeError:
             print(f"Failed to parse AI output as valid JSON. Retrying (attempt {attempt+1})...")
+            attempt += 1
+            time.sleep(2)
+            
+        except Exception as e:
+            print(f"Ran into exception {e} (most likely rate limiting). Retrying (attempt {attempt+1})...")
             attempt += 1
             time.sleep(2)
 
@@ -186,7 +159,7 @@ def main():
 
     # 1) Configure the AI model (global so it can be reused)
     global model
-    model = configure_genai()
+    model = configure_genai(model="gemini-2.0-flash-exp",temp=0.5)
 
     # 2) Load the schema text from file
     schema_text = load_trade_schema("global_subschemas/global_trade_schema.json")
@@ -200,7 +173,7 @@ def main():
     
 def initialize_trade(nations,timeline):
     global model
-    model = configure_genai()
+    model = configure_genai(model="gemini-2.0-flash-exp",temp=0.5)
     schema_text = load_trade_schema("global_subschemas/global_trade_schema.json")
     relations = build_trade_relations(nations, timeline, schema_text)
     save_trade_relations(relations, filename=f"simulation_data/generated_timeline_{timeline}/global_trade.json")

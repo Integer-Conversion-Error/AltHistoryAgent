@@ -18,41 +18,7 @@ import json
 import google.generativeai as genai
 import time
 from writers import low_level_writer
-
-###############################################################################
-#                           CONFIG & MODEL SETUP                              #
-###############################################################################
-
-def load_config():
-    """
-    Load API keys and other configurations from config.json.
-    """
-    config_path = "config.json"
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"{config_path} not found. Please create the file with the necessary configurations."
-        )
-    with open(config_path, "r") as file:
-        return json.load(file)
-
-def configure_genai():
-    """
-    Configure the generative AI model with API key and settings.
-    """
-    config = load_config()
-    genai.configure(api_key=config["GEMINI_API_KEY"])
-
-    generation_config = {
-        "temperature": 0.1,  # Keeps randomness low for accuracy
-        "top_p": 0.85,       # Limits output to the most probable choices while allowing some flexibility
-        "top_k": 40,         # Ensures diversity but prevents extreme randomness
-    }
-
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        generation_config=generation_config,
-    )
-    return model
+from initializer_util import *
 
 ###############################################################################
 #                        FUNCTION TO FETCH EVENTS                             #
@@ -84,7 +50,7 @@ def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year
     
     prompt = f"""
     You are an expert historian. Provide a valid JSON array of important events 
-    involving '{nation_name}' between {start_year} and {end_year}. 
+    involving '{nation_name}' between {start_year} and {end_year}. The events MUST be between these two dates. Exclude any events that are not within these two dates. Any event after {end_year} CANNOT BE INCLUDED, and likewise for any event before {start_year}.
 
     Each event object in the array must ONLY include these keys:
       - "date" (in YYYY-MM-DD format) – The exact date of the event.
@@ -128,7 +94,7 @@ def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year
 
     
     attempt = 0
-    max_attempts = 3
+    max_attempts = 15
     while attempt < max_attempts:
         try:
             response = model.generate_content(prompt)
@@ -158,6 +124,11 @@ def fetch_nation_events_brief(model, nation_name: str, start_year: int, end_year
             print(f"Attempt {attempt + 1}: Failed to parse AI output as JSON. Retrying...")
             attempt += 1
             time.sleep(5)
+            
+        except Exception as e:
+            print(f"Ran into exception {e} (most likely rate limiting). Retrying (attempt {attempt+1})...")
+            attempt += 1
+            time.sleep(2)
 
     print("Max attempts reached. Returning empty list.")
     return []
@@ -230,7 +201,7 @@ def test_fetch_and_save_nation_events():
     Calls `fetch_nation_events_brief` and `save_events_as_json` to fully test
     fetching and storing structured event data.
     """
-    model = configure_genai()
+    model = configure_genai(temp = 0.1)
 
     nation_name = "Finland"
     start_year = 1920
@@ -251,17 +222,18 @@ def fetch_and_save_nations_events(nations = ["United States of America"], start_
     fetching and storing structured event data.
     """
     
-    save_dir = f"simulation_data/generated_timeline_{end_year}/events"
+    
     model = configure_genai()
     events = []
     for nation_name in nations:
+        save_dir = f"simulation_data/generated_timeline_{end_year}/nations/{nation_name}/events"
         events = fetch_nation_events_brief(model, nation_name, start_year, end_year)
 
         print(f"\nFetched {len(events)} events for {nation_name}:")
         for e in events:
             print(json.dumps(e, indent=2))
 
-    save_events_as_json(events, save_dir)
+        save_events_as_json(events, save_dir)
     
     return events
 

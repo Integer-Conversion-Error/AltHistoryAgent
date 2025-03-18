@@ -2,38 +2,9 @@ import os
 import json
 from typing import List
 import google.generativeai as genai
+from summarizers.initializer_util import *
 
 
-def load_config():
-    """
-    Load API keys and other configurations from config.json.
-    """
-    config_path = "config.json"
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"{config_path} not found. Please create the file with the necessary configurations."
-        )
-    with open(config_path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-def configure_genai():
-    """
-    Configure the generative AI model with API key and settings.
-    """
-    config = load_config()
-    genai.configure(api_key=config["GEMINI_API_KEY"])
-
-    generation_config = {
-        "temperature": 0.1,  # Keeps randomness low for more factual responses
-        "top_p": 0.85,       # Limits output to the most probable choices while allowing some flexibility
-        "top_k": 40,         # Ensures diversity but prevents extreme randomness
-    }
-
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        generation_config=generation_config,
-    )
-    return model
 
 def gather_json_files(root_folder: str) -> List[str]:
     """
@@ -86,7 +57,7 @@ def summarize_content(model, all_content: dict) -> str:
 
 def main():
     # 1. Configure the generative model
-    model = configure_genai()
+    model = configure_genai(temp=0.1)
 
     # 2. Gather all JSON files (adjust 'nation_subschemas' to your actual directory)
     directory_to_scan = "simulation_data/generated_timelines/generated_nations_1965/Soviet Union"
@@ -108,7 +79,7 @@ def main():
 
 def load_and_summarize_nation(nation = "Soviet Union",timeline = "1965"):
     directory_to_scan = f"simulation_data/generated_timelines_{timeline}/generated_nations/{nation}"
-    model = configure_genai()
+    model = configure_genai(temp=0.1)
     json_files = gather_json_files(directory_to_scan)
 
     if not json_files:

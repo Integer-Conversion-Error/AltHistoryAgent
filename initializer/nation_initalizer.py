@@ -11,7 +11,7 @@ import os,time
 import json
 import google.generativeai as genai
 from typing import Dict
-
+from initializer_util import *
 ###############################################################################
 #                             1) Basic Setup                                  #
 ###############################################################################
@@ -192,10 +192,10 @@ def main():
     
     # Example countries and time period
     
-    #countries = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
+    countries = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
     
-    countries = ["United States of America", "Soviet Union", "United Kingdom"]
-    time_period = "1965"
+    #countries = ["United States of America", "Soviet Union", "United Kingdom"]
+    time_period = "1975"
 
 
     
@@ -307,7 +307,7 @@ def nation_init_main(
     ]
 
     # Define the directory structure for this simulation instance
-    simulation_dir = os.path.join("simulation_data", f"Simulation_{time_period}")
+    simulation_dir = os.path.join("simulation_data", f"generated_timeline_{time_period}")
     nations_dir = os.path.join(simulation_dir, "nations")
     os.makedirs(nations_dir, exist_ok=True)
 
