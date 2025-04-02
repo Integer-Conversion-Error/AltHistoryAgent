@@ -1,6 +1,6 @@
 {
-  "current_date": "1970-03-02",
-  "nations": [],
+  "current_date": "1970-01-31",
+  "nations": {},
   "conflicts": {
     "activeWars": [],
     "borderSkirmishes": [],
@@ -13,5 +13,7 @@
   "naturalDisasters": [],
   "politicalEvents": [],
   "politicalViolence": [],
-  "scientificDiscoveries": []
+  "scientificDiscoveries": [],
+  "effects": [],
+  "ramifications": []
 }

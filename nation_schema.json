@@ -52,9 +52,12 @@
       "$ref": "nation_subschemas/internal_affairs_subschemas/internal_affairs_schema.json",
       "description": "Internal affairs, including domestic policies, governance, and societal stability."
     },
-    "nationalEffects": {
-      "$ref": "nation_subschemas/internal_affairs_subschemas/national_effect_schema.json",
-      "description": "Internal affairs, including domestic policies, governance, and societal stability."
+    "nationwideImpacts": {
+      "type": "array",
+      "description": "An array tracking the specific impacts experienced by this nation as a result of global events.",
+      "items": {
+          "$ref": "nation_subschemas/internal_affairs_subschemas/nationwide_impact_schema.json"
+      }
     }
   },
   "required": [
@@ -66,6 +69,6 @@
     "currency",
     "externalAffairs",
     "internalAffairs",
-    "nationalEffects"
+    "nationwideImpacts"
   ]
 }

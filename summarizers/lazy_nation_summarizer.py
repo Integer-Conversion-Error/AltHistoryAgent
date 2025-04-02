@@ -1,7 +1,10 @@
 import os
 import json
+import re # For parsing retry delay
+import time # For sleep
 from typing import List
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 from summarizers.initializer_util import *
 
 
@@ -51,9 +54,55 @@ def summarize_content(model, all_content: dict) -> str:
         "Now, please provide a comprehensive, structured summary of this information."
     )
 
-    response = model.generate_content(prompt)
-    # The model returns a list of generated responses; we’ll assume we want the first.
-    return response.text if response and len(response.text) > 0 else ""
+    max_retries = 3
+    base_retry_delay = 5
+
+    for attempt in range(max_retries):
+        try:
+            response = model.generate_content(prompt)
+            # Check if response is valid and has text
+            if response and hasattr(response, 'text') and len(response.text) > 0:
+                 return response.text
+            else:
+                 # Handle cases where response might be empty or malformed (though less likely for summarization)
+                 print(f"Warning: Received empty or invalid response from AI (Attempt {attempt + 1}/{max_retries}).")
+                 # Decide if retry is appropriate or return empty string
+                 if attempt == max_retries - 1:
+                     print("Max retries reached after empty/invalid response.")
+                     return "" # Return empty on final failure
+                 # print(f"Waiting {base_retry_delay} seconds before retrying...")
+                 # time.sleep(base_retry_delay)
+                 continue # Go to next attempt
+
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' during summarization (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Unexpected error during summarization (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+
+    # If loop finishes without returning
+    print("Failed to generate summary after all retries.")
+    return ""
 
 def main():
     # 1. Configure the generative model

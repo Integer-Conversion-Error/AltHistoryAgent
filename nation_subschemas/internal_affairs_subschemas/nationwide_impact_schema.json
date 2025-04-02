@@ -1,0 +1,57 @@
+{
+    "$id": "https://example.com/schemas/nationwide_impact",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Nationwide Impact",
+    "description": "Represents when and how a specific nation gets significantly involved or affected by a Global Event.",
+    "type": "object",
+    "properties": {
+        "impactId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this specific nationwide impact instance."
+        },
+        "nationId": {
+            "type": "string",
+            "description": "The unique identifier of the nation experiencing this impact."
+        },
+        "originGlobalEventId": {
+            "type": "string",
+            "description": "The unique ID of the Global Event that ultimately triggered this impact."
+        },
+        "impactTriggerDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when this specific impact began for the nation (might be later than the global event start date)."
+        },
+        "description": {
+            "type": "string",
+            "description": "A brief summary of how the nation is impacted or involved (e.g., 'Joined the war effort', 'Experienced economic fallout', 'Became primary target')."
+        },
+        "effectIds": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "uuid"
+            },
+            "description": "A list of unique IDs for the specific Effects triggered by this Nationwide Impact."
+        },
+        "isActive": {
+            "type": "boolean",
+            "description": "Indicates if this impact is currently ongoing for the nation."
+        },
+        "estimatedEndDate": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "The estimated date when this specific impact on the nation will subside (if applicable)."
+        }
+    },
+    "required": [
+        "impactId",
+        "nationId",
+        "originGlobalEventId",
+        "impactTriggerDate",
+        "description",
+        "effectIds",
+        "isActive"
+    ]
+}

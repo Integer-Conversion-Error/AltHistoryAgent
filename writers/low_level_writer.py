@@ -1,6 +1,8 @@
 import os,time
 import json
+import re # For parsing retry delay
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 
 def load_config():
     """
@@ -65,24 +67,72 @@ def generate_json_object(model, json_schema, action, context):
     """
     Use AI to generate a JSON object following the schema.
     """
-    start_time = time.time()
-    #time.sleep(2.05)
-    prompt = generate_object_prompt(json_schema, action, context)
-    response = model.generate_content(prompt)
-    text = response.text[7:-3]
-    #print(text)
-    try:
-        generated_json = json.loads(text)
-        end_time = time.time() - start_time
-        print(f"Low-Level Write operation took {end_time:.2f}s")
-        if end_time <= 2:
-            time.sleep(2.05-end_time)
-            print(f"Extra Wait (+50ms): {2.05-end_time:.2f}s")
-        return generated_json
-    except json.JSONDecodeError:
-        print("Error: AI did not return valid JSON.")
-        print(response.text)
-        return None
+    max_retries = 5 # Allow more retries for this potentially complex generation
+    base_retry_delay = 5 # Default delay for general errors
+
+    for attempt in range(max_retries):
+        try:
+            start_time = time.time()
+            prompt = generate_object_prompt(json_schema, action, context)
+            response = model.generate_content(prompt)
+            # Apply the requested slicing directly
+            raw_json_text = response.text.strip()[7:-3]
+
+            generated_json = json.loads(raw_json_text)
+            end_time = time.time() - start_time
+            print(f"Low-Level Write operation took {end_time:.2f}s (Attempt {attempt + 1}/{max_retries})")
+
+            # Optional: Add a small delay if needed, e.g., to respect stricter rate limits
+            # if end_time <= 2:
+            #     time.sleep(2.05 - end_time)
+            #     print(f"Extra Wait (+50ms): {2.05 - end_time:.2f}s")
+
+            return generated_json # Success
+
+        except json.JSONDecodeError as json_err:
+            print(f"Error: AI did not return valid JSON after slicing (Attempt {attempt + 1}/{max_retries}). Error: {json_err}")
+            # Print the sliced text that failed parsing
+            print("Sliced text causing error:\n", raw_json_text)
+            if attempt == max_retries - 1:
+                print("Max retries reached after JSON decode error.")
+                return None
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                return None
+
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay for rate limits
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+
+        except Exception as e:
+            print(f"Unexpected error during low-level generation (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1:
+                print("Max retries reached after unexpected error.")
+                return None
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+
+    # If loop finishes without returning, it means all retries failed
+    print("Failed to generate valid JSON object after all retries.")
+    return None
 
 
 def produce_structured_data(json_schema: dict, action: str, context: str):

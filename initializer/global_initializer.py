@@ -42,6 +42,7 @@ from initializer_util import *
 import nation_initalizer
 import fetch_nation_events
 import ramification_generator
+import global_economy_initializer # Import the new initializer
 
 from writers import low_level_writer
 from writers import generate_event
@@ -105,75 +106,28 @@ def input_characters_count() -> int:
 #                    2) MAIN FLOW: GLOBAL INITIALIZER                         #
 ###############################################################################
 
-def init_nations(nations: list, start_date: str):
+# Define a default number of workers
+DEFAULT_MAX_WORKERS = 150
+
+def init_nations(nations: list, start_date: str, max_workers: int = DEFAULT_MAX_WORKERS):
     """
     Calls nation_initalizer to build out each nation's internal & external affairs data.
     Saves them under 'simulation_data/Simulation_<start_date>/nations/<Country>/...'
     """
     print("\n--- Initializing Nations ---")
     try:
+        # Pass max_workers to the parallelized nation initializer
         nation_initalizer.nation_init_main(
             countries=nations,
-            time_period=start_date
+            time_period=start_date,
+            max_workers=max_workers
         )
     except Exception as e:
         print(f"Error calling nation_initalizer: {e}")
-        sys.exit(1)
+    sys.exit(1)
     
 
-
-def apply_ramifications_to_nations(nations: list, start_date: str, global_events: list):
-    """
-    For each event, if it has ramifications referencing specific nations, we add them
-    to that nation's 'effects'. We store these in 'nation_effects.json'.
-
-    :param nations: The list of nation names that we have data for
-    :param start_date: The simulation's start date
-    :param global_events: The list of event objects
-    """
-    print("\n--- Adding ramifications to each nation's effects ---")
-    simulation_dir = os.path.join("simulation_data", f"Simulation_{start_date}", "nations")
-    nat_effects_schema_path = "nation_subschemas/internal_affairs_subschemas/national_effect_schema.json"
-    try:
-        with open(nat_effects_schema_path, "r", encoding="utf-8") as f:
-            nat_effects_schema = json.load(f)
-    except FileNotFoundError:
-        print(f"Warning: {nat_effects_schema_path} not found. We'll do minimal effect records.")
-        nat_effects_schema = None
-
-    for ev in global_events:
-        ramifications = ev.get("ramifications", [])
-        
-        event_id_label = ev.get("eventID", "NoEventID")
-
-        for ram in ramifications:
-            impacted_nations = ram.get("affectedParties", [])
-            for nation_name in impacted_nations:
-                nation_summary = lazy_nation_summarizer.load_and_summarize_nation(nation=nation_name,timeline=start_date)
-                if nation_name not in nations:
-                    continue  # skip if it's not in the chosen list
-                nation_path = os.path.join(simulation_dir, nation_name)
-                if not os.path.exists(nation_path):
-                    print(f"Nation folder not found for {nation_name}, skipping effects insertion.")
-                    continue
-
-                effects_file = os.path.join(nation_path, "nation_effects.json")
-                if not os.path.exists(effects_file):
-                    existing_effects = []
-                else:
-                    with open(effects_file, "r", encoding="utf-8") as ef:
-                        try:
-                            existing_effects = json.load(ef)
-                        except json.JSONDecodeError:
-                            existing_effects = []
-                
-                effects = ramification_generator.fetch_and_save_nation_effects(ram,nation_name,nation_summary,start_date)
-
-                existing_effects += effects
-                with open(effects_file, "w", encoding="utf-8") as ef:
-                    json.dump(existing_effects, ef, indent=2)
-                for effect in effects:
-                    print(f"Added effect to {nation_name}: {effect['ramificationType']}")
+# Removed apply_ramifications_to_nations function as this logic is now handled dynamically by EventEngine/RamificationExecutor
 
 def create_simulation_directory(start_date: str) -> str:
     """
@@ -183,98 +137,236 @@ def create_simulation_directory(start_date: str) -> str:
     os.makedirs(simulation_path, exist_ok=True)
     return simulation_path
 
-def generate_global_sentiment(nations: list, start_date: str, simulation_path: str):
+def generate_global_sentiment(nations: list, start_date: str, simulation_path: str, max_workers: int = DEFAULT_MAX_WORKERS):
     """
     Generates a `global_sentiment.json` file containing pairwise diplomatic/economic relations
     for the provided list of nations, if more than one nation is present.
     """
     import sentiment_initializer
-    return sentiment_initializer.initialize_sentiment(nations,simulation_path+"/global_sentiment.json",start_date)
+    output_file = os.path.join(simulation_path, "global_sentiment.json")
+    print("\n--- Generating Global Sentiment (Parallel) ---")
+    return sentiment_initializer.initialize_sentiment(
+        nations=nations,
+        filename=output_file,
+        time_period=start_date,
+        max_workers=max_workers
+    )
 
-def generate_global_trade(nations: list, start_date: str, simulation_path: str):
+def generate_global_trade(nations: list, start_date: str, simulation_path: str, max_workers: int = DEFAULT_MAX_WORKERS):
     """
     Generates a `global_trade.json` file containing pairwise trade relations
     for the provided list of nations, if more than one nation is present.
     """
     import trade_initializer
-    return trade_initializer.initialize_trade(nations,start_date)
-    
+    output_file = os.path.join(simulation_path, "global_trade.json")
+    print("\n--- Generating Global Trade (Parallel) ---")
+    return trade_initializer.initialize_trade(
+        nations=nations,
+        timeline=start_date,
+        max_workers=max_workers
+        # filename is handled inside initialize_trade now
+    )
 
-def generate_notable_characters(nations: list, start_date: str, char_count: int, simulation_path: str):
+
+def generate_notable_characters(nations: list, start_date: str, char_count: int, simulation_path: str, max_workers: int = DEFAULT_MAX_WORKERS):
     """
-    Generates a `notable_characters.json` file containing placeholder characters for each nation.
+    Generates a `notable_characters.json` file containing characters for each nation in parallel.
     """
     import notable_character_initalizer
-    return notable_character_initalizer.initialize_characters(char_count=char_count,reference_year=start_date,nations=nations)
-    
+    output_file = os.path.join(simulation_path, "notable_characters.json")
+    print("\n--- Generating Notable Characters (Parallel) ---")
+    return notable_character_initalizer.initialize_characters(
+        char_count=char_count,
+        reference_year=start_date,
+        nations=nations,
+        max_workers=max_workers
+        # filename is handled inside initialize_characters now
+    )
 
-def generate_organizations(nations: list, start_date: str, simulation_path: str,org_count:int):
+
+def generate_organizations(nations: list, start_date: str, simulation_path: str, org_count: int):
     """
     Generates an `organizations.json` file with placeholder content describing
     international or otherwise notable organizations.
     """
     
     import organizations_initializer
-    return organizations_initializer.initialize_global_agreements(reference_year=start_date,allowed_nations=nations,entity_count=org_count)
+    return organizations_initializer.initialize_global_agreements(reference_year=start_date,allowed_nations=nations,entity_count=org_count) # Not parallelized by nation/pair
 
 
-def generate_strategic_interests(nations: list, start_date: str, simulation_path: str):
+def generate_strategic_interests(nations: list, start_date: str, simulation_path: str, max_workers: int = DEFAULT_MAX_WORKERS):
     """
-    Generates a `strategic_interests.json` file with placeholder content describing
-    strategic interests for the listed nations.
+    Generates a `strategic_interests.json` file by calling the parallelized initializer.
     """
     import strategic_interest_initalizer
-    return strategic_interest_initalizer.initalize_strategic_interests(start_date)
+    print("\n--- Generating Strategic Interests (Parallel Internally) ---")
+    # Pass max_workers to the internally parallelized function
+    return strategic_interest_initalizer.initalize_strategic_interests(
+        reference_year=start_date,
+        max_workers=max_workers
+    )
 
-def generate_global_economy(nations: list, start_date: str, simulation_path: str):
+def generate_global_economy(nations: list, start_date: str, simulation_path: str): # Not parallelized by nation/pair
     """
-    Generates a `global_economy.json` file with placeholder data about the global economy.
+    Generates a `global_economy.json` file using the AI initializer.
     """
-    print("\n--- Generating global_economy.json ---")
     global_economy_path = os.path.join(simulation_path, "global_economy.json")
-    global_economy_data = {
-        "globalGDP": "$10 trillion",
-        "stockMarketTrends": {
-            "DowJones": 10000,
-            "Nasdaq": 2000,
-            "ShanghaiComposite": 2500,
-            "EuroStoxx": 3000
-        },
-        "majorTradeDisputes": [],
-        "globalInflationRate": 3.2
-    }
-    with open(global_economy_path, "w", encoding="utf-8") as gf:
-        json.dump(global_economy_data, gf, indent=2)
-    print("Saved global_economy.json")
+    try:
+        return global_economy_initializer.initialize_global_economy(
+            nations=nations,
+            reference_year=start_date,
+            output_path=global_economy_path
+        )
+    except Exception as e:
+        print(f"Error generating global economy data: {e}")
+        # Decide if you want to fall back to placeholder or stop
+        # For now, just print the error and continue
+        return None # Indicate failure
 
-def generate_global_structures(nations: list, start_date: str, char_count: int):
+def generate_global_structures(nations: list, start_date: str, char_count: int, max_workers: int = DEFAULT_MAX_WORKERS):
     """
     Orchestrates the creation of multiple global structure files.
-    Calls separate helper functions for each file:
-     - global_sentiment.json
-     - global_trade.json
-     - notable_characters.json
-     - organizations.json
-     - strategic_interests.json
-     - global_economy.json
+    Calls separate helper functions for each file, passing max_workers where applicable.
+     - global_sentiment.json (Parallel by pair)
+     - global_trade.json (Parallel by pair)
+     - notable_characters.json (Parallel by nation)
+     - organizations.json (Sequential)
+     - strategic_interests.json (Sequential)
+     - global_economy.json (Sequential)
     """
-    import trade_sentiment_initializer
+    import trade_sentiment_initializer # This one handles both sentiment and trade in one go
     simulation_path = create_simulation_directory(start_date)
 
-    # generate_global_sentiment(nations, start_date, simulation_path)
-    # generate_global_trade(nations, start_date, simulation_path)
-    #trade_sentiment_initializer.initialize_combined(nations=nations,year=start_date)
-    #generate_notable_characters(nations, start_date, char_count, simulation_path)
-    generate_organizations(nations, start_date, simulation_path,30)
-    #generate_strategic_interests(nations, start_date, simulation_path)
+    print("\n--- Generating Global Structures ---")
+
+    # Option 1: Generate Sentiment and Trade Separately (using parallelized functions)
+    # generate_global_sentiment(nations, start_date, simulation_path, max_workers)
+    # generate_global_trade(nations, start_date, simulation_path, max_workers)
+
+    # Option 2: Generate Sentiment and Trade Combined (using parallelized function)
+    print("\n--- Generating Combined Sentiment & Trade (Parallel by Pair) ---")
+    trade_sentiment_initializer.initialize_combined(
+        nations=nations,
+        year=start_date,
+        max_workers=max_workers
+    )
+
+    # # Generate Characters (Parallel by Nation)
+    # generate_notable_characters(nations, start_date, char_count, simulation_path, max_workers)
+
+    # Generate Organizations (Sequential)
+    print("\n--- Generating Organizations (Sequential) ---")
+    generate_organizations(nations, start_date, simulation_path, 30) # Assuming 30 orgs
+
+    # Generate Strategic Interests (Parallel Internally)
+    print("\n--- Generating Strategic Interests (Parallel Internally) ---")
+    generate_strategic_interests(nations, start_date, simulation_path, max_workers) # Pass max_workers
+
+    # Generate Global Economy (Sequential)
+    print("\n--- Generating Global Economy (Sequential) ---")
     generate_global_economy(nations, start_date, simulation_path)
 
     print("\n=== Finished generating global structures ===")
 
 
+###############################################################################
+#           4) ASSEMBLE & SAVE FINAL GLOBAL STATE FILE                        #
+###############################################################################
+
+def assemble_and_save_global_state(start_date: str, nations_list: list):
+    """
+    Loads all generated component files and assembles the final global_state.json.
+    """
+    print("\n--- Assembling Final Global State ---")
+    simulation_dir = os.path.join("simulation_data", f"generated_timeline_{start_date}")
+    nations_input_dir = os.path.join(simulation_dir, "nations")
+    global_state_output_path = os.path.join(simulation_dir, "global_state.json")
+
+    global_state = {
+        "current_date": f"{start_date}-01-01", # Default to Jan 1st of start year
+        "nations": {}, # Nations will be a dict keyed by nationId
+        "globalEvents": [],
+        "effects": [],
+        "ramifications": [],
+        "conflicts": { # Initialize basic conflict structure if needed by event engine
+             "activeWars": [], "borderSkirmishes": [], "internalUnrest": [], "proxyWars": []
+        },
+        # Add keys for other global structures
+        "globalEconomy": {},
+        "globalSentiment": [],
+        "globalTrade": [],
+        "notableCharacters": [],
+        "organizations": [],
+        "strategicInterests": []
+    }
+
+    # Load Nations
+    print("Loading nation files...")
+    nation_files_loaded = 0
+    if os.path.isdir(nations_input_dir):
+        for nation_file in os.listdir(nations_input_dir):
+            if nation_file.endswith(".json"):
+                nation_name_from_file = nation_file[:-5] # Get name from filename
+                # Find the corresponding nation name from the input list to handle potential case differences
+                matched_nation_name = next((n for n in nations_list if n.lower() == nation_name_from_file.lower()), None)
+                if matched_nation_name:
+                    try:
+                        with open(os.path.join(nations_input_dir, nation_file), "r", encoding="utf-8") as f:
+                            nation_data = json.load(f)
+                            nation_id = nation_data.get("nationId") # Get ID from loaded data
+                            if nation_id:
+                                global_state["nations"][nation_id] = nation_data
+                                nation_files_loaded += 1
+                            else:
+                                print(f"Warning: Missing 'nationId' in {nation_file}. Skipping.")
+                    except Exception as e:
+                        print(f"Error loading nation file {nation_file}: {e}")
+    print(f"Loaded data for {nation_files_loaded} nations.")
+
+
+    # Load Global Events
+    global_events_path = os.path.join(simulation_dir, "global_events.json")
+    if os.path.exists(global_events_path):
+        try:
+            with open(global_events_path, "r", encoding="utf-8") as f:
+                global_state["globalEvents"] = json.load(f)
+            print(f"Loaded {len(global_state['globalEvents'])} global events.")
+        except Exception as e:
+            print(f"Error loading {global_events_path}: {e}")
+
+    # Load other global files (add error handling as needed)
+    other_files = {
+        "globalEconomy": "global_economy.json",
+        "globalSentiment": "global_sentiment.json",
+        "globalTrade": "global_trade.json",
+        "notableCharacters": "notable_characters.json",
+        "organizations": "global_agreements.json", # Note filename difference
+        "strategicInterests": "global_strategic_theatres.json" # Note filename difference
+    }
+
+    for key, filename in other_files.items():
+        file_path = os.path.join(simulation_dir, filename)
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    global_state[key] = json.load(f)
+                print(f"Loaded {filename}.")
+            except Exception as e:
+                 print(f"Error loading {filename}: {e}")
+        else:
+             print(f"Warning: File not found - {filename}. Initializing '{key}' as empty/default.")
+             # Keep default empty list/dict initialized earlier
+
+    # Save the assembled state
+    try:
+        save_json(global_state, global_state_output_path) # Use existing save_json function from initializer_util
+        print(f"Successfully assembled and saved global state to {global_state_output_path}")
+    except Exception as e:
+        print(f"Error saving final global state: {e}")
+
 
 ###############################################################################
-#                    3) MAIN ORCHESTRATION FUNCTION                           #
+#                    5) MAIN ORCHESTRATION FUNCTION                           #
 ###############################################################################
 
 def main():
@@ -290,32 +382,88 @@ def main():
     #nations = input_nations()
     nations = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
 
-    start_date = 1975#input_start_date()
-    lookback = 1900#input_lookback_years()
-    char_count = 8#input_characters_count()
+    start_date = input_start_date()
+    lookback = input_lookback_years()
+    char_count = input_characters_count()
 
     print("\n=== Starting Global Initialization ===")
     print(f"Selected Nations: {nations}")
     print(f"Timeline Start: {start_date}")
     print(f"Lookback Years: {lookback}")
-    #print(f"Characters per Nation: {char_count}")
+    print(f"Characters per Nation: {char_count}")
 
-    # 2) Initialize each nation's data
-    #init_nations(nations, start_date)
+    # 2) Initialize each nation's data (Parallel by Nation)
+    init_nations(nations, start_date) 
 
-    # 3) Generate major events that impacted these nations
-    global_events = fetch_nation_events.fetch_and_save_nations_events(nations, lookback, start_date)
+    # 3) Generate major historical events (Parallel by Nation)
+    print("\n--- Generating Historical Events (Parallel by Nation) ---")
+    global_events = fetch_nation_events.fetch_and_save_nations_events(
+        nations=nations,
+        start_year=lookback, # Assuming lookback is the start year for events
+        end_year=int(start_date), # Assuming start_date is the end year for events
+        max_workers=DEFAULT_MAX_WORKERS # Added parallel worker control
+    )
+    # Note: The generated global_events file should be placed in the simulation_path directory if not already handled by fetch_nation_events
 
-    # 4) For each event, apply ramifications to the relevant nations
-    #apply_ramifications_to_nations(nations, start_date, global_events)
+    # 4) Ramifications/Effects are no longer applied at initialization.
 
-    # 5) Generate all the global structures (sentiment, trade, characters, organizations, etc.)
-    #generate_global_structures(nations, start_date, char_count)
+    # 5) Generate other global structures
+    generate_global_structures(nations, start_date, char_count)
+
+    # 6) Assemble and save the final global_state.json
+    assemble_and_save_global_state(start_date, nations)
 
     print("\n=== Global Initialization Complete ===")
-    print(f"Scenario data saved under 'simulation_data/Simulation_{start_date}/'.")
+    # The final state file is now at simulation_data/generated_timeline_{start_date}/global_state.json
 
+def testmain():
+    """
+    The main function that orchestrates the entire global initialization:
+      1) Collect user inputs
+      2) Initialize each nation's data
+      3) Generate major events
+      4) Apply ramifications to each nation
+      5) Generate global-level structures
+    """
+    # 1) Gather user inputs
+    #nations = input_nations()
+    nations = ["West Germany","East Germany", "Finland", "Soviet Union", "France", "United States of America", "United Kingdom", "Japan", "Hungary", "Turkey", "Canada", "Italy","Yugoslavia","Communist China","Taiwan (ROC)","Egypt","Poland","Spain","Portugal","Iran", "South Vietnam","North Vietnam", "South Korea", "North Korea", "Norway", "Sweden", "Saudi Arabia", "India","Pakistan", "Malaysia", "Indonesia", "South Africa", "Israel", "Singapore", "Burma", "Australia","Rhodesia"]
 
+    start_date = 1965#input_start_date()
+    lookback = 1900#input_lookback_years()
+    char_count = 25#input_characters_count()
+
+    print("\n=== Starting Global Initialization ===")
+    print(f"Selected Nations: {nations}")
+    print(f"Timeline Start: {start_date}")
+    print(f"Lookback Years: {lookback}")
+    print(f"Characters per Nation: {char_count}")
+
+    # 2) Initialize each nation's data
+    init_nations(nations, start_date) # Assuming this is already parallelized
+
+    # 3) Generate major historical events (ensure fetch_nation_events conforms to new global_event_schema)
+    print("\n--- Generating Historical Events (Parallel by Nation) ---")
+    global_events = fetch_nation_events.fetch_and_save_nations_events(
+        nations=nations,
+        start_year=lookback, # Assuming lookback is the start year for events
+        end_year=int(start_date), # Assuming start_date is the end year for events
+        max_workers=DEFAULT_MAX_WORKERS # Added parallel worker control
+    )
+    # Note: The generated global_events file should be placed in the simulation_path directory if not already handled by fetch_nation_events
+
+    # 4) Ramifications/Effects are no longer applied at initialization.
+
+    # 5) Generate other global structures (using internal parallelization where applicable)
+    generate_global_structures(nations, start_date, char_count) # Pass worker count
+    #import trade_sentiment_initializer
+    #trade_sentiment_initializer.initialize_combined(nations=nations, year=start_date,max_workers=DEFAULT_MAX_WORKERS)
+
+    # # 6) Assemble and save the final global_state.json (Sequential)
+    assemble_and_save_global_state(str(start_date), nations) # Ensure start_date is string
+
+    print("\n=== Global Initialization Complete ===")
+    # The final state file is now at simulation_data/generated_timeline_{start_date}/global_state.json
+    
 if __name__ == "__main__":
-    main()
-
+    testmain()

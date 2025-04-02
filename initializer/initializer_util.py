@@ -20,7 +20,7 @@ def load_config():
     with open(config_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def configure_genai(temp = 0.6,model = "gemini-2.0-flash-exp"):
+def configure_genai(temp = 0.6,model = "gemini-2.0-flash"):
     """
     Configure the generative AI model with API key and settings.
     """

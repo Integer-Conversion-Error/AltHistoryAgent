@@ -13,11 +13,18 @@ within an alternate history scenario. Integrates with the broader simulation:
 """
 
 import os
+import os
 import json
 import datetime
 import uuid
+import re # For parsing retry delay
 import time
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
+# Import necessary modules for new functionality
+from summarizers.lazy_nation_summarizer import load_and_summarize_nation
+from writers.generate_event import generate_global_event_json # Assuming we adapt this
+# Or potentially: from writers.low_level_writer import produce_structured_data
 
 ###############################################################################
 #                           1) CONFIG & MODEL SETUP                           #
@@ -37,24 +44,26 @@ def load_config():
         return json.load(file)
 
 
-def configure_genai():
+# Modified configure_genai to accept model name and temp
+def configure_genai(model="gemini-2.0-flash", temp=0.8):
     """
     Configure the generative AI model with the loaded API key and recommended generation settings.
+    Allows specifying model name and temperature.
     """
     config = load_config()
     genai.configure(api_key=config["GEMINI_API_KEY"])
 
     generation_config = {
-        "temperature": 0.8,  # Balanced randomness
+        "temperature": temp,
         "top_p": 0.95,
         "top_k": 40
     }
 
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash-exp",
+    model_instance = genai.GenerativeModel(
+        model_name=model,
         generation_config=generation_config,
     )
-    return model
+    return model_instance
 
 
 def generate_object_prompt(json_schema: dict, action: str, context: str) -> str:
@@ -66,11 +75,17 @@ def generate_object_prompt(json_schema: dict, action: str, context: str) -> str:
     :param context: Additional context describing the scenario.
     :return: A string prompt that instructs the AI to output valid JSON only.
     """
+    # Ensure json_schema is serializable, handle potential issues if needed
+    try:
+        schema_str = json.dumps(json_schema, indent=2)
+    except TypeError:
+        schema_str = "{ \"error\": \"Schema not serializable\" }"
+
     return f"""
     You are an expert in generating structured data for an alternate history scenario. Your task is to:
     
     **1. Follow this JSON schema strictly:**
-    {json.dumps(json_schema, indent=2)}
+    {schema_str}
 
     **2. Create a JSON object that matches this schema exactly.**
     
@@ -92,27 +107,69 @@ def generate_json_object(model, json_schema, action, context):
     """
     Calls the generative AI to produce a JSON object conforming to the provided schema.
 
-    :param model: The generative AI model (gemini-2.0-flash-exp).
+    :param model: The generative AI model instance.
     :param json_schema: The JSON schema dict to enforce.
     :param action: The event creation or escalation context.
     :param context: Additional scenario context for the AI.
     :return: Parsed Python dict if successful, else None.
     """
     prompt = generate_object_prompt(json_schema, action, context)
-    response = model.generate_content(prompt)
+    max_retries = 5 # Allow retries
+    base_retry_delay = 5 # Default delay for general errors
 
-    try:
-        # The AI might add extra text, we attempt a naive extraction.
-        # If the entire text is wrapped with potential lines, you may need more robust extraction logic.
-        text = response.text.strip()
+    for attempt in range(max_retries):
+        try:
+            # Increased timeout might be needed for complex generations
+            response = model.generate_content(prompt, request_options={'timeout': 120})
+            # Apply the requested slicing directly
+            # Ensure response.text exists and is long enough before slicing
+            if response.text and len(response.text) > 10: # 7 for ```json\n and 3 for \n```
+                 raw_json_text = response.text.strip()[7:-3]
+            else:
+                 raw_json_text = response.text.strip() # Fallback if format is unexpected
+                 print("Warning: AI response format might be unexpected. Attempting direct parse.")
 
-        # Some of your code tries to do text[7:-3]. Adjust if the AI response doesn't have bracketed lines
-        # For now, we do a direct attempt:
-        generated_json = json.loads(text)
-        return generated_json
-    except json.JSONDecodeError:
-        print("Error: AI did not return valid JSON.\nAI Output:\n", response.text)
-        return None
+            generated_json = json.loads(raw_json_text)
+            return generated_json # Success
+
+        except json.JSONDecodeError as e:
+            print(f"Error: AI did not return valid JSON object after slicing (Attempt {attempt + 1}/{max_retries}).\nDetails: {e}")
+            # Print the sliced text that failed parsing
+            print("Sliced text causing error:\n", raw_json_text)
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' generating JSON object (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Error during AI generation or parsing (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            # Consider logging the prompt here for debugging
+            # print(f"Prompt causing error:\n{prompt}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+
+    # If loop finishes without returning
+    print("Failed to generate valid JSON object after all retries.")
+    return None
 
 
 ###############################################################################
@@ -121,7 +178,8 @@ def generate_json_object(model, json_schema, action, context):
 
 class EventEngine:
     """
-    The EventEngine checks the global_state for conditions that trigger new events.
+    The EventEngine checks the global_state for conditions that trigger new events,
+    can load state from a directory, and allows searching for events by participant.
     It can also integrate user input to remove or alter pending events.
     Then it merges pending events into the correct sub-schemas, referencing your
     loaded or existing file structure (global_subschemas, etc.).
@@ -132,14 +190,151 @@ class EventEngine:
         Initialize the EventEngine with the current simulation's global state.
 
         :param global_state: A dictionary containing keys like 'current_date',
-                             'nations', 'conflicts', 'globalEconomy', etc.
+                              'nations', 'conflicts', 'globalEconomy', etc.
         """
-        self.global_state = global_state
-        self.pending_events = []  # List[dict], new events to insert in the update phase
-        self.time_step = datetime.datetime.strptime(global_state["current_date"], "%Y-%m-%d")  # Current sim time
+        if not isinstance(global_state, dict):
+            raise TypeError("global_state must be a dictionary.")
 
-        # Configure the generative AI model for possible event creation.
-        self.model = configure_genai()
+        self.global_state = global_state
+        self._validate_and_prepare_state() # Call helper to ensure structure
+
+        self.pending_events = []  # List[dict], new global events to insert in the update phase
+        try:
+            self.time_step = datetime.datetime.strptime(global_state["current_date"], "%Y-%m-%d")  # Current sim time
+        except (KeyError, ValueError) as e:
+             print(f"Warning: Could not parse current_date '{global_state.get('current_date')}'. Using current system date. Error: {e}")
+             self.time_step = datetime.datetime.now()
+             self.global_state["current_date"] = self.time_step.strftime("%Y-%m-%d")
+
+
+        # Configure the primary AI model (can be overridden in specific calls if needed)
+        self.model = configure_genai() # Default model
+        # Load schemas needed for AI generation prompts
+        self._load_ramification_schema()
+        # Load global event schema for user-prompted events
+        self._load_global_event_schema()
+
+    @classmethod
+    def from_directory(cls, simulation_dir_path: str):
+        """
+        Class method to initialize EventEngine by loading global_state.json
+        from a specified simulation directory.
+
+        :param simulation_dir_path: Path to the simulation directory
+                                    (e.g., "simulation_data/generated_timeline_1985").
+        :return: An instance of EventEngine.
+        :raises FileNotFoundError: If global_state.json is not found.
+        :raises json.JSONDecodeError: If global_state.json is invalid.
+        """
+        global_state_path = os.path.join(simulation_dir_path, "global_state.json")
+        print(f"Attempting to load global state from: {global_state_path}")
+        if not os.path.exists(global_state_path):
+            raise FileNotFoundError(f"Global state file not found at {global_state_path}")
+
+        try:
+            with open(global_state_path, "r", encoding="utf-8") as f:
+                global_state = json.load(f)
+            print("Global state loaded successfully.")
+            return cls(global_state) # Call the regular __init__ with loaded data
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON from {global_state_path}: {e}")
+            raise e
+        except Exception as e:
+            print(f"An unexpected error occurred loading global state: {e}")
+            raise e
+
+    def _validate_and_prepare_state(self):
+        """Helper method to ensure required keys and structures exist in global_state."""
+        print("Validating and preparing global state structure...")
+        # Ensure necessary lists/dicts exist
+        required_top_level_keys = [
+            "current_date", "nations", "globalEvents", "effects", "ramifications",
+            "conflicts", "globalEconomy", "globalSentiment", "globalTrade",
+            "notableCharacters", "organizations", "strategicInterests"
+        ]
+        for key in required_top_level_keys:
+            if key not in self.global_state:
+                print(f"Warning: Missing top-level key '{key}' in global_state. Initializing default.")
+                # Initialize with appropriate default type
+                if key.endswith("s") or key in ["globalSentiment", "globalTrade", "globalEvents", "effects", "ramifications"]:
+                    self.global_state[key] = []
+                else:
+                    self.global_state[key] = {} # Default to dict for others like nations, globalEconomy
+
+        # Ensure nations is a dict keyed by nationId
+        nations_data = self.global_state.get("nations", {})
+        if isinstance(nations_data, list):
+             print("Converting nations list to dict...")
+             try:
+                 # Attempt to use nationId first, fallback to name if nationId is missing
+                 nations_dict = {}
+                 for n in nations_data:
+                     nation_key = n.get("nationId") or n.get("name")
+                     if nation_key:
+                         nations_dict[nation_key] = n
+                     else:
+                         print(f"Warning: Nation object missing both 'nationId' and 'name': {n}")
+                 self.global_state["nations"] = nations_dict
+                 nations_data = nations_dict # Update local reference
+             except Exception as e:
+                 print(f"Error converting nations list to dict: {e}. Nations data might be malformed.")
+                 self.global_state["nations"] = {} # Reset to empty dict on error
+                 nations_data = {}
+
+        # Ensure nationwideImpacts list exists within each nation object
+        if isinstance(nations_data, dict):
+            for nation_id, nation_data in nations_data.items():
+                if isinstance(nation_data, dict):
+                    nation_data.setdefault("nationwideImpacts", [])
+                else:
+                    print(f"Warning: Nation data for '{nation_id}' is not a dictionary. Skipping nationwideImpacts check.")
+        else:
+             print("Warning: 'nations' key does not contain a dictionary. Cannot ensure nationwideImpacts.")
+
+        # Ensure conflicts structure exists
+        conflicts_data = self.global_state.setdefault("conflicts", {})
+        if isinstance(conflicts_data, dict):
+            conflicts_data.setdefault("activeWars", [])
+            conflicts_data.setdefault("borderSkirmishes", [])
+            conflicts_data.setdefault("internalUnrest", [])
+            conflicts_data.setdefault("proxyWars", [])
+        else:
+            print("Warning: 'conflicts' key is not a dictionary. Resetting to default structure.")
+            self.global_state["conflicts"] = {"activeWars": [], "borderSkirmishes": [], "internalUnrest": [], "proxyWars": []}
+
+    def _load_global_event_schema(self):
+        """Loads the global event schema needed for AI generation."""
+        # Assuming the schema is at the root level relative to where this runs
+        # Adjust path if necessary
+        schema_path = "global_subschemas/global_event_schema.json"
+        try:
+            with open(schema_path, "r", encoding="utf-8") as f:
+                self.global_event_schema = json.load(f)
+                # If it's an array schema, store the item schema
+                if self.global_event_schema.get("type") == "array" and "items" in self.global_event_schema:
+                    self.global_event_item_schema = self.global_event_schema["items"]
+                else:
+                    self.global_event_item_schema = self.global_event_schema # Assume it's the object schema
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Warning: Could not load {schema_path}. AI generation of user events might fail. Error: {e}")
+            self.global_event_schema = None
+            self.global_event_item_schema = None
+
+
+    def _load_ramification_schema(self):
+        """Loads the ramification schema needed for AI generation."""
+        try:
+            with open("nation_subschemas/internal_affairs_subschemas/ramification_schema.json", "r", encoding="utf-8") as f:
+                full_schema = json.load(f)
+                self.ramification_object_schema = {
+                    k: v for k, v in full_schema.get("properties", {}).items()
+                    if k in ["targetPath", "operation", "value", "description"]
+                }
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Warning: Could not load ramification_schema.json. AI generation of ramifications might fail. Error: {e}")
+            self.ramification_object_schema = None
+
+    # --- Core Engine Logic ---
 
     def evaluate_conditions(self):
         """
@@ -147,370 +342,351 @@ class EventEngine:
         """
         self.check_conflicts()
         self.check_economic_events()
-        self.check_generic_events()
-        self.check_humanitarian_crises()
-        self.check_natural_disasters()
-        self.check_political_events()
-        self.check_political_violence()
-        self.check_scientific_discoveries()
-        # If you have other condition checks, add them here:
-        # e.g. check_social_unrest(), check_diplomatic_crises(), etc.
-
-    # --------------------------------------------------------------------------
-    # Condition checks: Each searches global_state for triggers.
-    # If triggered, we either directly create an event or use the AI to fill details.
-    # The event is appended to self.pending_events. Then at update_json_schemas,
-    # we integrate them with the relevant sub-schema.
-    # --------------------------------------------------------------------------
+        # ... other checks ...
 
     def check_conflicts(self):
-        """
-        Check if an active conflict (e.g., war) has escalated to certain thresholds
-        or if new conflicts arise.
-        """
+        """ Check for conflict escalations. """
         conflicts_data = self.global_state.get("conflicts", {})
         activeWars = conflicts_data.get("activeWars", [])
-
         for war in activeWars:
-            # Example: escalate if casualties are huge or if it's multi-year with no resolution
-            if war["status"] == "Ongoing" and war["casualties"]["military"] > 10000:
-                # Potential AI approach to elaborate an escalation
-                action = "Escalate conflict due to high military casualties"
-                context = (
-                    f"The war named {war['conflictName']} now exceeds 10k military casualties. "
-                    f"Status is {war['status']}, started on {war['startDate']}."
-                )
-                # Possibly generate an event referencing conflicts_schema or generic event
-                # For demonstration, we show a simple manual event:
-                event_obj = {
-                    "eventId": str(uuid.uuid4()),
-                    "name": f"Escalation in {war['conflictName']}",
-                    "date": self.time_step.strftime("%Y-%m-%d"),
-                    "type": "Conflict",
-                    "location": {"country": war["belligerents"]["sideA"][0]},
-                    "causes": ["Excessive casualties", "Unresolved hostilities"],
-                    "impact": [
-                        {
-                            "category": "Military",
-                            "details": {
-                                "description": "Conflict worsens significantly.",
-                                "affectedEntities": war["belligerents"]["sideA"] + war["belligerents"]["sideB"]
-                            }
-                        }
-                    ],
-                    "longTermEffects": ["Potential for regional destabilization", "Increased global scrutiny"]
+             # Ensure casualties data exists and is numeric
+            casualties = war.get("casualties", {})
+            mil_casualties = casualties.get("military", 0)
+            if not isinstance(mil_casualties, (int, float)): mil_casualties = 0
+
+            if war.get("status") == "Ongoing" and mil_casualties > 10000:
+                event_id = str(uuid.uuid4())
+                participants = war.get("belligerents", {}).get("sideA", []) + war.get("belligerents", {}).get("sideB", [])
+                event_data = {
+                    "conflictName": war.get('conflictName', 'Unnamed Conflict'),
+                    "description": f"Significant escalation in {war.get('conflictName', 'Unnamed Conflict')} due to high casualties.",
+                    "belligerents": war.get("belligerents", {"sideA": [], "sideB": []}),
+                    "status": "Escalated",
+                    "startDate": self.time_step.strftime("%Y-%m-%d"),
                 }
-                self.pending_events.append(event_obj)
+                global_event = {
+                    "eventId": event_id, "eventType": "Conflict", "eventData": event_data,
+                    "parentEventId": war.get("eventId"), "childEventIds": [], "siblingEventIds": [],
+                    "participatingNations": participants,
+                    "ramifications": [
+                         {"ramificationType": "Military", "severity": "High", "affectedParties": participants, "description": "Conflict intensity increases.", "timeframe": "Short-Term"},
+                         {"ramificationType": "Political", "severity": "Moderate", "affectedParties": participants, "description": "Increased political pressure.", "timeframe": "Medium-Term"}
+                    ]
+                }
+                self.pending_events.append(global_event)
 
     def check_economic_events(self):
-        """
-        Example check: If a nation's GDP growth is below a threshold, spawn a crisis event.
-        """
-        for nation in self.global_state.get("nations", []):
-            gdp_growth = nation.get("economicIndicators", {}).get("gdpGrowthRate", 0)
-            if gdp_growth < -3.0:
-                # Attempt an AI-based event creation referencing economic_events_schema
-                try:
-                    with open("global_subschemas/event_subschemas/economic_events_schema.json", "r", encoding="utf-8") as file:
-                        econ_schema = json.load(file)
-                except (FileNotFoundError, json.JSONDecodeError):
-                    print("Warning: Could not load economic_events_schema.json. Using fallback event creation.")
-                    econ_schema = None
+        """ Check for economic downturns. """
+        for nation_id, nation_obj in self.global_state.get("nations", {}).items():
+            nation_name = nation_obj.get("name", nation_id)
+            # Safely access nested economic indicators
+            economic_indicators = nation_obj.get("internalAffairs", {}).get("economicIndicators", {})
+            gdp_growth = economic_indicators.get("gdpGrowthRate", 0)
+            if isinstance(gdp_growth, (int, float)) and gdp_growth < -0.03: # Check if numeric and below threshold (-3%)
+                event_id = str(uuid.uuid4())
+                event_data = {
+                    "eventName": f"Economic Downturn in {nation_name}",
+                    "description": f"Severe economic contraction triggered by GDP growth falling to {gdp_growth:.2%}.",
+                    "economicIndicators": {"gdpGrowthRate": gdp_growth, "unemploymentRate": "Rising"}, # Assuming unemployment rises
+                    "affectedSectors": ["Multiple", "Finance", "Industry"],
+                    "governmentResponse": "Pending",
+                    "startDate": self.time_step.strftime("%Y-%m-%d")
+                }
+                global_event = {
+                    "eventId": event_id, "eventType": "Economic Event", "eventData": event_data,
+                    "parentEventId": None, "childEventIds": [], "siblingEventIds": [],
+                    "participatingNations": [nation_id],
+                    "ramifications": [
+                        {"ramificationType": "Economic", "severity": "High", "affectedParties": [nation_id], "description": "Risk of recession, increased unemployment.", "timeframe": "Medium-Term"},
+                        {"ramificationType": "Political", "severity": "Moderate", "affectedParties": [nation_id], "description": "Government faces pressure.", "timeframe": "Medium-Term"}
+                    ]
+                }
+                self.pending_events.append(global_event)
 
-                if econ_schema:
-                    action = "Create an economic downturn event"
-                    context = (
-                        f"{nation['name']} experiences severe negative GDP growth of {gdp_growth}%. "
-                        f"This triggers a possible economic crisis with rising unemployment."
-                    )
-                    new_event = generate_json_object(self.model, econ_schema, action, context)
-                    if new_event:
-                        # Adjust fields to match your structure
-                        new_event["eventId"] = str(uuid.uuid4())
-                        new_event.setdefault("name", f"Economic Crisis in {nation['name']}")
-                        new_event["date"] = self.time_step.strftime("%Y-%m-%d")
-                        self.pending_events.append(new_event)
-
-    def check_generic_events(self):
-        """
-        If you track user-specified or system-logged globalEvents with conditions,
-        you might replicate or mutate them here.
-        """
-        # Example: We look for an old event with a date older than 2 years
-        # that might cause a follow-up event.aaaa
-        pass
-
-    def check_humanitarian_crises(self):
-        """
-        If there's a big refugee count or large scale famine in 'humanitarianCrises',
-        we can spawn new events or escalate them.
-        """
-        for crisis in self.global_state.get("humanitarianCrises", []):
-            if crisis["severityLevel"] in ["International", "Global"] and crisis["refugeeCount"] > 100000:
-                # Possibly create or escalate a new crisis event
-                pass
-
-    def check_natural_disasters(self):
-        """
-        If a natural disaster is extremely large magnitude, we might spawn a new event or update existing ones.
-        """
-        for disaster in self.global_state.get("naturalDisasters", []):
-            if disaster["magnitude"] > 7.5:
-                # e.g., escalation or new data
-                pass
-
-    def check_political_events(self):
-        """
-        Evaluate 'politicalEvents' to see if a revolution or major election triggers a new scenario.
-        """
-        for pol_event in self.global_state.get("politicalEvents", []):
-            if pol_event["type"] == "Revolution" and "Ongoing" not in pol_event.get("longTermEffects", []):
-                # possibly spawn follow-up events
-                pass
-
-    def check_political_violence(self):
-        """
-        If there's an assassination or terror attack with high fatalities, might cause a new event.
-        """
-        for violence in self.global_state.get("politicalViolence", []):
-            if violence["casualties"]["fatalities"] > 50:
-                # spawn a crisis or major condemnation event
-                pass
-
-    def check_scientific_discoveries(self):
-        """
-        If there's a 'Revolutionary' impact discovery, spawn a big event that changes the game.
-        """
-        for discovery in self.global_state.get("scientificDiscoveries", []):
-            if discovery["impactLevel"] == "Revolutionary":
-                # Possibly spawn a 'Global Science Breakthrough' event
-                pass
-
-    ############################################################################
-    #                        3) USER INPUT & TIME ADVANCE                      #
-    ############################################################################
+    # --- Other check_... methods would go here ---
 
     def process_user_input(self, user_input: str):
-        """
-        Allows the user to override or remove certain new events, e.g., 'prevent war'.
-        In a real system, you'd parse user commands more robustly.
-
-        :param user_input: The text command from the user.
-        """
+        """ Handle user commands to modify pending events. """
         if "prevent war" in user_input.lower():
-            self.pending_events = [ev for ev in self.pending_events if ev.get("type", "").lower() != "conflict"]
-        # Additional commands can remove or alter other types of events.
+            self.pending_events = [ev for ev in self.pending_events if ev.get("eventType") != "Conflict"]
 
     def advance_time(self, days=30):
-        """
-        Moves simulation time forward by a specified number of days
-        and updates the global state's current_date accordingly.
-
-        :param days: How many days to move forward.
-        """
+        """ Advance simulation time. """
         self.time_step += datetime.timedelta(days=days)
         self.global_state["current_date"] = self.time_step.strftime("%Y-%m-%d")
 
-    ############################################################################
-    #                        4) UPDATE JSON SCHEMAS                             #
-    ############################################################################
-
     def update_json_schemas(self):
-        """
-        After we've queued up new events in pending_events, integrate them
-        into the relevant sub-schemas (e.g. conflicts, politicalEvents).
-        """
-        for ev in self.pending_events:
-            ev_type = ev.get("type", "").lower()
-
-            # For each recognized type, place event in the correct sub-schema.
-            # Adjust logic as needed for your codebase.
-            if ev_type in ["conflict", "war"]:
-                self._merge_conflict_event(ev)
-
-            elif ev_type in ["market crash", "recession", "financial boom", "economic event"]:
-                self._merge_economic_event(ev)
-
-            elif ev_type == "humanitarian crisis":
-                self._merge_humanitarian_event(ev)
-
-            elif ev_type == "natural disaster":
-                self._merge_natural_disaster(ev)
-
-            elif ev_type == "political event":
-                self.global_state["politicalEvents"].append(ev)
-
-            elif ev_type in ["political violence", "assassination", "terrorist attack"]:
-                self.global_state["politicalViolence"].append(ev)
-
-            elif ev_type == "scientific discovery":
-                self.global_state["scientificDiscoveries"].append(ev)
-
-            else:
-                # Fallback: treat as generic event
-                self.global_state["globalEvents"].append(ev)
-
-    def _merge_conflict_event(self, ev: dict):
-        """
-        Helper function to handle new conflict events, merging them into the 'conflicts' structure.
-        """
-        # Insert into 'activeWars' or 'borderSkirmishes' or 'proxyWars' based on internal logic
-        war = {
-            "conflictName": ev.get("name", "Unnamed Conflict"),
-            "startDate": ev["date"],
-            "status": "Ongoing",
-            "belligerents": {
-                "sideA": ["Undefined"],
-                "sideB": ["Undefined"]
-            },
-            "casualties": {"military": 0, "civilian": 0},
-            "territorialChanges": []
-        }
-        self.global_state["conflicts"]["activeWars"].append(war)
-
-    def _merge_economic_event(self, ev: dict):
-        """
-        Helper function to handle economic events, storing them in globalEconomy or a separate structure.
-        """
-        self.global_state["globalEconomy"].append(ev)
-
-    def _merge_humanitarian_event(self, ev: dict):
-        """
-        For a new humanitarian crisis event, add it to the 'humanitarianCrises' array.
-        """
-        crisis = {
-            "crisisId": ev["eventId"],
-            "crisisName": ev.get("name", "Humanitarian Crisis"),
-            "startDate": ev["date"],
-            "affectedRegions": [ev.get("location", {}).get("country", "Unknown")],
-            "severityLevel": "International",
-            "cause": "unknown",
-            "casualties": {"deaths": 0, "injuries": 0},
-            "refugeeCount": 0,
-            "longTermEffects": ev.get("longTermEffects", [])
-        }
-        self.global_state["humanitarianCrises"].append(crisis)
-
-    def _merge_natural_disaster(self, ev: dict):
-        """
-        For a new natural disaster event, store in 'naturalDisasters'.
-        """
-        disaster = {
-            "disasterType": ev.get("name", "Unnamed Disaster"),
-            "location": ev.get("location", {}).get("country", "Unknown"),
-            "date": ev["date"],
-            "magnitude": 0.0,
-            "casualties": 0,
-            "economicDamage": "$0 billion",
-            "affectedPopulation": 0,
-            "disasterResponse": {
-                "evacuations": 0,
-                "aidProvided": "$0 million",
-                "internationalAssistance": False
-            },
-            "environmentalImpact": {
-                "co2Released": 0,
-                "habitatDestruction": "Minor",
-                "waterContamination": False
-            }
-        }
-        self.global_state["naturalDisasters"].append(disaster)
+        """ Add pending events to the main globalEvents list. """
+        if self.pending_events:
+            self.global_state["globalEvents"].extend(self.pending_events)
 
     def summarize_changes(self) -> str:
-        """
-        Build a short textual summary of the newly triggered events.
-        :return: A multi-line string with date, name, and type for each new event.
-        """
+        """ Summarize newly added events. """
         if not self.pending_events:
             return "No new events triggered this step."
         lines = []
         for ev in self.pending_events:
-            lines.append(f"{ev['date']}: {ev.get('name', 'Unnamed')} - {ev.get('type', 'Unknown')}")
+             ev_data = ev.get("eventData", {})
+             name = ev_data.get("eventName", ev_data.get("conflictName", ev.get("eventId")))
+             date = ev_data.get("startDate", self.time_step.strftime("%Y-%m-%d"))
+             lines.append(f"{date}: {name} - {ev.get('eventType', 'Unknown')}")
         return "\n".join(lines)
-    
-    
-    
+
     def apply_ramifications(self):
-        """
-        After new events have been merged into the global state, 
-        apply any ramifications to the nations or global context.
+        """ Generate the Impact -> Effect -> Ramification chain. """
+        if not self.pending_events: return # Skip if no new events
 
-        For example, if an event has a 'ramifications' array or if your code
-        stores ramifications in eventData. Then we can place them into 
-        'nation_effects' or directly modify each nation's stats.
-        """
-        # Example approach: loop over newly added events in globalEvents (or other sub-schemas)
-        # and check if they contain a 'ramifications' key.
-        # Then, for each ramification, apply to the relevant nation or data structure.
-        new_global_events = self._get_newly_merged_events("globalEvents")
-        
-        for ev in new_global_events:
-            # If the event includes a 'ramifications' field:
-            ramifications = ev.get("ramifications", [])
-            if not ramifications:
-                continue
-            
-            # For each ramification, determine which nation or sector is affected
-            for ram in ramifications:
-                # Example structure: 
-                # {
-                #   "ramificationType": "Economic",
-                #   "severity": "Moderate",
-                #   "affectedParties": ["Germany"],
-                #   "description": "...",
-                #   "timeframe": "Short-Term"
-                # }
-                affected_nations = ram.get("affectedParties", [])
-                for nation_name in affected_nations:
-                    # Optionally store in a new 'nation_effects' array or 
-                    # directly update the nation's data in self.global_state.
-                    self._record_nation_effect(nation_name, ev, ram)
+        # Use a temporary list to avoid modifying list while iterating if needed elsewhere
+        events_to_process = list(self.pending_events)
 
-    def _record_nation_effect(self, nation_name: str, event_obj: dict, ram: dict):
-        """
-        Internal method to record or apply a single ramification
-        for a specific nation (like storing in a 'nation_effects' or altering 
-        the nation's data).
-        """
-        # Find the nation in self.global_state["nations"]
-        for nation in self.global_state.get("nations", []):
-            if nation.get("name", "").lower() == nation_name.lower():
-                # Example: We might store a new 'effects' array
-                if "effects" not in nation:
-                    nation["effects"] = []
-                
-                # Append a simplified record
-                effect_record = {
-                    "originEventId": event_obj["eventId"],
-                    "ramificationType": ram.get("ramificationType", "Other"),
-                    "severity": ram.get("severity", "Low"),
-                    "description": ram.get("description", ""),
-                    "timeframe": ram.get("timeframe", "Short-Term"),
-                    "isActive": True,
-                    "startDate": self.time_step.strftime("%Y-%m-%d")
-                }
-                # Possibly store more details from the event or ramification.
-                nation["effects"].append(effect_record)
-                # break if only one match is desired
-                break
+        for global_event in events_to_process:
+            event_id = global_event.get("eventId", "unknown_event")
+            participating_nation_ids = global_event.get("participatingNations", [])
+            if not participating_nation_ids: continue
+
+            for nation_id in participating_nation_ids:
+                nation_obj = self._get_nation_data(nation_id) # Use updated getter
+                if not nation_obj:
+                    print(f"Warning: Could not find nation '{nation_id}' for event '{event_id}'.")
+                    continue
+
+                # --- 1. Generate NationwideImpact ---
+                impact_trigger_date = self.time_step
+                impact_desc = f"Nation involved in/affected by: {global_event.get('eventData',{}).get('eventName', event_id)}"
+                nationwide_impact = self._create_nationwide_impact(nation_id, event_id, impact_trigger_date, impact_desc)
+                # Ensure the list exists before appending
+                nation_obj.setdefault("nationwideImpacts", []).append(nationwide_impact)
 
 
-    def _get_newly_merged_events(self, key_name: str) -> list:
-        """
-        Helper method: after 'update_json_schemas', if we want to track or apply
-        further logic to newly inserted events, we can look them up here.
+                # --- 2. Generate Effect(s) ---
+                generated_effect_ids = []
+                for ge_ram in global_event.get("ramifications", []):
+                    effect = self._create_effect(nation_id, nationwide_impact["impactId"], ge_ram)
+                    if effect:
+                        self.global_state["effects"].append(effect)
+                        generated_effect_ids.append(effect["effectId"])
 
-        This approach might require you to store old length references before 
-        insertion, or you can keep track in pending_events. For demonstration:
-        we cross-reference pending_events that ended up in the globalState sub-schema.
+                        # --- 3. Generate Ramification(s) ---
+                        generated_ramification_ids = []
+                        # Generate ramification using AI
+                        ramification = self._create_ramification_with_ai(
+                            nation_id, effect["effectId"], ge_ram
+                        )
+                        if ramification:
+                             self.global_state["ramifications"].append(ramification)
+                             generated_ramification_ids.append(ramification["ramificationId"])
+
+                        # Update Effect with its Ramification IDs
+                        effect["ramificationIds"] = generated_ramification_ids
+                        # Update the effect in the central list
+                        for i, e in enumerate(self.global_state["effects"]):
+                             if e["effectId"] == effect["effectId"]:
+                                 self.global_state["effects"][i] = effect
+                                 break
+
+                # Update NationwideImpact with its Effect IDs
+                nationwide_impact["effectIds"] = generated_effect_ids
+                # Update the impact in the nation's list
+                impacts_list = nation_obj.get("nationwideImpacts", [])
+                for i, imp in enumerate(impacts_list):
+                     if imp["impactId"] == nationwide_impact["impactId"]:
+                         impacts_list[i] = nationwide_impact
+                         break
+
+    # Renamed from _find_nation_by_id and potentially enhanced
+    def _get_nation_data(self, identifier: str) -> dict | None:
         """
-        results = []
-        new_ev_ids = {ev["eventId"] for ev in self.pending_events}
-        
-        for ev in self.global_state.get(key_name, []):
-            if ev.get("eventId") in new_ev_ids:
-                results.append(ev)
-        return results
+        Finds and returns the full nation data object from global_state['nations']
+        using either the nation's name or its ID.
+
+        :param identifier: The name or ID of the nation.
+        :return: The nation's data dictionary, or None if not found.
+        """
+        nations_dict = self.global_state.get("nations", {})
+        if not isinstance(nations_dict, dict):
+            print("Warning: global_state['nations'] is not a dictionary. Cannot retrieve nation data.")
+            return None
+
+        # Try direct lookup by identifier (assuming it might be ID)
+        if identifier in nations_dict:
+            return nations_dict[identifier]
+
+        # If not found by ID, iterate and check by name
+        for nation_data in nations_dict.values():
+            if isinstance(nation_data, dict) and nation_data.get("name") == identifier:
+                return nation_data
+
+        # If still not found
+        print(f"Warning: Nation '{identifier}' not found by ID or name.")
+        return None
+
+    # NEW: Helper to get organization data by name
+    def _get_organization_data_by_name(self, org_name: str) -> dict | None:
+        """
+        Finds and returns the full organization data object from global_state['organizations']
+        by matching the organization's name.
+
+        :param org_name: The name of the organization.
+        :return: The organization's data dictionary, or None if not found.
+        """
+        orgs_list = self.global_state.get("organizations", [])
+        if not isinstance(orgs_list, list):
+            print("Warning: global_state['organizations'] is not a list. Cannot retrieve organization data.")
+            return None
+
+        for org_data in orgs_list:
+            if isinstance(org_data, dict) and org_data.get("name") == org_name:
+                return org_data
+
+        print(f"Warning: Organization '{org_name}' not found.")
+        return None
+
+
+    def _create_nationwide_impact(self, nation_id: str, global_event_id: str, trigger_date: datetime.datetime, description: str) -> dict:
+        """ Creates a NationwideImpact object. """
+        impact_id = str(uuid.uuid4())
+        return {
+            "impactId": impact_id, "nationId": nation_id, "originGlobalEventId": global_event_id,
+            "impactTriggerDate": trigger_date.strftime("%Y-%m-%d"), "description": description,
+            "effectIds": [], "isActive": True, "estimatedEndDate": None
+        }
+
+    def _create_effect(self, nation_id: str, impact_id: str, global_ramification: dict) -> dict | None:
+        """ Generates an Effect object based on a global ramification context. """
+        if not global_ramification: return None
+        effect_id = str(uuid.uuid4())
+        effect_type_map = {
+            "Political": "Political Shift", "Economic": "Economic Change", "Social": "Social Upheaval",
+            "Technological": "Technological Advancement", "Military": "Military Posture Change",
+            "Diplomatic": "Diplomatic Realignment", "Environmental": "Environmental Consequence",
+            "Cultural": "Cultural Trend", "Humanitarian": "Resource Strain", "Legal": "Political Shift", "Other": "Other"
+        }
+        severity_map = {
+            "Minimal": "Minimal", "Low": "Low", "Moderate": "Moderate", "High": "High",
+            "Severe": "Severe", "Critical": "Critical", "Unprecedented": "Transformative"
+        }
+        return {
+            "effectId": effect_id, "originImpactId": impact_id, "nationId": nation_id,
+            "effectType": effect_type_map.get(global_ramification.get("ramificationType", "Other"), "Other"),
+            "description": f"Broad effect: {global_ramification.get('description', 'General consequence')}",
+            "severity": severity_map.get(global_ramification.get("severity", "Low"), "Low"),
+            "startDate": self.time_step.strftime("%Y-%m-%d"), "isActive": True, "estimatedEndDate": None,
+            "ramificationIds": [], "nationalMemoryImpact": "Moderately Remembered"
+        }
+
+    def _create_ramification_with_ai(self, nation_id: str, effect_id: str, global_ramification: dict) -> dict | None:
+        """
+        Generates a specific Ramification object using an AI model based on an Effect
+        and the context from the originating global event's general ramification.
+        Returns an object conforming to ramification_schema.json, or None if generation fails.
+        """
+        if not global_ramification or not self.ramification_object_schema:
+            print("Warning: Missing global ramification context or ramification schema for AI generation.")
+            return None
+
+        # --- Prepare Context for AI ---
+        nation_obj = self._get_nation_data(nation_id) # Use updated getter
+        if not nation_obj:
+             print(f"Warning: Cannot find nation {nation_id} to provide context for ramification generation.")
+             nation_context_summary = "Nation context unavailable."
+        else:
+             # Create a brief summary of the nation's current state for context
+             stability = nation_obj.get("internalAffairs", {}).get("stability", "N/A")
+             # Safely access nested economic indicators
+             economic_indicators = nation_obj.get("internalAffairs", {}).get("economicIndicators", {})
+             gdp_growth = economic_indicators.get("gdpGrowthRate", "N/A")
+             readiness = nation_obj.get("externalAffairs", {}).get("military", {}).get("readiness", "N/A")
+             nation_context_summary = f"Current State of {nation_obj.get('name', nation_id)}: Stability={stability}, GDP Growth={gdp_growth}, Military Readiness={readiness}."
+
+        ram_type = global_ramification.get("ramificationType", "Unknown")
+        severity = global_ramification.get("severity", "Low")
+        context_description = global_ramification.get('description', 'No description provided.')
+
+        # --- Build the AI Prompt ---
+        action = f"Generate the specific state change (ramification) details for nation {nation_id}."
+        # Tuned prompt with more context, clearer instructions, and examples
+        context = f"""
+Context:
+- Nation: {nation_id} ({nation_obj.get('name', 'N/A') if nation_obj else 'N/A'})
+- Current Nation Summary: {nation_context_summary}
+- Originating Effect Type: '{ram_type}'
+- Originating Effect Severity: '{severity}'
+- Originating Effect Description: '{context_description}'
+
+Task: Determine the single most likely and specific state change ramification resulting from this effect. Provide the output as a JSON object containing: 'targetPath', 'operation', 'value', and 'description'.
+
+Instructions:
+1.  **targetPath:** Specify the exact path within the simulation's global state using dot notation. Examples: 'nations.USA.internalAffairs.stability', 'nations.USSR.externalAffairs.military.readiness', 'globalEconomy.globalInflationRate', 'nations.UK.economicIndicators.unemploymentRate'. Choose the most relevant path based on the effect type and description. Assume 'nations' is a dictionary keyed by nationId (e.g., 'nations.USA', not 'nations[0]').
+2.  **operation:** Choose the most appropriate operation from the enum: ["set", "add", "subtract", "multiply", "divide"]. Use 'add'/'subtract' for numerical changes, 'set' for replacing values or setting flags. Avoid list operations ('remove_item', 'update_item') for this generation task.
+3.  **value:** Determine a plausible value for the change. Consider the 'severity':
+    - Minimal/Low: Small change (e.g., +/- 1-3 stability, +/- 0.001-0.005 GDP growth rate).
+    - Moderate: Noticeable change (e.g., +/- 5-10 stability, +/- 0.01 GDP growth rate).
+    - High/Severe: Significant change (e.g., +/- 15-25 stability, +/- 0.02-0.05 GDP growth rate).
+    - Critical/Transformative: Major change (e.g., +/- 30+ stability, +/- 0.05+ GDP growth rate).
+    The value type must match the target path (e.g., number for stability [0-100 scale likely], float for gdpGrowthRate [e.g., -0.02 for -2%], boolean for a flag like 'inDefault').
+4.  **description:** Write a brief, specific description of this ramification (e.g., "Decrease stability by 10 points due to political unrest", "Set economic growth rate to -0.02 due to recession").
+
+Example 1 (Political):
+- Context: Nation=USA, Stability=60, Effect Type=Political, Severity=High, Description='Government faces pressure...'
+- Output JSON: {{"targetPath": "nations.USA.internalAffairs.stability", "operation": "subtract", "value": 15, "description": "Decrease stability significantly due to high political pressure."}}
+
+Example 2 (Economic):
+- Context: Nation=UK, GDP Growth=0.01, Effect Type=Economic, Severity=Severe, Description='Risk of recession...'
+- Output JSON: {{"targetPath": "nations.UK.economicIndicators.gdpGrowthRate", "operation": "set", "value": -0.03, "description": "Set GDP growth rate to -3% reflecting severe recession risk."}}
+
+Example 3 (Military):
+- Context: Nation=USSR, Readiness=70, Effect Type=Military, Severity=Moderate, Description='Increased border tensions...'
+- Output JSON: {{"targetPath": "nations.USSR.externalAffairs.military.readiness", "operation": "add", "value": 10, "description": "Increase military readiness moderately due to border tensions."}}
+
+Now, generate the JSON for the provided context. Output ONLY the JSON object.
+        """
+
+        # Define the target schema for the AI (just the core fields it needs to generate)
+        target_ai_schema = {
+            "targetPath": self.ramification_object_schema.get("targetPath", {}),
+            "operation": self.ramification_object_schema.get("operation", {}),
+            "value": self.ramification_object_schema.get("value", {}),
+            "description": self.ramification_object_schema.get("description", {})
+        }
+
+        # Configure model specifically for this task (using pro, potentially lower temp for structure)
+        # Ensure configure_genai can accept model and temp arguments
+        pro_model = configure_genai(model="gemini-2.0-pro-exp-02-05", temp=0.4) # Lower temp for more deterministic output
+
+        # --- Call AI and Process Result ---
+        ai_generated_data = generate_json_object(
+            model=pro_model,
+            json_schema=target_ai_schema,
+            action=action,
+            context=context
+        )
+
+        if ai_generated_data and "targetPath" in ai_generated_data and "operation" in ai_generated_data and "value" in ai_generated_data:
+            ramification_id = str(uuid.uuid4())
+            # Determine execution time (e.g., immediate or delayed based on timeframe)
+            # For simplicity, execute immediately in this example
+            execution_time = self.time_step
+
+            # Assemble the full ramification object
+            full_ramification = {
+                "ramificationId": ramification_id,
+                "originEffectId": effect_id,
+                "nationId": nation_id,
+                "description": ai_generated_data.get("description", f"AI generated ramification for effect {effect_id}"),
+                "targetPath": ai_generated_data["targetPath"],
+                "operation": ai_generated_data["operation"],
+                "value": ai_generated_data["value"],
+                "valueIdentifier": None, # AI unlikely to determine this, handle in executor if needed
+                "executionTime": execution_time.strftime("%Y-%m-%dT%H:%M:%S"), # ISO format
+                "status": "pending",
+                "failureReason": None
+            }
+            # Optional: Add validation against the full ramification schema here
+            print(f"AI generated ramification: {full_ramification['description']} targeting {full_ramification['targetPath']}")
+            return full_ramification
+        else:
+            print(f"Warning: AI failed to generate valid ramification details for effect {effect_id}. AI Output: {ai_generated_data}")
+            return None
 
     ############################################################################
     #                        5) SIMULATION STEP                                 #
@@ -528,27 +704,386 @@ class EventEngine:
         7. Clear pending events
         8. Return summary
         """
+        print(f"\n--- Running Simulation Step: {self.global_state['current_date']} ---")
         self.evaluate_conditions()
 
         if user_input:
             self.process_user_input(user_input)
 
-        # Merge new events into sub-schemas
+        # Merge new events into globalEvents list
         self.update_json_schemas()
 
-        # Summarize
+        # Summarize newly added global events
         summary = self.summarize_changes()
+        print("\n--- Event Generation Summary ---")
+        print(summary if summary else "No new global events generated.")
 
-        # (NEW) After merging events, apply ramifications if any
+
+        # (NEW) Generate Impacts, Effects, and AI-driven Ramifications
+        print("\n--- Generating Consequences (Impacts -> Effects -> Ramifications) ---")
         self.apply_ramifications()
 
-        # Advance time
-        self.advance_time(days=30)
+        # Advance time for the next step
+        self.advance_time(days=30) # Assuming fixed 30-day steps for now
 
-        # Clear the pending events so next step is clean
+        # Clear the pending events list for the next cycle
         self.pending_events.clear()
 
+        # Return summary of events added in this step
         return summary
+
+    # --- New Search Functionality ---
+    def find_events_for_nation(self, nation_name_or_id: str) -> list:
+        """
+        Searches the globalEvents list for events involving a specific nation.
+
+        :param nation_name_or_id: The name or ID of the nation to search for.
+        :return: A list of global event dictionaries where the nation is listed
+                 in 'participatingNations'.
+        """
+        matching_events = []
+        all_events = self.global_state.get("globalEvents", [])
+        if not isinstance(all_events, list):
+            print("Warning: globalEvents is not a list. Cannot search.")
+            return []
+
+        for event in all_events:
+            participants = event.get("participatingNations", [])
+            if isinstance(participants, list) and nation_name_or_id in participants:
+                matching_events.append(event)
+
+        print(f"Found {len(matching_events)} events involving '{nation_name_or_id}'.")
+        return matching_events
+
+    # --- NEW: User Prompt Event Generation ---
+
+    def _extract_entities_with_ai(self, user_prompt: str, known_nations: list, known_orgs: list) -> dict:
+        """
+        Uses an AI model to extract relevant entities (nations, orgs, regions, event type)
+        from the user's prompt.
+        """
+        print("Attempting AI-driven entity extraction...")
+        # Use a potentially faster/cheaper model for this classification task
+        extraction_model = configure_genai(model="gemini-2.0-flash", temp=0.2)
+
+        # Prepare known entities for the prompt
+        nations_list_str = ", ".join(known_nations) if known_nations else "None provided"
+        orgs_list_str = ", ".join(known_orgs) if known_orgs else "None provided"
+
+        # Define the desired JSON output structure for the AI
+        output_schema = {
+            "type": "object",
+            "properties": {
+                "identified_nations": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of nation names/IDs identified in the prompt that match the known nations list. Consider common aliases and acronyms (e.g., USA, USSR, UK, PRC, ROC)."
+                },
+                "identified_organizations": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of organization names identified in the prompt that match the known organizations list."
+                },
+                "identified_regions": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of geographical regions mentioned (e.g., 'Middle East', 'Europe', 'Southeast Asia')."
+                },
+                "suggested_event_type": {
+                    "type": ["string", "null"],
+                    "enum": ["Conflict", "Economic Event", "Political Event", "Scientific Discovery", "Natural Disaster", "Humanitarian Crisis", "Political Violence", "Generic Event", None],
+                    "description": "The most likely event type based on the prompt, or null if unclear."
+                }
+            },
+            "required": ["identified_nations", "identified_organizations", "identified_regions", "suggested_event_type"]
+        }
+
+        prompt = f"""
+Analyze the following user prompt and extract the relevant entities based on the provided lists and general knowledge.
+
+User Prompt: "{user_prompt}"
+
+Known Nations: [{nations_list_str}]
+Known Organizations: [{orgs_list_str}]
+
+Task: Identify the nations, organizations, geographical regions mentioned or clearly implied in the prompt. Also, suggest the most likely event type. Match identified nations and organizations against the known lists provided. **Consider common aliases and acronyms for nations (e.g., USA for United States of America, USSR for Soviet Union, UK for United Kingdom, PRC for People's Republic of China, ROC for Republic of China).**
+
+Output ONLY a valid JSON object strictly following this schema:
+{json.dumps(output_schema, indent=2)}
+
+Instructions:
+- **Crucially:** If you identify a nation by an alias or acronym (e.g., "USA", "USSR", "PRC", "ROC", "UK"), you MUST return the corresponding canonical identifier found in the 'Known Nations' list (e.g., return "United States of America" or "USA" if that's the key in the list, not the alias used in the prompt unless the alias itself is the key). Only include nations in 'identified_nations' if they or their aliases appear in the 'Known Nations' list.
+- Only include organizations in 'identified_organizations' if they appear in the 'Known Organizations' list.
+- List any geographical regions mentioned under 'identified_regions'.
+- Select the most appropriate 'suggested_event_type' from the enum provided in the schema, or use null if none seems correct.
+- If no entities of a certain type are found, return an empty list for that key (e.g., "identified_regions": []).
+- Do not include any explanations or surrounding text.
+        """
+
+        # Use generate_json_object for retries and parsing
+        # Note: generate_json_object expects 'action' and 'context', we'll adapt
+        action_placeholder = "Extract entities from user prompt"
+        context_placeholder = f"Known Nations: {nations_list_str}\nKnown Orgs: {orgs_list_str}"
+
+        ai_result = generate_json_object(
+            model=extraction_model,
+            json_schema=output_schema,
+            action=action_placeholder,
+            context=prompt # Pass the full prompt as context here
+        )
+
+        if ai_result and isinstance(ai_result, dict):
+            # Basic validation of the result structure
+            default_result = {
+                "identified_nations": [], "identified_organizations": [],
+                "identified_regions": [], "suggested_event_type": None
+            }
+            # Ensure all keys exist, defaulting to empty lists/None
+            for key, default_val in default_result.items():
+                ai_result.setdefault(key, default_val)
+            print(f"AI Entity Extraction Result: {ai_result}")
+            return ai_result
+        else:
+            print("Warning: AI entity extraction failed or returned invalid format. Falling back to empty entities.")
+            return {
+                "identified_nations": [], "identified_organizations": [],
+                "identified_regions": [], "suggested_event_type": None
+            }
+
+
+    def _extract_entities_from_prompt(self, user_prompt: str) -> dict:
+        """
+        Extracts entities from the user prompt using an AI helper function.
+        Maps the AI result to the format expected by _build_context_for_user_event.
+        """
+        # Get known entities from the current state
+        # Extract both IDs and names if available, as AI might match on either
+        known_nations = list(self.global_state.get("nations", {}).keys())
+        known_nation_names = [n.get("name") for n in self.global_state.get("nations", {}).values() if n.get("name")]
+        all_known_nation_identifiers = list(set(known_nations + known_nation_names)) # Combine IDs and names
+
+        known_orgs = [org.get("name") for org in self.global_state.get("organizations", []) if org.get("name")]
+
+        # Call the AI extraction helper with combined identifiers
+        ai_extracted_data = self._extract_entities_with_ai(user_prompt, all_known_nation_identifiers, known_orgs)
+
+        # Map the AI result to the desired output format, ensuring lists are returned
+        # Prioritize returning the canonical ID/key used in the nations dictionary if possible
+        mapped_nations = []
+        for identified_nation in ai_extracted_data.get("identified_nations", []):
+             nation_obj = self._get_nation_data(identified_nation) # Try finding by ID or name
+             if nation_obj:
+                 # Prefer ID if available, else use the name that was matched
+                 nation_key = nation_obj.get("nationId") or nation_obj.get("name")
+                 if nation_key and nation_key not in mapped_nations:
+                      mapped_nations.append(nation_key)
+             elif identified_nation not in mapped_nations: # Add the identifier if lookup failed but not already added
+                  mapped_nations.append(identified_nation)
+
+
+        entities = {
+            "nations": mapped_nations[:2] if isinstance(mapped_nations, list) else [], # Limit primary nations
+            "organizations": ai_extracted_data.get("identified_organizations", []) if isinstance(ai_extracted_data.get("identified_organizations"), list) else [],
+            "regions": ai_extracted_data.get("identified_regions", []) if isinstance(ai_extracted_data.get("identified_regions"), list) else [],
+            "event_type": ai_extracted_data.get("suggested_event_type") # Can be None or string
+        }
+
+        print(f"Mapped AI entities for context building: {entities}")
+        return entities
+
+    def _build_context_for_user_event(self, user_prompt: str) -> str:
+        """
+        Gathers and synthesizes context based on the user prompt and global state,
+        following the refined plan.
+        """
+        print("Building context for user event...")
+        context_parts = []
+        current_date_str = self.global_state.get("current_date", "Unknown Date")
+        context_parts.append(f"## Current Simulation Date: {current_date_str}\n")
+
+        # --- 1. Analyze Prompt ---
+        extracted_entities = self._extract_entities_from_prompt(user_prompt)
+        primary_nations = extracted_entities.get("nations", []) # These are likely names or IDs
+        mentioned_orgs = extracted_entities.get("organizations", [])
+
+        # --- 2. Global Context ---
+        context_parts.append("## Global Overview:")
+        # Economy
+        economy = self.global_state.get("globalEconomy", {})
+        gdp = economy.get("globalGDP", "N/A")
+        inflation = economy.get("globalInflationRate", "N/A")
+        context_parts.append(f"- Economy: Global GDP {gdp}, Inflation {inflation}%.")
+        # Conflicts
+        active_wars = self.global_state.get("conflicts", {}).get("activeWars", [])
+        if active_wars:
+            context_parts.append("- Major Conflicts:")
+            for war in active_wars[:3]: # Limit for brevity
+                context_parts.append(f"  - {war.get('conflictName', 'Unnamed War')} ({war.get('status', 'Unknown')})")
+        # Strategic Interests (Improved filtering attempt)
+        interests = self.global_state.get("strategicInterests", [])
+        relevant_interests = []
+        # Basic filtering: check if primary nations are involved as controlling/rival entities
+        for theatre in interests: # Assuming interests is the list of theatres
+             for interest in theatre.get("strategicInterests", []):
+                 controlling = interest.get("controllingEntities", [])
+                 rivals = interest.get("rivalClaims", [])
+                 involved_entities = set(controlling + rivals)
+                 if any(nation in involved_entities for nation in primary_nations):
+                     relevant_interests.append(f"  - {interest.get('interestName', 'Unnamed')} ({interest.get('region', 'Unknown')}) - Importance: {interest.get('importanceLevel', 'N/A')}")
+                     if len(relevant_interests) >= 3: break # Limit for brevity
+             if len(relevant_interests) >= 3: break
+        if relevant_interests:
+             context_parts.append("- Relevant Strategic Interests:")
+             context_parts.extend(relevant_interests)
+
+        # Recent Events (Last 3 involving primary nations) - Use _find_nation_by_id logic if needed
+        recent_events_str = []
+        count = 0
+        for event in reversed(self.global_state.get("globalEvents", [])):
+            if count >= 3: break
+            participants = event.get("participatingNations", [])
+            if any(nation in participants for nation in primary_nations):
+                 event_name = event.get("eventData", {}).get("standardizedEventName", event.get("eventId"))
+                 recent_events_str.append(f"  - {event_name}")
+                 count += 1
+        if recent_events_str:
+             context_parts.append("- Recent Relevant Events:")
+             context_parts.extend(recent_events_str)
+        context_parts.append("\n")
+
+
+        # --- 3. Primary Nation Context ---
+        context_parts.append("## Primary Nation Status:")
+        current_year = current_date_str.split('-')[0] if current_date_str != "Unknown Date" else "UnknownYear"
+        for nation_identifier in primary_nations: # Could be name or ID
+            nation_obj = self._get_nation_data(nation_identifier) # Use helper to find object
+            if nation_obj:
+                nation_name = nation_obj.get("name", nation_identifier) # Prefer name if available
+                nation_id = nation_obj.get("nationId", nation_identifier) # Prefer ID if available
+                context_parts.append(f"### {nation_name} ({nation_id}):")
+                # Add full nation object as JSON string
+                try:
+                    nation_json_str = json.dumps(nation_obj, indent=2)
+                    context_parts.append(f"- Full Data:\n```json\n{nation_json_str}\n```")
+                except TypeError:
+                    context_parts.append("- Full Data: (Error serializing nation object)")
+
+                # Diplomatic Stance (towards other primary nation if applicable)
+                other_primary_id = next((n_id for n_id in primary_nations if n_id != nation_identifier), None)
+                if other_primary_id:
+                    # Find sentiment using nation IDs/names
+                    # Add type check for 's'
+                    sentiment = next((s for s in self.global_state.get("globalSentiment", [])
+                                      if isinstance(s, dict) and \
+                                         ((s.get("nationA") == nation_identifier and s.get("nationB") == other_primary_id) or \
+                                          (s.get("nationA") == other_primary_id and s.get("nationB") == nation_identifier))), None)
+                    if sentiment:
+                        context_parts.append(f"- Relations with {other_primary_id}: {sentiment.get('diplomaticRelations', 'N/A')}")
+
+                # Key Figures (Simplified: first leader found matching nation name)
+                char = next((c for c in self.global_state.get("notableCharacters", [])
+                             if isinstance(c, dict) and c.get("nationality") == nation_name and ("Leader" in c.get("role", "") or "Head of State" in c.get("role", ""))), None)
+                if char:
+                    context_parts.append(f"- Key Figure: {char.get('fullName', 'Unknown')} ({char.get('role', 'Unknown')})")
+
+            else:
+                context_parts.append(f"### {nation_identifier}: Data not found.")
+        context_parts.append("\n")
+
+
+        # --- 4. Organization & Stakeholder Context ---
+        context_parts.append("## Organizational Context:")
+        relevant_orgs = []
+        # Add explicitly mentioned orgs
+        relevant_orgs.extend(mentioned_orgs)
+        # TODO: Add logic to find relevant orgs based on nations/region if not explicitly mentioned
+
+        stakeholder_nations = set()
+        if relevant_orgs: # Only proceed if orgs were mentioned or identified
+            context_parts.append("- Relevant Organizations:")
+            for org_name in relevant_orgs:
+                org_data = self._get_organization_data_by_name(org_name) # Use helper
+                if org_data:
+                    context_parts.append(f"  - {org_name}: Objective - {org_data.get('primaryObjectives', ['N/A'])[0]}, Influence - {org_data.get('influenceScore', 'N/A')}")
+                    # Identify key members (excluding primary nations already covered)
+                    members = [m for m in org_data.get("memberStates", []) if m not in primary_nations]
+                    stakeholder_nations.update(members[:3]) # Limit stakeholders for brevity
+                else:
+                    context_parts.append(f"  - {org_name}: Data not found.")
+
+        if stakeholder_nations:
+            context_parts.append("- Key Stakeholder Nation Stances (towards primary nations):")
+            for stakeholder in stakeholder_nations:
+                stances = []
+                for primary_id in primary_nations:
+                    # Find sentiment using stakeholder name and primary nation ID/name
+                    # Add type check for 's'
+                    sentiment = next((s for s in self.global_state.get("globalSentiment", [])
+                                      if isinstance(s, dict) and \
+                                         ((s.get("nationA") == stakeholder and s.get("nationB") == primary_id) or \
+                                          (s.get("nationA") == primary_id and s.get("nationB") == stakeholder))), None)
+                    if sentiment:
+                        stances.append(f"{primary_id}: {sentiment.get('diplomaticRelations', 'N/A')}")
+                if stances:
+                    context_parts.append(f"  - {stakeholder}: ({'; '.join(stances)})")
+        context_parts.append("\n")
+
+
+        # --- 5. Synthesize ---
+        final_context = "\n".join(context_parts)
+        # --- DEBUG PRINT ---
+        print("\n" + "="*20 + " CONTEXT FOR EVENT GENERATION " + "="*20)
+        print(final_context)
+        print("="*60 + "\n")
+        # --- END DEBUG PRINT ---
+        return final_context
+
+
+    def generate_event_from_prompt(self, user_prompt: str):
+        """
+        Generates a single global event based on a user prompt and derived context,
+        then adds it to the pending_events list.
+        """
+        print(f"\n--- Generating Event from User Prompt: '{user_prompt}' ---")
+        if not self.global_event_item_schema:
+            print("Error: Global event item schema not loaded. Cannot generate event.")
+            return
+
+        # 1. Build Context
+        context = self._build_context_for_user_event(user_prompt)
+
+        # 2. Prepare for AI Call
+        # Use a specific model/temp if desired for this task
+        event_gen_model = configure_genai(model="gemini-2.0-flash", temp=0.7) # Example config
+
+        # Adapt the prompt generation - using a simpler action description
+        action = f"Generate a single global event based on the user request: '{user_prompt}' considering the provided context."
+
+        # 3. Call AI to Generate Event Object
+        # Using generate_json_object from this file
+        generated_event_obj = generate_json_object(
+            model=event_gen_model,
+            json_schema=self.global_event_item_schema, # Use the item schema
+            action=action, # Pass the refined action
+            context=context # Pass the synthesized context
+        )
+
+        # 4. Validate and Add to Pending
+        if generated_event_obj and isinstance(generated_event_obj, dict):
+            # Basic validation (add more checks as needed)
+            if "eventId" in generated_event_obj and "eventType" in generated_event_obj:
+                print(f"Successfully generated event: {generated_event_obj.get('eventId')}")
+                # Ensure essential fields like participatingNations are present if needed by schema
+                generated_event_obj.setdefault("participatingNations", [])
+                generated_event_obj.setdefault("ramifications", [])
+                # Add to pending events
+                self.pending_events.append(generated_event_obj)
+            else:
+                print("Error: Generated event object is missing required fields (eventId, eventType).")
+        else:
+            print("Error: Failed to generate a valid event object from the AI.")
+
+    # --- End NEW ---
 
 
 ###############################################################################
@@ -557,57 +1092,51 @@ class EventEngine:
 
 if __name__ == "__main__":
     """
-    If you run event_engine.py directly, here's a minimal usage example.
-    A real scenario might load global_state from file or share it with time_engine.py.
+    Example usage demonstrating initializing from a directory and generating
+    an event from a user prompt.
     """
+    # --- Configuration ---
+    # Specify the simulation directory containing global_state.json
+    # Make sure this directory and file exist from a previous initialization run.
+    simulation_directory = "simulation_data/generated_timeline_1975" # Example year
 
-    # Example skeleton global_state
-    global_state = {
-        "current_date": "1975-01-01",
-        "nations": [
-            {
-                "name": "Example Nation",
-                "military_tensions": 85,
-                "economicIndicators": {"gdpGrowthRate": -4.0},
-                "domesticStability": 50
-            }
-        ],
-        "conflicts": {
-            "activeWars": [
-                {
-                    "conflictName": "Eastern Border Conflict",
-                    "startDate": "1974-06-10",
-                    "endDate": None,
-                    "status": "Ongoing",
-                    "belligerents": {
-                        "sideA": ["Example Nation"],
-                        "sideB": ["Another Nation"]
-                    },
-                    "casualties": {"military": 12000, "civilian": 500},
-                    "territorialChanges": []
-                }
-            ],
-            "borderSkirmishes": [],
-            "internalUnrest": [],
-            "proxyWars": []
-        },
-        "globalEconomy": [],
-        "globalEvents": [],
-        "humanitarianCrises": [],
-        "naturalDisasters": [],
-        "politicalEvents": [],
-        "politicalViolence": [],
-        "scientificDiscoveries": []
-    }
+    # Example user prompt for event generation
+    user_event_prompt = "Generate a political event where the USA and USSR sign a new arms control treaty."
 
-    # Instantiate the engine and run a step:
-    engine = EventEngine(global_state)
+    # --- Execution ---
+    try:
+        # 1. Initialize EventEngine from the specified directory
+        print(f"--- Initializing Event Engine from: {simulation_directory} ---")
+        engine = EventEngine.from_directory(simulation_directory)
+        print(f"Engine initialized. Current simulation date: {engine.global_state.get('current_date')}")
 
-    # Single simulation step with user input "prevent war"
-    summary_output = engine.run_simulation_step(user_input="prevent war")
-    print("=== Simulation Step Summary ===")
-    print(summary_output)
+        # 2. Generate an event based on the user prompt
+        # This will build context and call the AI
+        engine.generate_event_from_prompt(user_event_prompt)
 
-    # The updated global_state now includes new events
-    print("\n=== Updated Global State ===")
-    print(json.dumps(global_state, indent=2))
+        # 3. Check pending events (the newly generated one should be here)
+        print("\n--- Pending Events After User Prompt Generation ---")
+        if engine.pending_events:
+            print(json.dumps(engine.pending_events, indent=2))
+        else:
+            print("No events were added to pending_events (generation might have failed).")
+
+        # 4. Optionally, run a simulation step to process the pending event
+        # print("\n--- Running a Simulation Step to Process Pending Event ---")
+        # step_summary = engine.run_simulation_step()
+        # print("\n--- Simulation Step Summary ---")
+        # print(step_summary)
+
+        # 5. Optionally, save the updated state (if a step was run)
+        # updated_state_path = os.path.join(simulation_directory, "global_state_after_user_event.json")
+        # with open(updated_state_path, "w", encoding="utf-8") as f:
+        #     json.dump(engine.global_state, f, indent=2)
+        # print(f"\nSaved potentially updated state to {updated_state_path}")
+
+    except FileNotFoundError as e:
+        print(f"\nError: Could not find simulation data directory or global_state.json.")
+        print(f"Please ensure '{simulation_directory}' exists and contains 'global_state.json'.")
+        print(f"Details: {e}")
+    except Exception as e:
+        print(f"\nAn unexpected error occurred during the example run:")
+        print(f"{type(e).__name__}: {e}")

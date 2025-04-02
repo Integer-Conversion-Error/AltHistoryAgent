@@ -1,6 +1,9 @@
 import os
 import json
+import re # For parsing retry delay
+import time # For sleep
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 
 def load_config():
     """
@@ -29,7 +32,7 @@ def configure_genai():
     }
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash-exp",
+        model_name="gemini-2.0-flash",
         generation_config=generation_config,
     )
     return model
@@ -39,17 +42,69 @@ def generate_json_object(model, json_schema, action, context):
     """
     Use AI to generate a JSON object following the schema.
     """
-    prompt = ""#generate_object_prompt(json_schema, action, context)
-    response = model.generate_content(prompt)
+    prompt = "" # Placeholder - This function seems incomplete or unused based on the empty prompt
+    # If this function were to be used, the prompt generation needs to be implemented.
+    # Assuming it would be similar to other generators:
+    # prompt = generate_object_prompt(json_schema, action, context)
 
-    try:
-        generated_json = json.loads(response.text[7:-3])
-        return generated_json
-    except json.JSONDecodeError:
-        print("Error: AI did not return valid JSON.")
-        print(response)
-        
-        return None
+    max_retries = 3
+    base_retry_delay = 5
+
+    for attempt in range(max_retries):
+        try:
+            # If the prompt is empty, this will likely fail or return nothing useful.
+            # This needs to be addressed if the function is intended to be used.
+            if not prompt:
+                 print("Error: Prompt is empty in generate_json_object. Cannot call AI.")
+                 return None
+
+            response = model.generate_content(prompt)
+            text = response.text.strip()
+
+            # Clean potential markdown
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.endswith("```"):
+                text = text[:-3]
+            text = text.strip()
+
+            generated_json = json.loads(text)
+            return generated_json # Success
+
+        except json.JSONDecodeError as e:
+            print(f"Error: AI did not return valid JSON (Attempt {attempt + 1}/{max_retries}).\nDetails: {e}\nAI Output:\n{text}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Unexpected error during JSON generation (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
+
+    # If loop finishes without returning
+    print("Failed to generate valid JSON object after all retries.")
+    return None
 
 
 

@@ -25,8 +25,10 @@ processed further (as JSON).
 import sys
 import os
 import json
+import re # For parsing retry delay
 import time
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 from initializer_util import *
 ###############################################################################
 #                           CONFIG & MODEL SETUP                              #
@@ -310,11 +312,38 @@ Each effect must impact multiple relevant fields within a single domain, ensurin
         except json.JSONDecodeError:
             print(f"Attempt {attempt + 1}: Failed to parse AI output as valid JSON. Retrying...")
             attempt += 1
-            time.sleep(5)
-        except Exception as e:
-            print(f"Ran into exception {e} (most likely rate limiting). Retrying (attempt {attempt+1})...")
+            print(f"Attempt {attempt + 1}: Failed to parse AI output as valid JSON. Retrying...")
             attempt += 1
-            time.sleep(2)
+            if attempt == max_attempts: break
+            # print("Waiting 5 seconds before retrying...")
+            # time.sleep(5)
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' fetching effects (Attempt {attempt + 1}/{max_attempts}): {rate_limit_error}")
+            attempt += 1
+            if attempt == max_attempts:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Encountered unexpected error {type(e).__name__}: {e}. Retrying (attempt {attempt+1}/{max_attempts})...")
+            attempt += 1
+            if attempt == max_attempts: break
+            # print("Waiting 5 seconds before retrying...")
+            # time.sleep(5) # Use a longer delay for general errors
 
     print("Max attempts reached. Returning empty list.")
     return []

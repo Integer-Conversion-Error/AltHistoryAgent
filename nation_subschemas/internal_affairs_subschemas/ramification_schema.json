@@ -1,0 +1,83 @@
+{
+    "$id": "https://example.com/schemas/ramification",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Ramification",
+    "description": "A specific, often quantifiable, directed change to a nation's state or subschemas resulting from an Effect.",
+    "type": "object",
+    "properties": {
+        "ramificationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this specific ramification instance."
+        },
+        "originEffectId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the Effect that caused this ramification."
+        },
+        "nationId": {
+            "type": "string",
+            "description": "The unique identifier of the nation experiencing this ramification."
+        },
+        "description": {
+            "type": "string",
+            "description": "Optional narrative description of the specific change (e.g., 'Unemployment drops due to war production')."
+        },
+        "targetPath": {
+            "type": "string",
+            "description": "A path indicating the specific field in the global state to modify (e.g., 'nations.USA.economy.unemploymentRate', 'globalEconomy.tradeVolume'). Uses dot notation."
+        },
+        "operation": {
+            "type": "string",
+            "enum": [
+                "set",
+                "add",
+                "subtract",
+                "multiply",
+                "divide",
+                "remove_item",
+                "update_item"
+            ],
+            "description": "The operation to perform on the target path."
+        },
+        "value": {
+            "type": ["string", "number", "boolean", "object", "array", "null"],
+            "description": "The value to use in the operation (e.g., the number to set, the item to add/remove)."
+        },
+        "valueIdentifier": {
+            "type": "string",
+            "description": "Optional identifier needed for 'update_item' or specific 'remove_item' operations on lists of objects (e.g., the ID of the object to update/remove)."
+        },
+        "executionTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The simulation date and time when this ramification should be executed."
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "executed",
+                "failed",
+                "skipped",
+                "cancelled"
+            ],
+            "default": "pending",
+            "description": "The current execution status of the ramification."
+        },
+        "failureReason": {
+            "type": "string",
+            "description": "Reason why the ramification failed execution, if applicable."
+        }
+    },
+    "required": [
+        "ramificationId",
+        "originEffectId",
+        "nationId",
+        "targetPath",
+        "operation",
+        "value",
+        "executionTime",
+        "status"
+    ]
+}

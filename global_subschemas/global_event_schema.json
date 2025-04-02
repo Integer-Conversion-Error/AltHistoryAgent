@@ -53,6 +53,31 @@
                 ],
                 "description": "The detailed data of the event, based on the specific event type."
             },
+            "parentEventId": {
+                "type": ["string", "null"],
+                "description": "The unique ID of the direct parent event, if any."
+            },
+            "childEventIds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "A list of unique IDs for direct child events stemming from this one."
+            },
+            "siblingEventIds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "A list of unique IDs for sibling events related to this one (e.g., occurring concurrently or as alternatives)."
+            },
+            "participatingNations": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "A list of nation IDs directly involved or significantly affected by the event's occurrence."
+            },
             "ramifications": {
                 "type": "array",
                 "items": {
@@ -129,7 +154,7 @@
             }
         },
         "required": [
-            "eventID",
+            "eventId",
             "eventType",
             "eventData",
             "ramifications"

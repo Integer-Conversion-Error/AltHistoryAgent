@@ -1,6 +1,9 @@
 import os
 import json
+import re # For parsing retry delay
+import time # For sleep
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 
 
 def load_config():
@@ -189,72 +192,119 @@ def initialize_summarization_session(model, json_data, schema_type):
     Initialize a "summarization session" with the generative model
     using an initial system prompt approach.
     """
-    summarization_session = model.start_chat(
-        history=[
-            {
-                "role": "user",
-                "parts": [
+    # Add retry logic for the initial chat setup
+    max_retries = 3
+    base_retry_delay = 5
+    for attempt in range(max_retries):
+        try:
+            summarization_session = model.start_chat(
+                history=[
                     {
-                        "text": (
-                            f"System prompt: {generate_summarization_prompt(json_data, schema_type)} "
-                            f"Respond 'Understood.' if you got it."
-                        )
-                    }
-                ],
-            },
-            {
-                "role": "model",
-                "parts": [{"text": "Understood."}],
-            },
-        ]
-    )
-    return summarization_session
+                        "role": "user",
+                        "parts": [
+                            {
+                                "text": (
+                                    f"System prompt: {generate_summarization_prompt(json_data, schema_type)} "
+                                    f"Respond 'Understood.' if you got it."
+                                )
+                            }
+                        ],
+                    },
+                    {
+                        "role": "model",
+                        "parts": [{"text": "Understood."}],
+                    },
+                ]
+            )
+            return summarization_session # Success
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' initializing chat (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error during chat initialization.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Unexpected error initializing chat (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
 
+    # If loop finishes without returning
+    print("Failed to initialize summarization session after all retries.")
+    return None # Indicate failure
 
 def perform_summarization(summarization_session, json_data, schema_type):
     """
     Automatically generates the summary without user input.
     """
-    # Send the summarization request
-    response = summarization_session.send_message(generate_summarization_prompt(json_data, schema_type))
+    # Check if session initialization failed
+    if summarization_session is None:
+        print("Summarization session not initialized. Cannot perform summarization.")
+        return None
 
-    # Display the model's response
-    print("\n--- Generated Summary ---")
-    print(response.text)
-    return response.text
+    # Send the summarization request with retry logic
+    max_retries = 3
+    base_retry_delay = 5
+    prompt = generate_summarization_prompt(json_data, schema_type)
 
+    for attempt in range(max_retries):
+        try:
+            response = summarization_session.send_message(prompt)
 
-def main():
-    """
-    Main function to execute the JSON Summarizer.
-    """
-    # 1. Load config and configure generative AI
-    model = configure_genai()
+            # Display the model's response
+            print("\n--- Generated Summary ---")
+            print(response.text)
+            # Basic check if response text is not empty
+            if response and hasattr(response, 'text') and response.text:
+                return response.text # Success
+            else:
+                print(f"Warning: Received empty response from AI (Attempt {attempt + 1}/{max_retries}).")
+                if attempt == max_retries - 1: break
+                # print(f"Waiting {base_retry_delay} seconds before retrying...")
+                # time.sleep(base_retry_delay)
+                continue # Go to next attempt
 
-    # 2. Read JSON data from a file (defaults to 'input.json')
-    json_file_path = "summarizers/test_summarize.json"
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            # Attempt to get model name from session; might not be directly available, hence the default
+            model_name = getattr(summarization_session, 'model_name', 'Unknown Model') # Best effort guess
+            print(f"Rate limit hit for model '{model_name}' sending message (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error sending message.")
+                break
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+        except Exception as e:
+            print(f"Unexpected error sending message (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {base_retry_delay} seconds before retrying...")
+            # time.sleep(base_retry_delay)
 
-    if not os.path.exists(json_file_path):
-        print(f"Error: {json_file_path} not found. Please place a valid JSON file in the directory.")
-        return
-
-    try:
-        with open(json_file_path, "r", encoding="utf-8") as file:
-            json_data = json.load(file)
-    except json.JSONDecodeError as e:
-        print(f"Invalid JSON format in {json_file_path}. Error: {e}")
-        return
-    except Exception as e:
-        print(f"Error reading {json_file_path}: {e}")
-        return
-
-    # 3. Initialize summarization session
-    schema_type = "Internal Affairs"
-    summarization_session = initialize_summarization_session(model, json_data, schema_type)
-
-    # 4. Generate and display the summary
-    perform_summarization(summarization_session, json_data, schema_type)
-#
-
-if __name__ == "__main__":
-    main()
+    # If loop finishes without returning
+    print("Failed to perform summarization after all retries.")
+    return None

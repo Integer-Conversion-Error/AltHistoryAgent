@@ -1,0 +1,103 @@
+{
+    "$id": "https://example.com/schemas/effect",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Effect",
+    "description": "A broader, descriptive consequence for a nation resulting from a specific Nationwide Impact. Describes the state change.",
+    "type": "object",
+    "properties": {
+        "effectId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this specific effect instance."
+        },
+        "originImpactId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the Nationwide Impact that triggered this effect."
+        },
+        "nationId": {
+            "type": "string",
+            "description": "The unique identifier of the nation experiencing this effect."
+        },
+        "effectType": {
+            "type": "string",
+            "enum": [
+                "Political Shift",
+                "Economic Change",
+                "Social Upheaval",
+                "Technological Advancement",
+                "Military Posture Change",
+                "Diplomatic Realignment",
+                "Environmental Consequence",
+                "Cultural Trend",
+                "Resource Strain",
+                "Infrastructure Development",
+                "Public Sentiment Shift",
+                "Other"
+            ],
+            "description": "The general category of the effect."
+        },
+        "description": {
+            "type": "string",
+            "description": "A narrative description of the broader state change experienced by the nation (e.g., 'Mass mobilization strains labor force', 'Economy shifts to war production')."
+        },
+        "severity": {
+            "type": "string",
+            "enum": [
+                "Minimal",
+                "Low",
+                "Moderate",
+                "High",
+                "Severe",
+                "Critical",
+                "Transformative"
+            ],
+            "description": "The overall intensity or significance of this effect on the nation."
+        },
+        "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when this effect began to manifest."
+        },
+        "isActive": {
+            "type": "boolean",
+            "description": "Indicates if this effect is currently ongoing."
+        },
+        "estimatedEndDate": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "The estimated date when this effect will subside (if applicable)."
+        },
+        "ramificationIds": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "uuid"
+            },
+            "description": "A list of unique IDs for the specific Ramifications caused by this Effect."
+        },
+         "nationalMemoryImpact": {
+            "type": "string",
+            "enum": [
+                "Forgotten",
+                "Barely Remembered",
+                "Moderately Remembered",
+                "Well Remembered",
+                "Strongly Remembered",
+                "Historic Landmark"
+            ],
+            "description": "How prominently this effect is remembered by the nation's population and government over time."
+        }
+    },
+    "required": [
+        "effectId",
+        "originImpactId",
+        "nationId",
+        "effectType",
+        "description",
+        "severity",
+        "startDate",
+        "isActive",
+        "ramificationIds"
+    ]
+}

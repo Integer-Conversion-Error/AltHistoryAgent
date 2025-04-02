@@ -4,9 +4,11 @@ import os
 import json
 import time
 import uuid
-import re
+import re # For parsing retry delay and ID validation
 import random
+import time # For sleep
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 from collections import defaultdict
 from initializer_util import *
 
@@ -69,16 +71,79 @@ Thank you.
     attempt = 0
     max_attempts = 4
     while attempt < max_attempts:
+        raw_output = "" # Initialize raw_output here to avoid UnboundLocalError
         try:
             response = model.generate_content(prompt)
-            raw_output = response.text.strip()[7:-3]  # remove potential markdown
-            entity_obj = json.loads(raw_output)
 
-            new_name = entity_obj["name"]
+            # Check for safety blocks or empty parts before accessing text
+            if not response.parts:
+                 finish_reason = getattr(response.candidates[0], 'finish_reason', None) if response.candidates else None
+                 safety_ratings = getattr(response.candidates[0], 'safety_ratings', []) if response.candidates else []
+                 # Using 4 as a common value for SAFETY finish_reason, adjust if needed based on library specifics
+                 if finish_reason == 4:
+                     print(f"  [SAFETY] AI response blocked due to safety settings (finish_reason={finish_reason}). Skipping attempt {attempt+1}.")
+                     attempt += 1
+                     # time.sleep(1) # Short delay before next attempt
+                     continue # Skip parsing for this attempt
+                 else:
+                     # Handle other cases where parts might be empty unexpectedly
+                     print(f"  [ERROR] AI response has no valid parts (finish_reason={finish_reason}). Attempt {attempt+1}/{max_attempts}.")
+                     # Let it fall through to the general exception handling / retry logic
+                     raise ValueError("AI response has no valid parts.") # Raise specific error
+
+            # If parts exist, try to get text (this might still raise ValueError)
+            if not response.parts:
+                 finish_reason = getattr(response.candidates[0], 'finish_reason', None) if response.candidates else None
+                 safety_ratings = getattr(response.candidates[0], 'safety_ratings', []) if response.candidates else []
+                 # Using 4 as a common value for SAFETY finish_reason, adjust if needed based on library specifics
+                 if finish_reason == 4:
+                     print(f"  [SAFETY] AI response blocked due to safety settings (finish_reason={finish_reason}). Skipping attempt {attempt+1}.")
+                     attempt += 1
+                     # time.sleep(1) # Short delay before next attempt
+                     continue # Skip parsing for this attempt
+                 else:
+                     # Handle other cases where parts might be empty unexpectedly
+                     print(f"  [ERROR] AI response has no valid parts (finish_reason={finish_reason}). Attempt {attempt+1}/{max_attempts}.")
+                     # Let it fall through to the general exception handling / retry logic
+                     raise ValueError("AI response has no valid parts.") # Raise specific error
+
+            # If parts exist, try to get text (this might still raise ValueError)
+            raw_output = response.text.strip()
+
+            # More robust JSON extraction
+            json_start = raw_output.find('{')
+            json_end = raw_output.rfind('}')
+            if json_start != -1 and json_end != -1:
+                raw_json = raw_output[json_start:json_end+1]
+            elif raw_output.startswith('{') and raw_output.endswith('}'): # Handle case with no fences
+                 raw_json = raw_output
+            else:
+                 # Handle potential case where AI returns list with one item? Unlikely based on prompt but possible.
+                 if raw_output.strip().startswith('[') and raw_output.strip().endswith(']'):
+                     try:
+                         temp_list = json.loads(raw_output)
+                         if isinstance(temp_list, list) and len(temp_list) == 1 and isinstance(temp_list[0], dict):
+                             print("Warning: AI returned a list with one object for organization, extracting the object.")
+                             raw_json = json.dumps(temp_list[0]) # Extract the single object
+                         else:
+                             raise ValueError("AI returned an array, but not a single-item array of objects.")
+                     except json.JSONDecodeError:
+                          raise ValueError("AI returned something starting/ending with [], but couldn't parse it.")
+                 else:
+                    raise ValueError("AI response doesn't appear to be a JSON object.")
+
+            # Attempt to parse the extracted JSON string
+            entity_obj = json.loads(raw_json)
+
+            # Ensure it's actually a dictionary now
+            if not isinstance(entity_obj, dict):
+                raise ValueError("Parsed JSON is not a dictionary object.")
+
+            new_name = entity_obj.get("name", f"UnnamedEntity_{attempt}") # Use get for safety
             if new_name in used_names:
                 print(f"Duplicate name '{new_name}' encountered. Retrying (attempt {attempt+1})...")
                 attempt += 1
-                time.sleep(2)
+                # time.sleep(2)
                 continue
 
             # 1) Simple direct membership check
@@ -100,7 +165,7 @@ Thank you.
                 if not advanced_match_found:
                     print(f"Entity '{new_name}' does not include required nations (advanced check). Retrying (attempt {attempt+1})...")
                     attempt += 1
-                    time.sleep(2)
+                    # time.sleep(2)
                     continue
 
             # Add a unique entity ID (if missing)
@@ -109,13 +174,48 @@ Thank you.
 
             return entity_obj
 
-        except json.JSONDecodeError:
-            print(f"Failed to parse AI output as valid JSON. Retrying (attempt {attempt+1})...")
+        except (json.JSONDecodeError, ValueError) as e: # Catch parsing, validation, and potential response.text errors
+            print(f"Failed to parse/validate AI output as valid JSON object for organization (Attempt {attempt+1}/{max_attempts}): {e}")
+            # Only print raw_output if it was successfully assigned
+            if raw_output:
+                print(f"Raw AI output was:\n{raw_output}")
+            else:
+                print("Raw AI output was empty or inaccessible.") # Indicate if raw_output couldn't be read
             attempt += 1
-            time.sleep(2)
+            if attempt == max_attempts: break
+            # print("Waiting 2 seconds before retrying...")
+            # time.sleep(2)
+
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' (Attempt {attempt+1}/{max_attempts}): {rate_limit_error}")
+            attempt += 1
+            if attempt == max_attempts:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+
+            # Try to parse retry delay
+            retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         retry_delay = int(delay_str)
+            elif match:
+                 retry_delay = int(match.group(1))
+
+            # print(f"Waiting for {retry_delay} seconds due to rate limit...")
+            # time.sleep(retry_delay)
+
         except Exception as e:
-            print(f"Encountered error {e}, retrying in 2s")
-            time.sleep(2)
+            print(f"Encountered unexpected error {type(e).__name__}: {e}. Retrying (attempt {attempt+1}/{max_attempts})...")
+            attempt += 1
+            if attempt == max_attempts: break
+            # print("Waiting 5 seconds before retrying...")
+            # time.sleep(5)
 
     # Fallback placeholder
     print("Max attempts reached. Returning fallback entity.")
@@ -314,7 +414,7 @@ def initialize_global_agreements(entity_count=10, reference_year=1975, allowed_n
         allowed_nations = ["US", "UK", "USSR"]
 
     global model
-    model = configure_genai(model="gemini-2.0-flash-exp")
+    model = configure_genai(model="gemini-2.0-flash")
     schema_text = load_schema_text("global_subschemas/organizations_schema.json")
     entities = build_global_agreements(entity_count, schema_text, reference_year, allowed_nations)
     save_global_agreements(entities, filename=f"simulation_data/generated_timeline_{reference_year}/global_agreements.json")

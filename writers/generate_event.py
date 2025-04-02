@@ -2,8 +2,10 @@
 
 import os
 import json
+import re # For parsing retry delay
 import time
 import google.generativeai as genai
+from google.api_core import exceptions as google_exceptions # Import google exceptions
 
 ###############################################################################
 #                           1) Configuration & Setup                          #
@@ -82,14 +84,14 @@ def generate_global_event_json(model, json_schema, action, context, max_retries=
             print(f"AI generation took {end_time:.2f}s")
 
             # Optional: ensure a minimum wait time (if desired) to avoid rate-limit or timing issues
-            if end_time < 6:
-                wait_extra = 7.2 - end_time
-                time.sleep(wait_extra)
-                print(f"Added wait time: {wait_extra:.2f}s")
+            # if end_time < 6:
+                # wait_extra = 7.2 - end_time
+                # time.sleep(wait_extra)
+                # print(f"Added wait time: {wait_extra:.2f}s")
 
-            # Attempt to parse the AI response as JSON
-            text = response.text.strip()[7:-3]
-            event_data = json.loads(text)  # Expect an array with one item
+            # Apply the requested slicing directly
+            raw_json_text = response.text.strip()[7:-3]
+            event_data = json.loads(raw_json_text)  # Expect an array with one item
 
             # Basic validation: Must be an array of length 1
             if not isinstance(event_data, list) or len(event_data) != 1:
@@ -97,17 +99,42 @@ def generate_global_event_json(model, json_schema, action, context, max_retries=
 
             return event_data  # e.g. [ { "eventType": "...", "eventData": {...} } ]
 
-        except (json.JSONDecodeError, ValueError) as e:
-            print(f"Invalid or incomplete JSON: {e}")
+        except (json.JSONDecodeError, ValueError) as e: # Catch both parsing and validation errors
+            print(f"Invalid or incomplete JSON after slicing (Attempt {attempt + 1}/{max_retries}): {e}")
+            # Print the sliced text that failed parsing
+            print("Sliced text causing error:\n", raw_json_text)
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {retry_delay} seconds before retrying...")
+            # time.sleep(retry_delay)
+        except google_exceptions.ResourceExhausted as rate_limit_error:
+            model_name = getattr(model, 'model_name', 'Unknown Model') # Get model name safely
+            print(f"Rate limit hit for model '{model_name}' (Attempt {attempt + 1}/{max_retries}): {rate_limit_error}")
+            if attempt == max_retries - 1:
+                print(f"Max retries reached for model '{model_name}' after rate limit error.")
+                break
+            # Try to parse retry delay
+            current_retry_delay = 60 # Default delay
+            error_message = str(rate_limit_error)
+            match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE)
+            if hasattr(rate_limit_error, 'metadata'):
+                 metadata = getattr(rate_limit_error, 'metadata', {})
+                 if isinstance(metadata, dict) and 'retryInfo' in metadata and 'retryDelay' in metadata['retryInfo']:
+                     delay_str = metadata['retryInfo']['retryDelay'].get('seconds', '0')
+                     if delay_str.isdigit():
+                         current_retry_delay = int(delay_str)
+            elif match:
+                 current_retry_delay = int(match.group(1))
+            # print(f"Waiting for {current_retry_delay} seconds due to rate limit...")
+            # time.sleep(current_retry_delay)
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            print(f"Unexpected error (Attempt {attempt + 1}/{max_retries}): {type(e).__name__} - {e}")
+            if attempt == max_retries - 1: break
+            # print(f"Waiting {retry_delay} seconds before retrying...") # Use default delay for general errors
+            # time.sleep(retry_delay)
 
-        if attempt < max_retries - 1:
-            print(f"Retrying in {retry_delay} seconds... (Attempt {attempt + 2}/{max_retries})")
-            time.sleep(retry_delay)
-        else:
-            print("Maximum retries reached. Returning None.")
-            return None
+    # If loop finishes without returning
+    print("Maximum retries reached. Returning None.")
+    return None
 
 ###############################################################################
 #                           3) Main Demo / Usage                               #
